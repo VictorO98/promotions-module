@@ -27,8 +27,8 @@
         <nav id="menu">
             <a href="#" onclick="showSection('home')">Inicio</a>
             <a href="#" onclick="showSection('check_promotions')">Consultar Promociones</a>
-            <%--<a href="#" onclick="showSection('associate_promotion')">Asociar Promocion</a>
-            <a href="#" onclick="showSection('promotion_management')">Gestion de Promociones</a>
+            <a href="#" onclick="showSection('associate_promotion')">Asociar Promocion</a>
+            <%--<a href="#" onclick="showSection('promotion_management')">Gestion de Promociones</a>
             <a href="#" onclick="showSection('promotions_report')">Reporte Promociones</a>
             <a href="#" onclick="showSection('product_management')">Gestión de Producto</a>
             <a href="#" onclick="showSection('check_assigned_promotions')">Consulta Promociones asignadas</a>--%>
@@ -45,6 +45,11 @@
     <%--Consultar Promociones--%>
     <div id="check_promotions" class="section">
         <jsp:include page="check_promotions.jsp" />
+    </div>
+
+    <%--Consultar Promociones--%>
+    <div id="associate_promotion" class="section">
+        <jsp:include page="associate_promotion.jsp" />
     </div>
 </main>
 
