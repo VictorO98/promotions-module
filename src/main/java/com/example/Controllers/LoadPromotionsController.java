@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/LoadPromotions")
 public class LoadPromotionsController extends HttpServlet {
 
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int MAX_PAGE_SIZE = 30;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -27,10 +30,17 @@ public class LoadPromotionsController extends HttpServlet {
         String debugInfo = "";
         int recordCount = 0;
 
-        // Obtener parámetros de búsqueda
+        // Obtener parámetros de búsqueda y paginación
         String nombrePromocion = request.getParameter("nombrePromocion");
         String vigenciaInicio = request.getParameter("vigenciaInicio");
         String vigenciaFin = request.getParameter("vigenciaFin");
+        int pageSize = getPageSize(request);
+        int currentPage = getCurrentPage(request);
+
+        // Verificar si es la primera carga (sin filtros de búsqueda aplicados)
+        boolean isInitialLoad = (nombrePromocion == null || nombrePromocion.trim().isEmpty()) &&
+                (vigenciaInicio == null || vigenciaInicio.trim().isEmpty()) &&
+                (vigenciaFin == null || vigenciaFin.trim().isEmpty());
 
         try {
             System.out.println("=== INICIANDO CONSULTA A VW_CONSULTA_PROMO ===");
@@ -38,12 +48,16 @@ public class LoadPromotionsController extends HttpServlet {
             databaseConnection.getConnection();
             Statement stmt = databaseConnection.connection.createStatement();
 
-            // Construir consulta con filtros
+            // Construir consulta base
             StringBuilder queryBuilder = new StringBuilder("SELECT * FROM VW_CONSULTA_PROMO WHERE 1=1");
+            boolean hasFilters = false;
 
             if (nombrePromocion != null && !nombrePromocion.trim().isEmpty()) {
-                queryBuilder.append(" AND UPPER(TICODESC) LIKE UPPER('%").append(nombrePromocion.trim()).append("%')");
+                // Escapar caracteres especiales para prevenir SQL injection
+                String nombreEscapado = nombrePromocion.trim().replace("'", "''");
+                queryBuilder.append(" AND UPPER(TICODESC) LIKE UPPER('%").append(nombreEscapado).append("%')");
                 System.out.println("Filtro por nombre: " + nombrePromocion);
+                hasFilters = true;
             }
 
             if (vigenciaInicio != null && !vigenciaInicio.trim().isEmpty()) {
@@ -51,6 +65,7 @@ public class LoadPromotionsController extends HttpServlet {
                         .append("', 'YYYY-MM-DD') OR COCOFEFI >= TO_DATE('").append(vigenciaInicio)
                         .append("', 'YYYY-MM-DD'))");
                 System.out.println("Filtro fecha inicio: " + vigenciaInicio);
+                hasFilters = true;
             }
 
             if (vigenciaFin != null && !vigenciaFin.trim().isEmpty()) {
@@ -58,12 +73,29 @@ public class LoadPromotionsController extends HttpServlet {
                         .append("', 'YYYY-MM-DD') OR COCOFEFI <= TO_DATE('").append(vigenciaFin)
                         .append("', 'YYYY-MM-DD'))");
                 System.out.println("Filtro fecha fin: " + vigenciaFin);
+                hasFilters = true;
             }
 
-            String query = queryBuilder.toString();
-            System.out.println("Ejecutando query: " + query);
+            // Si no hay filtros específicos, cargar los primeros registros por defecto
+            if (!hasFilters) {
+                System.out.println("Sin filtros específicos - cargando primeros registros");
+            } else {
+                System.out.println("Filtros aplicados - ejecutando búsqueda específica");
+            }
 
-            ResultSet rs = stmt.executeQuery(query);
+            // Construir consulta simple con ROWNUM para limitar registros
+            String simpleQuery;
+            if (!hasFilters) {
+                // Sin filtros: cargar primeros registros
+                simpleQuery = "SELECT * FROM VW_CONSULTA_PROMO WHERE ROWNUM <= " + pageSize;
+            } else {
+                // Con filtros: aplicar filtros y limitar
+                simpleQuery = queryBuilder.toString() + " AND ROWNUM <= " + pageSize;
+            }
+
+            System.out.println("Ejecutando query: " + simpleQuery);
+
+            ResultSet rs = stmt.executeQuery(simpleQuery);
 
             // Obtener metadatos de las columnas
             ResultSetMetaData metaData = rs.getMetaData();
@@ -84,10 +116,10 @@ public class LoadPromotionsController extends HttpServlet {
                 Promotion promotion = new Promotion();
 
                 try {
-                    promotion.setTicododi(rs.getInt("TICODODI"));
-                    System.out.println("TICODODI: " + rs.getInt("TICODODI"));
+                    promotion.setTicododi(rs.getInt("TICOCODI"));
+                    System.out.println("TICOCODI: " + rs.getInt("TICOCODI"));
                 } catch (Exception e) {
-                    System.out.println("Error leyendo TICODODI: " + e.getMessage());
+                    System.out.println("Error leyendo TICOCODI: " + e.getMessage());
                 }
 
                 try {
@@ -126,10 +158,10 @@ public class LoadPromotionsController extends HttpServlet {
                 }
 
                 try {
-                    promotion.setTicodex(rs.getString("TICODEX"));
-                    System.out.println("TICODEX: " + rs.getString("TICODEX"));
+                    promotion.setTicodex(rs.getString("TICOCOEX"));
+                    System.out.println("TICOCOEX: " + rs.getString("TICOCOEX"));
                 } catch (Exception e) {
-                    System.out.println("Error leyendo TICODEX: " + e.getMessage());
+                    System.out.println("Error leyendo TICOCOEX: " + e.getMessage());
                 }
 
                 try {
@@ -161,10 +193,10 @@ public class LoadPromotionsController extends HttpServlet {
                 }
 
                 try {
-                    promotion.setLocandmb(rs.getString("LOCANDMB"));
-                    System.out.println("LOCANDMB: " + rs.getString("LOCANDMB"));
+                    promotion.setLocandmb(rs.getString("LOCANOMB"));
+                    System.out.println("LOCANOMB: " + rs.getString("LOCANOMB"));
                 } catch (Exception e) {
-                    System.out.println("Error leyendo LOCANDMB: " + e.getMessage());
+                    System.out.println("Error leyendo LOCANOMB: " + e.getMessage());
                 }
 
                 try {
@@ -273,10 +305,10 @@ public class LoadPromotionsController extends HttpServlet {
                 }
 
                 try {
-                    promotion.setCocodlco(rs.getString("COCODLCO"));
-                    System.out.println("COCODLCO: " + rs.getString("COCODLCO"));
+                    promotion.setCocodlco(rs.getString("COCOCLCO"));
+                    System.out.println("COCOCLCO: " + rs.getString("COCOCLCO"));
                 } catch (Exception e) {
-                    System.out.println("Error leyendo COCODLCO: " + e.getMessage());
+                    System.out.println("Error leyendo COCOCLCO: " + e.getMessage());
                 }
 
                 try {
@@ -323,22 +355,29 @@ public class LoadPromotionsController extends HttpServlet {
             databaseConnection.connection.close();
 
             System.out.println("=== RESUMEN ===");
-            System.out.println("Total de registros encontrados: " + recordCount);
-            System.out.println("Total de promociones en la lista: " + promotions.size());
-            System.out.println("Filtros aplicados: Nombre=" + nombrePromocion + ", FechaInicio=" + vigenciaInicio
-                    + ", FechaFin=" + vigenciaFin);
+            System.out.println("Registros obtenidos: " + recordCount);
+            System.out.println("Tamaño de página solicitado: " + pageSize);
 
             // Crear información de debug para la vista
-            debugInfo = "Consulta ejecutada exitosamente. Registros encontrados: " + recordCount;
-
-            if (recordCount == 0 && nombrePromocion != null && !nombrePromocion.trim().isEmpty()) {
-                debugInfo += ". No se encontraron promociones con los criterios especificados.";
+            if (recordCount > 0) {
+                if (isInitialLoad) {
+                    debugInfo = String.format("Mostrando los primeros %d registros disponibles", recordCount);
+                } else {
+                    debugInfo = String.format("Consulta ejecutada exitosamente. Se encontraron %d registros",
+                            recordCount);
+                }
+            } else {
+                debugInfo = "No se encontraron promociones que coincidan con los criterios especificados";
             }
 
             request.setAttribute("promotions", promotions);
             request.setAttribute("debugInfo", debugInfo);
             request.setAttribute("recordCount", recordCount);
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("totalPages", 1);
             request.setAttribute("showPromotions", "true");
+            request.setAttribute("isInitialLoad", isInitialLoad);
             request.getRequestDispatcher("/views/index.jsp").forward(request, response);
 
         } catch (Exception e) {
@@ -356,5 +395,37 @@ public class LoadPromotionsController extends HttpServlet {
             request.setAttribute("showPromotions", "true");
             request.getRequestDispatcher("/views/index.jsp").forward(request, response);
         }
+    }
+
+    private int getPageSize(HttpServletRequest request) {
+        String pageSizeParam = request.getParameter("pageSize");
+        if (pageSizeParam != null && !pageSizeParam.trim().isEmpty()) {
+            try {
+                int size = Integer.parseInt(pageSizeParam);
+                return Math.min(Math.max(size, DEFAULT_PAGE_SIZE), MAX_PAGE_SIZE);
+            } catch (NumberFormatException e) {
+                return DEFAULT_PAGE_SIZE;
+            }
+        }
+        return DEFAULT_PAGE_SIZE;
+    }
+
+    private int getCurrentPage(HttpServletRequest request) {
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.trim().isEmpty()) {
+            try {
+                return Math.max(Integer.parseInt(pageParam), 1);
+            } catch (NumberFormatException e) {
+                return 1;
+            }
+        }
+        return 1;
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Redirigir todas las peticiones POST al método GET
+        doGet(request, response);
     }
 }

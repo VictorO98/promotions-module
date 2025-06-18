@@ -350,8 +350,74 @@
 
                     .form-actions {
                         display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
                         gap: 1rem;
+                        margin-top: 1.5rem;
+                    }
+
+                    .export-actions {
+                        margin-left: auto;
+                        display: flex;
+                        gap: 1rem;
+                    }
+
+                    .pagination-container {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 1rem;
+                        border-top: 1px solid var(--border-color);
+                        margin-top: 1rem;
+                    }
+
+                    .pagination-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .pagination-info select {
+                        padding: 0.25rem;
+                        border: 1px solid var(--border-color);
+                        border-radius: 4px;
+                        background: white;
+                    }
+
+                    .pagination-controls {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .pagination-controls button {
+                        padding: 0.5rem;
+                        border: 1px solid var(--border-color);
+                        background: white;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
                         justify-content: center;
+                        min-width: 2rem;
+                    }
+
+                    .pagination-controls button:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    .pagination-controls button:not(:disabled):hover {
+                        background: var(--primary-color);
+                        color: white;
+                        border-color: var(--primary-color);
+                    }
+
+                    .pagination-controls span {
+                        padding: 0.5rem 1rem;
+                        background: var(--surface-color);
+                        border: 1px solid var(--border-color);
+                        border-radius: 4px;
                     }
 
                     .btn {
@@ -448,7 +514,9 @@
                     .data-table {
                         width: 100%;
                         border-collapse: collapse;
-                        font-size: 0.9rem;
+                        font-size: 0.85rem;
+                        min-width: 1400px;
+                        /* Tabla más ancha para acomodar las nuevas columnas */
                     }
 
                     .data-table th {
@@ -462,9 +530,27 @@
                     }
 
                     .data-table td {
-                        padding: 1rem 0.75rem;
+                        padding: 0.75rem 0.5rem;
                         border-bottom: 1px solid var(--border-color);
                         vertical-align: middle;
+                    }
+
+                    .data-table td.text-center {
+                        text-align: center;
+                    }
+
+                    .data-table td.text-right {
+                        text-align: right;
+                    }
+
+                    .data-table .codigo-col {
+                        font-weight: bold;
+                        color: var(--primary-color);
+                    }
+
+                    .data-table .porcentaje-col {
+                        font-weight: bold;
+                        color: var(--success-color);
                     }
 
                     .data-table tbody tr:hover {
@@ -991,7 +1077,13 @@
                         }
 
                         .details-table {
-                            min-width: 800px;
+                            min-width: 1200px;
+                            /* Incrementar debido a las nuevas columnas */
+                        }
+
+                        .table-container {
+                            font-size: 0.8rem;
+                            /* Texto más pequeño en móviles */
                         }
 
                         .promotion-management-form {
@@ -1253,102 +1345,236 @@
                     }
 
                     /* Product Management Styles */
-                    .product-management-container {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 2rem;
-                        margin-bottom: 2rem;
-                    }
-
-                    .products-section,
-                    .association-section {
-                        background: var(--surface-color);
-                        border-radius: var(--border-radius);
-                        padding: 2rem;
-                        border: 1px solid var(--border-color);
-                    }
-
-                    .products-header,
-                    .association-header {
+                    .products-list-header {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
                         margin-bottom: 2rem;
-                        padding-bottom: 1rem;
-                        border-bottom: 2px solid var(--border-color);
+                        padding: 1.5rem;
+                        background: var(--background-color);
+                        border-radius: var(--border-radius);
+                        border: 1px solid var(--border-color);
                     }
 
-                    .products-header h3,
-                    .association-header h3 {
-                        font-size: 1.25rem;
-                        font-weight: 700;
-                        color: var(--primary-color);
+                    .products-actions {
+                        display: flex;
+                        gap: 1rem;
+                    }
+
+                    .products-info {
+                        color: var(--text-secondary);
+                        font-weight: 600;
+                        font-size: 0.9rem;
+                    }
+
+                    .products-list-container {
+                        background: var(--surface-color);
+                        border-radius: var(--border-radius);
+                        border: 1px solid var(--border-color);
+                        min-height: 400px;
+                    }
+
+                    .loading-state {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 3rem;
+                        color: var(--text-secondary);
+                    }
+
+                    .loading-state .spinner {
+                        margin-bottom: 1rem;
+                    }
+
+                    .products-list-area {
+                        padding: 1.5rem;
+                    }
+
+                    .no-products-message {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        padding: 3rem;
+                        color: var(--text-secondary);
+                    }
+
+                    .no-products-message i {
+                        font-size: 3rem;
+                        margin-bottom: 1rem;
+                        color: var(--border-color);
+                    }
+
+                    .products-list {
+                        display: grid;
+                        gap: 1rem;
+                    }
+
+                    .product-item {
+                        background: var(--background-color);
+                        border: 2px solid var(--border-color);
+                        border-radius: 8px;
+                        padding: 1.5rem;
+                        transition: var(--transition);
+                        cursor: pointer;
+                    }
+
+                    .product-item:hover {
+                        border-color: var(--primary-color);
+                        background: rgba(37, 99, 235, 0.05);
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    .product-item-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 1rem;
+                    }
+
+                    .product-item-title {
                         display: flex;
                         align-items: center;
-                        gap: 0.5rem;
+                        gap: 0.75rem;
+                    }
+
+                    .product-item-icon {
+                        background: var(--primary-color);
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1.2rem;
+                    }
+
+                    .product-item-info h4 {
                         margin: 0;
+                        color: var(--text-primary);
+                        font-size: 1.1rem;
+                        font-weight: 600;
                     }
 
-                    .products-navigation {
+                    .product-item-info .product-code {
+                        color: var(--text-secondary);
+                        font-size: 0.9rem;
+                        margin-top: 0.25rem;
+                    }
+
+                    .product-item-actions {
                         display: flex;
-                        gap: 0.25rem;
-                        align-items: center;
-                        flex-wrap: wrap;
+                        gap: 0.5rem;
                     }
 
-                    .nav-btn {
+                    .btn-details {
                         background: var(--primary-color);
                         color: white;
                         border: none;
-                        padding: 0.5rem;
+                        padding: 0.5rem 1rem;
                         border-radius: 6px;
+                        font-size: 0.85rem;
                         cursor: pointer;
                         transition: var(--transition);
                         display: flex;
                         align-items: center;
-                        justify-content: center;
-                        min-width: 36px;
-                        height: 36px;
-                        font-size: 0.875rem;
+                        gap: 0.5rem;
                     }
 
-                    .nav-btn:hover {
+                    .btn-details:hover {
                         background: var(--primary-dark);
                         transform: translateY(-1px);
                     }
 
-                    .nav-btn:disabled {
-                        opacity: 0.5;
-                        cursor: not-allowed;
-                        background: var(--border-color);
-                    }
-
-                    .nav-btn-special {
-                        background: var(--success-color);
-                        margin-left: 0.5rem;
-                    }
-
-                    .nav-btn-special:hover {
-                        background: #059669;
-                    }
-
-                    .nav-info {
+                    /* Product Modal Styles */
+                    .product-modal {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 10000;
                         display: flex;
                         align-items: center;
-                        gap: 0.25rem;
-                        font-size: 0.875rem;
-                        color: var(--text-secondary);
-                        font-weight: 600;
-                        margin: 0 0.5rem;
-                        white-space: nowrap;
+                        justify-content: center;
                     }
 
-                    .product-details {
-                        margin-top: 1.5rem;
-                    }
-
-                    .product-form {
+                    .modal-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
                         width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5);
+                        backdrop-filter: blur(4px);
+                    }
+
+                    .modal-content {
+                        position: relative;
+                        background: var(--surface-color);
+                        border-radius: var(--border-radius);
+                        box-shadow: var(--shadow-lg);
+                        width: 90%;
+                        max-width: 800px;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .modal-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 1.5rem;
+                        border-bottom: 2px solid var(--border-color);
+                        background: var(--background-color);
+                    }
+
+                    .modal-header h3 {
+                        margin: 0;
+                        color: var(--primary-color);
+                        font-size: 1.25rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .modal-close-btn {
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary);
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        padding: 0.5rem;
+                        border-radius: 4px;
+                        transition: var(--transition);
+                    }
+
+                    .modal-close-btn:hover {
+                        background: var(--border-color);
+                        color: var(--text-primary);
+                    }
+
+                    .modal-body {
+                        padding: 2rem;
+                    }
+
+                    .modal-associations {
+                        margin-top: 2rem;
+                        padding-top: 2rem;
+                        border-top: 2px solid var(--border-color);
+                    }
+
+                    .modal-associations h4 {
+                        color: var(--primary-color);
+                        margin-bottom: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
                     }
 
                     .association-buttons {
@@ -1393,12 +1619,16 @@
                         max-width: 300px;
                     }
 
-                    .product-actions {
-                        grid-column: span 2;
+                    .modal-footer {
                         display: flex;
-                        justify-content: center;
-                        gap: 1.5rem;
-                        margin-top: 1rem;
+                        justify-content: flex-end;
+                        gap: 1rem;
+                        padding: 1.5rem;
+                        border-top: 2px solid var(--border-color);
+                        background: var(--background-color);
+                        position: sticky;
+                        bottom: 0;
+                        z-index: 10;
                     }
 
                     /* Associations Results Table */
@@ -1495,10 +1725,9 @@
                     }
 
                     .service-client-section {
-                        display: grid;
-                        grid-template-columns: 2fr 1fr;
-                        gap: 2rem;
-                        align-items: end;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.5rem;
                     }
 
                     .client-type-section {
@@ -1745,14 +1974,7 @@
                     /* Mobile Responsive for Assigned Promotions */
                     @media (max-width: 768px) {
                         .service-client-section {
-                            grid-template-columns: 1fr;
-                            gap: 1.5rem;
-                        }
-
-                        .input-with-clear {
-                            flex-direction: column;
-                            align-items: stretch;
-                            gap: 0.75rem;
+                            gap: 1rem;
                         }
 
                         .assigned-promotion-details {
@@ -1774,6 +1996,367 @@
 
                         .service-info-grid {
                             grid-template-columns: 1fr;
+                        }
+                    }
+
+                    /* Product Detail Modal Styles */
+                    .product-detail-container {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+
+                    .product-info-section {
+                        background: var(--primary-color);
+                        color: white;
+                        padding: 1rem 1.5rem;
+                        border-radius: var(--border-radius);
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+
+                    .product-name-display {
+                        flex: 1;
+                    }
+
+                    .product-name-display h4 {
+                        margin: 0 0 0.25rem 0;
+                        font-size: 1.125rem;
+                        font-weight: 600;
+                    }
+
+                    .product-code {
+                        font-size: 0.85rem;
+                        opacity: 0.9;
+                    }
+
+                    .product-info-extra {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                        gap: 0.25rem;
+                        font-size: 0.85rem;
+                        opacity: 0.9;
+                    }
+
+                    .product-status {
+                        background: rgba(255, 255, 255, 0.2);
+                        padding: 0.25rem 0.75rem;
+                        border-radius: 12px;
+                        font-weight: 500;
+                    }
+
+                    .product-type {
+                        font-weight: 500;
+                    }
+
+                    .association-section {
+                        background: var(--background-color);
+                        padding: 1.5rem;
+                        border-radius: var(--border-radius);
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .association-section h4 {
+                        color: var(--primary-color);
+                        margin-bottom: 1.5rem;
+                        font-size: 1.25rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .association-buttons {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 1rem;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .btn-association {
+                        padding: 1rem;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        border-radius: var(--border-radius);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                        transition: var(--transition);
+                    }
+
+                    .btn-association:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-lg);
+                    }
+
+                    .association-results {
+                        background: var(--surface-color);
+                        border: 2px solid var(--border-color);
+                        border-radius: var(--border-radius);
+                        min-height: 300px;
+                        max-height: 400px;
+                        overflow-y: auto;
+                        padding: 1.5rem;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+
+                    .no-association {
+                        text-align: center;
+                        color: var(--text-secondary);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 200px;
+                    }
+
+                    .no-association i {
+                        font-size: 2.5rem;
+                        margin-bottom: 1rem;
+                        color: var(--border-color);
+                    }
+
+                    .no-association p {
+                        margin: 0;
+                        font-size: 1rem;
+                        max-width: 300px;
+                        line-height: 1.5;
+                    }
+
+                    /* Conceptos y Servicios Results */
+                    .concepts-list,
+                    .services-list {
+                        display: grid;
+                        gap: 0.75rem;
+                        padding: 0;
+                        margin: 0;
+                        width: 100%;
+                    }
+
+                    .concept-item,
+                    .service-item {
+                        background: var(--background-color);
+                        border: 1px solid var(--border-color);
+                        border-radius: 8px;
+                        padding: 1.25rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        transition: var(--transition);
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+
+                    .concept-item:hover,
+                    .service-item:hover {
+                        border-color: var(--primary-color);
+                        background: rgba(37, 99, 235, 0.05);
+                    }
+
+                    .item-info {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        flex: 1;
+                        padding-right: 1rem;
+                    }
+
+                    .item-name {
+                        font-weight: 600;
+                        color: var(--text-primary);
+                        font-size: 1.1rem;
+                        line-height: 1.3;
+                    }
+
+                    .item-description {
+                        color: var(--text-secondary);
+                        font-size: 0.95rem;
+                        line-height: 1.4;
+                    }
+
+                    .item-actions {
+                        display: flex;
+                        gap: 0.5rem;
+                    }
+
+                    .btn-associate {
+                        background: var(--success-color);
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: var(--transition);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.25rem;
+                    }
+
+                    .btn-associate:hover {
+                        background: #059669;
+                        transform: translateY(-1px);
+                    }
+
+                    .btn-associated {
+                        background: var(--secondary-color);
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        font-size: 0.85rem;
+                        cursor: not-allowed;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.25rem;
+                        opacity: 0.7;
+                    }
+
+                    /* Search Filter Styles */
+                    .search-filter-container {
+                        margin-bottom: 1rem;
+                        padding: 1rem;
+                        background: var(--background-color);
+                        border: 1px solid var(--border-color);
+                        border-radius: var(--border-radius);
+                    }
+
+                    .search-filter-input {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        background: var(--surface-color);
+                        border: 2px solid var(--border-color);
+                        border-radius: 8px;
+                        padding: 0.75rem 1rem;
+                        transition: var(--transition);
+                    }
+
+                    .search-filter-input:focus-within {
+                        border-color: var(--primary-color);
+                        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+                    }
+
+                    .search-filter-input i {
+                        color: var(--text-secondary);
+                        margin-right: 0.75rem;
+                        font-size: 0.9rem;
+                    }
+
+                    .search-filter-input input {
+                        flex: 1;
+                        border: none;
+                        outline: none;
+                        background: transparent;
+                        font-size: 0.95rem;
+                        color: var(--text-primary);
+                        padding: 0;
+                    }
+
+                    .search-filter-input input::placeholder {
+                        color: var(--text-secondary);
+                        font-style: italic;
+                    }
+
+                    .clear-search-btn {
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                        padding: 0.25rem;
+                        border-radius: 4px;
+                        margin-left: 0.5rem;
+                        transition: var(--transition);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.8rem;
+                    }
+
+                    .clear-search-btn:hover {
+                        background: var(--border-color);
+                        color: var(--text-primary);
+                    }
+
+                    /* Botón Crear Producto Mejorado */
+                    .btn-create-product {
+                        background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+                        color: white;
+                        border: none;
+                        padding: 0.875rem 1.5rem;
+                        border-radius: 8px;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: var(--transition);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    .btn-create-product:hover {
+                        transform: translateY(-1px);
+                        box-shadow: var(--shadow-lg);
+                        background: linear-gradient(135deg, #059669 0%, var(--success-color) 100%);
+                    }
+
+                    .btn-create-product:active {
+                        transform: translateY(0);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    .btn-create-product i {
+                        font-size: 1rem;
+                    }
+
+                    .associate-all-container {
+                        margin-bottom: 1.5rem;
+                        padding: 1rem;
+                        background: rgba(245, 158, 11, 0.1);
+                        border: 2px dashed var(--warning-color);
+                        border-radius: var(--border-radius);
+                        text-align: center;
+                    }
+
+                    .btn-associate-all {
+                        padding: 1rem 2.5rem;
+                        font-size: 1.1rem;
+                        font-weight: 700;
+                        border-radius: var(--border-radius);
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                        transition: var(--transition);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+
+                    .btn-associate-all:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-lg);
+                    }
+
+                    /* Mobile Responsive for Product Detail Modal */
+                    @media (max-width: 768px) {
+                        .association-buttons {
+                            grid-template-columns: 1fr;
+                        }
+
+                        .product-detail-container {
+                            gap: 1rem;
+                        }
+
+                        .modal-content {
+                            width: 95%;
+                            max-height: 95vh;
+                        }
+
+                        .association-results {
+                            min-height: 250px;
                         }
                     }
                 </style>
@@ -1799,8 +2382,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link ${showPromotions == 'true' ? 'active' : ''}"
-                                        onclick="showSection('check_promotions')">
+                                    <a href="<%= request.getContextPath() %>/InitialPromotions"
+                                        class="nav-link ${showPromotions == 'true' ? 'active' : ''}">
                                         <i class="fas fa-search"></i>
                                         Consultar Promociones
                                     </a>
@@ -1818,21 +2401,17 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" onclick="showSection('promotions_reports')">
-                                        <i class="fas fa-chart-bar"></i>
-                                        Reportes de Promociones
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link" onclick="showSection('product_management')">
+                                    <a href="<%= request.getContextPath() %>/InitialProducts"
+                                        class="nav-link ${showProducts == 'true' ? 'active' : ''}">
                                         <i class="fas fa-box"></i>
                                         Gestión de Productos
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" onclick="showSection('assigned_promotions')">
+                                    <a href="<%= request.getContextPath() %>/InitialPromocionesActivas"
+                                        class="nav-link ${showPromocionesActivas == 'true' ? 'active' : ''}">
                                         <i class="fas fa-link"></i>
-                                        Promociones Asignadas
+                                        Promociones Activas
                                     </a>
                                 </li>
                             </ul>
@@ -1863,13 +2442,7 @@
                                     <h3>Gestión de Promociones</h3>
                                     <p>Administra el ciclo de vida completo de promociones</p>
                                 </div>
-                                <div class="feature-card">
-                                    <div class="icon">
-                                        <i class="fas fa-chart-bar"></i>
-                                    </div>
-                                    <h3>Reportes</h3>
-                                    <p>Genera reportes detallados y análisis de promociones</p>
-                                </div>
+
                                 <div class="feature-card">
                                     <div class="icon">
                                         <i class="fas fa-box"></i>
@@ -1895,11 +2468,12 @@
                                         <label for="nombrePromocion" class="form-label">
                                             <i class="fas fa-tag"></i>
                                             Nombre de la Promoción
-                                            <span class="required">*</span>
+                                            <span class="text-secondary">(Opcional)</span>
                                         </label>
                                         <input type="text" id="nombrePromocion" name="nombrePromocion"
-                                            class="form-input" placeholder="Ej: Promo Navidad"
-                                            value="${param.nombrePromocion}" required>
+                                            class="form-input"
+                                            placeholder="Ej: Promo Navidad (déjelo vacío para ver todas)"
+                                            value="${param.nombrePromocion}">
                                     </div>
                                     <div class="form-group">
                                         <label for="vigenciaInicio" class="form-label">
@@ -1924,74 +2498,131 @@
                                         <i class="fas fa-eraser"></i>
                                         Limpiar Campos
                                     </button>
+                                    <div class="export-actions">
+                                        <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                                            <i class="fas fa-file-csv"></i>
+                                            Exportar CSV
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
 
                             <div class="results-container" id="resultsContainer">
                                 <c:choose>
                                     <c:when test="${recordCount > 0}">
-                                        <div class="alert alert-success">
-                                            <i class="fas fa-check-circle"></i>
-                                            Se encontraron ${recordCount} promociones que coinciden con tu búsqueda
-                                        </div>
+                                        <c:choose>
+                                            <c:when test="${isInitialLoad}">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    ${debugInfo}. Use los filtros de búsqueda para obtener resultados
+                                                    específicos.
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="alert alert-success">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    ${debugInfo}
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
                                         <div class="table-container">
                                             <table class="data-table">
                                                 <thead>
                                                     <tr>
-                                                        <th><i class="fas fa-hashtag"></i> Código</th>
-                                                        <th><i class="fas fa-file-alt"></i> Descripción</th>
-                                                        <th><i class="fas fa-building"></i> Departamento</th>
+                                                        <th><i class="fas fa-hashtag"></i> Código Promoción</th>
+                                                        <th><i class="fas fa-tag"></i> Nombre Promoción</th>
+                                                        <th><i class="fas fa-map"></i> Departamento</th>
                                                         <th><i class="fas fa-map-marker-alt"></i> Localidad</th>
-                                                        <th><i class="fas fa-layer-group"></i> Categoría</th>
-                                                        <th><i class="fas fa-cogs"></i> Tipo Servicio</th>
-                                                        <th><i class="fas fa-calendar"></i> Inicio</th>
-                                                        <th><i class="fas fa-calendar"></i> Fin</th>
-                                                        <th><i class="fas fa-toggle-on"></i> Estado</th>
-                                                        <th><i class="fas fa-dollar-sign"></i> Valor</th>
+                                                        <th><i class="fas fa-store"></i> Mercado</th>
+                                                        <th><i class="fas fa-layer-group"></i> Estrato</th>
+                                                        <th><i class="fas fa-cubes"></i> Tipo Plan</th>
+                                                        <th><i class="fas fa-box"></i> Tipo Producto</th>
+                                                        <th><i class="fas fa-percent"></i> % Descuento</th>
+                                                        <th><i class="fas fa-clock"></i> Duración</th>
+                                                        <th><i class="fas fa-calendar-check"></i> Periodicidad</th>
+                                                        <th><i class="fas fa-calendar-plus"></i> Fecha Creación</th>
+                                                        <th><i class="fas fa-user"></i> Usuario</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <c:forEach items="${promotions}" var="promotion">
                                                         <tr>
-                                                            <td><strong>${promotion.ticododi}</strong></td>
+                                                            <td class="codigo-col">${promotion.ticododi}</td>
                                                             <td>${promotion.ticodesc}</td>
                                                             <td>${promotion.depadesc}</td>
                                                             <td>${promotion.locandmb}</td>
                                                             <td>${promotion.catedesc}</td>
-                                                            <td>${promotion.pasedesc}</td>
-                                                            <td>
-                                                                <fmt:formatDate value="${promotion.cocofein}"
+                                                            <td class="text-center">${promotion.sucacate}</td>
+                                                            <td>${promotion.plsudesc}</td>
+                                                            <td>${promotion.concdesc}</td>
+                                                            <td class="porcentaje-col text-center">
+                                                                ${promotion.cocoporc}%</td>
+                                                            <td class="text-center">${promotion.cocotiap} meses</td>
+                                                            <td class="text-center">${promotion.ticoperiodicidad}</td>
+                                                            <td class="text-center">
+                                                                <fmt:formatDate value="${promotion.ticofech}"
                                                                     pattern="dd/MM/yyyy" />
                                                             </td>
-                                                            <td>
-                                                                <fmt:formatDate value="${promotion.cocofefi}"
-                                                                    pattern="dd/MM/yyyy" />
-                                                            </td>
-                                                            <td>
-                                                                <span
-                                                                    class="status-badge ${promotion.ticoactive == 'S' ? 'status-active' : 'status-inactive'}">
-                                                                    ${promotion.ticoactive == 'S' ? 'Activo' :
-                                                                    'Inactivo'}
-                                                                </span>
-                                                            </td>
-                                                            <td><strong>$${promotion.cocoval}</strong></td>
+                                                            <td>${promotion.ticouser}</td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>
                                             </table>
+
+                                            <!-- Paginación -->
+                                            <div class="pagination-container">
+                                                <div class="pagination-info">
+                                                    <span>Tamaño de página:</span>
+                                                    <select id="pageSizeSelect" onchange="changePageSize(this.value)">
+                                                        <option value="10" ${pageSize==10 ? 'selected="selected"' : ''
+                                                            }>10</option>
+                                                        <option value="20" ${pageSize==20 ? 'selected="selected"' : ''
+                                                            }>20</option>
+                                                        <option value="30" ${pageSize==30 ? 'selected="selected"' : ''
+                                                            }>30</option>
+                                                    </select>
+                                                </div>
+                                                <div class="pagination-controls">
+                                                    <button type="button" onclick="goToPage(1)" class="pagination-btn"
+                                                        ${currentPage==1 ? 'disabled' : '' }>
+                                                        <i class="fas fa-angle-double-left"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        onclick="goToPage(<c:out value='${currentPage - 1}'/>)"
+                                                        class="pagination-btn" ${currentPage==1 ? 'disabled' : '' }>
+                                                        <i class="fas fa-angle-left"></i>
+                                                    </button>
+                                                    <span class="current-page">Página ${currentPage} de
+                                                        ${totalPages}</span>
+                                                    <button type="button"
+                                                        onclick="goToPage(<c:out value='${currentPage + 1}'/>)"
+                                                        class="pagination-btn" ${currentPage==totalPages ? 'disabled'
+                                                        : '' }>
+                                                        <i class="fas fa-angle-right"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        onclick="goToPage(<c:out value='${totalPages}'/>)"
+                                                        class="pagination-btn" ${currentPage==totalPages ? 'disabled'
+                                                        : '' }>
+                                                        <i class="fas fa-angle-double-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </c:when>
-                                    <c:when test="${param.nombrePromocion != null && recordCount == 0}">
+                                    <c:when test="${showPromotions == 'true' && recordCount == 0}">
                                         <div class="alert alert-warning">
                                             <i class="fas fa-exclamation-triangle"></i>
-                                            No se encontraron promociones que coincidan con los criterios de búsqueda
-                                            especificados
+                                            ${debugInfo}
+                                            <br><small>Intente con diferentes criterios de búsqueda o haga clic en
+                                                "Consultar" sin filtros para ver todas las promociones.</small>
                                         </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle"></i>
-                                            Ingresa el nombre de la promoción para comenzar la búsqueda
+                                            Para consultar promociones, haga clic en el botón "Consultar". Puede usar
+                                            filtros opcionales para búsquedas específicas.
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -2269,260 +2900,281 @@
                         </div>
                     </div>
 
-                    <!-- Promotions Reports Section -->
-                    <div id="promotions_reports" class="section">
-                        <div class="content-container">
-                            <div class="section-header">
-                                <i class="fas fa-chart-bar"></i>
-                                <h2>Reportes de Promociones</h2>
-                            </div>
-
-                            <form class="reports-form" onsubmit="return submitReportsForm(event)">
-                                <!-- Reports Filters -->
-                                <div class="reports-filters">
-                                    <div class="form-grid-reports">
-                                        <div class="form-group">
-                                            <label for="usuarioReporte" class="form-label">
-                                                <i class="fas fa-user"></i>
-                                                Usuario
-                                            </label>
-                                            <input type="text" id="usuarioReporte" name="usuarioReporte"
-                                                class="form-input" placeholder="Código de usuario">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="nombreUsuarioReporte" class="form-label">
-                                                <i class="fas fa-user-tag"></i>
-                                                Nombre Usuario
-                                            </label>
-                                            <input type="text" id="nombreUsuarioReporte" name="nombreUsuarioReporte"
-                                                class="form-input" placeholder="Nombre completo del usuario">
-                                        </div>
-
-                                        <div class="form-group full-width-reports">
-                                            <label for="nombrePromocionReporte" class="form-label">
-                                                <i class="fas fa-tag"></i>
-                                                Nombre Promoción
-                                            </label>
-                                            <input type="text" id="nombrePromocionReporte" name="nombrePromocionReporte"
-                                                class="form-input" placeholder="Nombre de la promoción">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="vigenciaInicioReporte" class="form-label">
-                                                <i class="fas fa-calendar-alt"></i>
-                                                Vigencia Promoción - Inicio
-                                            </label>
-                                            <div class="date-input-wrapper">
-                                                <input type="date" id="vigenciaInicioReporte"
-                                                    name="vigenciaInicioReporte" class="form-input">
-                                                <i class="fas fa-calendar date-icon"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="vigenciaFinReporte" class="form-label">
-                                                <i class="fas fa-calendar-alt"></i>
-                                                Fin
-                                            </label>
-                                            <div class="date-input-wrapper">
-                                                <input type="date" id="vigenciaFinReporte" name="vigenciaFinReporte"
-                                                    class="form-input">
-                                                <i class="fas fa-calendar date-icon"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="reports-actions">
-                                    <div class="primary-actions">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search"></i>
-                                            Consultar
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="clearReportsForm()">
-                                            <i class="fas fa-eraser"></i>
-                                            Limpiar Campos
-                                        </button>
-                                    </div>
-                                    <div class="export-actions">
-                                        <button type="button" class="btn btn-success" onclick="exportToCSV()">
-                                            <i class="fas fa-file-csv"></i>
-                                            Exportar CSV
-                                        </button>
-                                        <button type="button" class="btn btn-warning" onclick="exportToPDF()">
-                                            <i class="fas fa-file-pdf"></i>
-                                            Exportar PDF / XLS
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <!-- Reports Results -->
-                            <div class="reports-results" id="reportsResults">
-                                <div class="results-section">
-                                    <div class="section-title">
-                                        <h3><i class="fas fa-table"></i> Promociones</h3>
-                                        <div class="pagination-info">
-                                            <span id="recordsInfo">0 de 0</span>
-                                            <div class="pagination-controls">
-                                                <button type="button" class="pagination-btn" onclick="firstPage()"
-                                                    title="Primera página">
-                                                    <i class="fas fa-angle-double-left"></i>
-                                                </button>
-                                                <button type="button" class="pagination-btn" onclick="previousPage()"
-                                                    title="Página anterior">
-                                                    <i class="fas fa-angle-left"></i>
-                                                </button>
-                                                <span class="current-page">1</span>
-                                                <button type="button" class="pagination-btn" onclick="nextPage()"
-                                                    title="Página siguiente">
-                                                    <i class="fas fa-angle-right"></i>
-                                                </button>
-                                                <button type="button" class="pagination-btn" onclick="lastPage()"
-                                                    title="Última página">
-                                                    <i class="fas fa-angle-double-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="reports-table-container">
-                                        <table class="reports-table" id="reportsTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Código Promoción</th>
-                                                    <th>Nombre Promoción</th>
-                                                    <th>Departamento</th>
-                                                    <th>Localidad</th>
-                                                    <th>Mercado</th>
-                                                    <th>Estrato</th>
-                                                    <th>Tipo Plan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="reportsTableBody">
-                                                <tr>
-                                                    <td colspan="7" class="no-data">
-                                                        <div class="no-data-message">
-                                                            <i class="fas fa-search"></i>
-                                                            <p>Realice una consulta para ver los resultados</p>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Product Management Section -->
-                    <div id="product_management" class="section">
+                    <div id="product_management" class="section ${showProducts == 'true' ? 'active' : ''}">
                         <div class="content-container">
                             <div class="section-header">
                                 <i class="fas fa-box"></i>
                                 <h2>Gestión de Productos</h2>
+                                <button type="button" class="btn-create-product" onclick="abrirModalCrearProducto()">
+                                    <i class="fas fa-plus"></i>
+                                    Crear Producto
+                                </button>
                             </div>
 
-                            <div class="product-management-container">
-                                <!-- Products List Section -->
-                                <div class="products-section">
-                                    <div class="products-header">
-                                        <h3><i class="fas fa-boxes"></i> Productos</h3>
-                                        <div class="products-navigation">
-                                            <button type="button" class="nav-btn" onclick="firstProduct()"
-                                                title="Primer producto">
-                                                <i class="fas fa-angle-double-left"></i>
-                                            </button>
-                                            <button type="button" class="nav-btn" onclick="previousProduct()"
-                                                title="Producto anterior">
-                                                <i class="fas fa-angle-left"></i>
-                                            </button>
-                                            <span class="nav-info">
-                                                <span id="currentProductIndex">1</span> de <span
-                                                    id="totalProducts">0</span>
-                                            </span>
-                                            <button type="button" class="nav-btn" onclick="nextProduct()"
-                                                title="Producto siguiente">
-                                                <i class="fas fa-angle-right"></i>
-                                            </button>
-                                            <button type="button" class="nav-btn" onclick="lastProduct()"
-                                                title="Último producto">
-                                                <i class="fas fa-angle-double-right"></i>
-                                            </button>
-                                            <button type="button" class="nav-btn nav-btn-special"
-                                                onclick="addNewProduct()" title="Agregar producto">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                            <button type="button" class="nav-btn nav-btn-special"
-                                                onclick="saveProduct()" title="Guardar producto">
-                                                <i class="fas fa-save"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Product Details -->
-                                    <div class="product-details">
-                                        <div class="product-form">
-                                            <div class="form-group">
-                                                <label for="nombreProducto" class="form-label">
-                                                    <i class="fas fa-tag"></i>
-                                                    Nombre Producto
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <input type="text" id="nombreProducto" name="nombreProducto"
-                                                    class="form-input" placeholder="Ej: Banda Ancha" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Association Section -->
-                                <div class="association-section">
-                                    <div class="association-header">
-                                        <h3><i class="fas fa-link"></i> Asociar</h3>
-                                    </div>
-
-                                    <div class="association-buttons">
-                                        <button type="button" class="btn btn-primary btn-association"
-                                            onclick="manageConceptos()">
-                                            <i class="fas fa-lightbulb"></i>
-                                            Conceptos
-                                        </button>
-                                        <button type="button" class="btn btn-secondary btn-association"
-                                            onclick="manageServicios()">
-                                            <i class="fas fa-cogs"></i>
-                                            Servicios
+                            <!-- Buscador de productos -->
+                            <form class="search-form" onsubmit="return buscarProductos(event)">
+                                <div class="form-group">
+                                    <label for="buscarProducto" class="form-label">
+                                        <i class="fas fa-search"></i>
+                                        Buscar Producto
+                                    </label>
+                                    <div class="input-with-button">
+                                        <input type="text" id="buscarProducto" name="buscarProducto" class="form-input"
+                                            placeholder="Buscar por código o nombre..." value="${param.buscarProducto}">
+                                        <button type="submit" class="search-btn">
+                                            <i class="fas fa-search"></i>
                                         </button>
                                     </div>
-
-                                    <!-- Association Results -->
-                                    <div class="association-results" id="associationResults">
-                                        <div class="no-association">
-                                            <i class="fas fa-info-circle"></i>
-                                            <p>Seleccione "Conceptos" o "Servicios" para gestionar las asociaciones del
-                                                producto actual</p>
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <!-- Product Actions -->
-                                <div class="product-actions">
-                                    <button type="button" class="btn btn-success" onclick="loadProducts()">
-                                        <i class="fas fa-refresh"></i>
-                                        Cargar Productos
-                                    </button>
-                                    <button type="button" class="btn btn-warning" onclick="deleteProduct()">
-                                        <i class="fas fa-trash"></i>
-                                        Eliminar Producto
-                                    </button>
-                                    <button type="button" class="btn btn-info" onclick="clearProductForm()">
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="limpiarBusquedaProductos()">
                                         <i class="fas fa-eraser"></i>
                                         Limpiar
                                     </button>
                                 </div>
+                            </form>
+
+                            <div class="results-container" id="productResults">
+                                <c:choose>
+                                    <c:when test="${recordCount > 0}">
+                                        <div class="alert alert-success">
+                                            <i class="fas fa-check-circle"></i>
+                                            ${debugInfo}
+                                        </div>
+                                        <div class="table-container">
+                                            <table class="data-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th><i class="fas fa-hashtag"></i> Código Producto</th>
+                                                        <th><i class="fas fa-tag"></i> Nombre Producto</th>
+                                                        <th><i class="fas fa-cog"></i> Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach items="${productos}" var="producto">
+                                                        <tr>
+                                                            <td class="codigo-col">${producto.tiposervcodi}</td>
+                                                            <td>${producto.paradesc}</td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn-details"
+                                                                    onclick="verDetalleProducto('${producto.tiposervcodi}', '${producto.paradesc}')">
+                                                                    <i class="fas fa-eye"></i>
+                                                                    Ver Detalle
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Paginación para productos -->
+                                            <div class="pagination-container">
+                                                <div class="pagination-info">
+                                                    <span>Tamaño de página:</span>
+                                                    <select id="pageSizeSelectProducts"
+                                                        onchange="changePageSizeProducts(this.value)">
+                                                        <option value="10" ${pageSize==10 ? 'selected="selected"' : ''
+                                                            }>10</option>
+                                                        <option value="20" ${pageSize==20 ? 'selected="selected"' : ''
+                                                            }>20</option>
+                                                        <option value="30" ${pageSize==30 ? 'selected="selected"' : ''
+                                                            }>30</option>
+                                                    </select>
+                                                </div>
+                                                <div class="pagination-controls">
+                                                    <button type="button" onclick="goToPageProducts(1)"
+                                                        class="pagination-btn" ${currentPage==1 ? 'disabled' : '' }>
+                                                        <i class="fas fa-angle-double-left"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        onclick="goToPageProducts(<c:out value='${currentPage - 1}'/>)"
+                                                        class="pagination-btn" ${currentPage==1 ? 'disabled' : '' }>
+                                                        <i class="fas fa-angle-left"></i>
+                                                    </button>
+                                                    <span class="current-page">Página ${currentPage} de
+                                                        ${totalPages}</span>
+                                                    <button type="button"
+                                                        onclick="goToPageProducts(<c:out value='${currentPage + 1}'/>)"
+                                                        class="pagination-btn" ${currentPage==totalPages ? 'disabled'
+                                                        : '' }>
+                                                        <i class="fas fa-angle-right"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        onclick="goToPageProducts(<c:out value='${totalPages}'/>)"
+                                                        class="pagination-btn" ${currentPage==totalPages ? 'disabled'
+                                                        : '' }>
+                                                        <i class="fas fa-angle-double-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:when>
+                                    <c:when test="${showProducts == 'true' && recordCount == 0}">
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            ${debugInfo}
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i>
+                                            Cargando productos del sistema...
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para Ver Detalle del Producto -->
+                    <div id="productDetailModal" class="product-modal" style="display: none;">
+                        <div class="modal-overlay" onclick="cerrarDetalleProducto()"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3><i class="fas fa-box"></i> Detalle del Producto</h3>
+                                <button type="button" class="modal-close-btn" onclick="cerrarDetalleProducto()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="product-detail-container">
+                                    <!-- Información del Producto -->
+                                    <div class="product-info-section">
+                                        <div class="product-name-display">
+                                            <h4 id="productNameModal">Nombre del Producto</h4>
+                                            <span class="product-code" id="productCodeModal">Código: </span>
+                                        </div>
+                                        <div class="product-info-extra">
+                                            <span class="product-status">Activo</span>
+                                            <span class="product-type">Producto de Servicios</span>
+                                            <span id="productDateCreated">Creado: 01/01/2024</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sección de Asociaciones -->
+                                    <div class="association-section">
+                                        <h4><i class="fas fa-link"></i> Asociar</h4>
+                                        <p
+                                            style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">
+                                            <i class="fas fa-info-circle"></i> Los conceptos se cargan automáticamente.
+                                            Use los botones para alternar entre conceptos y servicios.
+                                        </p>
+                                        <div class="association-buttons">
+                                            <button type="button" class="btn btn-primary btn-association"
+                                                onclick="mostrarConceptos()">
+                                                <i class="fas fa-lightbulb"></i>
+                                                Conceptos
+                                            </button>
+                                            <button type="button" class="btn btn-secondary btn-association"
+                                                onclick="mostrarServicios()">
+                                                <i class="fas fa-cogs"></i>
+                                                Servicios
+                                            </button>
+                                        </div>
+
+                                        <!-- Área de resultados -->
+                                        <div class="association-results" id="associationResults">
+                                            <div class="no-association">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>Seleccione "Conceptos" o "Servicios" para gestionar las asociaciones
+                                                    del producto actual</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="cerrarDetalleProducto()">
+                                    <i class="fas fa-times"></i>
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para Crear Nuevo Producto -->
+                    <div id="createProductModal" class="product-modal" style="display: none;">
+                        <div class="modal-overlay" onclick="cerrarModalCrearProducto()"></div>
+                        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+                            <div class="modal-header">
+                                <h3><i class="fas fa-plus"></i> Crear Nuevo Producto</h3>
+                                <button type="button" class="modal-close-btn" onclick="cerrarModalCrearProducto()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="createProductForm" onsubmit="crearProducto(event)">
+                                    <div class="product-detail-container">
+                                        <!-- Información del Producto -->
+                                        <div class="form-group" style="margin-bottom: 2rem;">
+                                            <label for="newProductName" class="form-label">
+                                                <i class="fas fa-tag"></i>
+                                                Nombre del Producto
+                                                <span class="required">*</span>
+                                            </label>
+                                            <input type="text" id="newProductName" name="newProductName"
+                                                class="form-input" placeholder="Ej: Internet Fibra Óptica" required
+                                                maxlength="100">
+                                        </div>
+
+                                        <!-- Sección de Asociaciones -->
+                                        <div class="association-section">
+                                            <h4><i class="fas fa-link"></i> Asociar al Producto</h4>
+                                            <p
+                                                style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">
+                                                <i class="fas fa-info-circle"></i> Seleccione los conceptos y servicios
+                                                que desea asociar al nuevo producto.
+                                            </p>
+
+                                            <div class="association-buttons">
+                                                <button type="button" class="btn btn-primary btn-association"
+                                                    onclick="cargarConceptosParaCrear()">
+                                                    <i class="fas fa-lightbulb"></i>
+                                                    Seleccionar Conceptos
+                                                </button>
+                                                <button type="button" class="btn btn-secondary btn-association"
+                                                    onclick="cargarServiciosParaCrear()">
+                                                    <i class="fas fa-cogs"></i>
+                                                    Seleccionar Servicios
+                                                </button>
+                                            </div>
+
+                                            <!-- Área de resultados -->
+                                            <div class="association-results" id="createAssociationResults">
+                                                <div class="no-association">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <p>Haga clic en "Seleccionar Conceptos" o "Seleccionar Servicios"
+                                                        para elegir las asociaciones</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Resumen de selecciones -->
+                                            <div id="selectionSummary" style="display: none; margin-top: 1.5rem;">
+                                                <div
+                                                    style="background: var(--background-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                                                    <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                                                        <i class="fas fa-check-circle"></i> Elementos Seleccionados
+                                                    </h5>
+                                                    <div id="selectedConceptos" style="margin-bottom: 0.5rem;"></div>
+                                                    <div id="selectedServicios"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="cerrarModalCrearProducto()">
+                                    <i class="fas fa-times"></i>
+                                    Cancelar
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="guardarNuevoProducto()"
+                                    id="saveProductBtn">
+                                    <i class="fas fa-save"></i>
+                                    Crear Producto
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2532,73 +3184,131 @@
                         <div class="content-container">
                             <div class="section-header">
                                 <i class="fas fa-link"></i>
-                                <h2>Promociones Asignadas</h2>
+                                <h2>Promociones Activas</h2>
                             </div>
 
-                            <div class="assigned-promotions-container">
-                                <form class="assigned-form" onsubmit="return consultarPromocionesAsignadas(event)">
-                                    <!-- Service and Client Info -->
-                                    <div class="service-client-section">
-                                        <div class="form-group">
-                                            <label for="numeroServicioAsignado" class="form-label">
-                                                <i class="fas fa-phone"></i>
-                                                Número de Servicio o Suscripción
-                                                <span class="required">*</span>
-                                            </label>
-                                            <input type="text" id="numeroServicioAsignado" name="numeroServicioAsignado"
-                                                class="form-input"
-                                                placeholder="Ingrese número de servicio o suscripción" required>
-                                        </div>
-
-                                        <div class="client-type-section">
-                                            <label for="tipoClienteAsignado" class="form-label">
-                                                <i class="fas fa-user-tag"></i>
-                                                Tipo de Cliente
-                                            </label>
-                                            <div class="input-with-clear">
-                                                <select id="tipoClienteAsignado" name="tipoClienteAsignado"
-                                                    class="form-input">
-                                                    <option value="">Seleccione tipo de cliente</option>
-                                                    <option value="RESIDENCIAL">Residencial</option>
-                                                    <option value="COMERCIAL">Comercial</option>
-                                                    <option value="EMPRESARIAL">Empresarial</option>
-                                                    <option value="CORPORATIVO">Corporativo</option>
-                                                    <option value="GOBIERNO">Gobierno</option>
-                                                </select>
-                                                <button type="button" class="clear-btn" onclick="clearClientType()">
-                                                    Limpiar
-                                                </button>
-                                            </div>
-                                        </div>
+                            <!-- Formulario de filtros -->
+                            <form class="search-form">
+                                <div class="form-group">
+                                    <label for="numeroServicioAsignado" class="form-label">
+                                        <i class="fas fa-phone"></i>
+                                        Filtrar por número de servicio o placa (opcional)
+                                    </label>
+                                    <div class="input-with-button">
+                                        <input type="text" id="numeroServicioAsignado" name="numeroServicioAsignado"
+                                            class="form-input"
+                                            placeholder="Ingrese número de servicio o placa para filtrar">
+                                        <button type="button" class="search-btn" onclick="filtrarPromocionesActivas()">
+                                            <i class="fas fa-search"></i>
+                                        </button>
                                     </div>
+                                </div>
+                            </form>
 
-                                    <!-- Promotions Display Section -->
-                                    <div class="promotions-display-section">
-                                        <div class="promotions-header">
-                                            <h3><i class="fas fa-tags"></i> Promociones</h3>
-                                        </div>
+                            <!-- Resultados -->
+                            <div class="results-container" id="resultsContainer">
+                                <div id="promocionesAsignadasArea">
+                                    <c:choose>
+                                        <c:when test="${recordCount > 0}">
+                                            <c:choose>
+                                                <c:when test="${isInitialLoad}">
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle"></i>
+                                                        ${debugInfo}
+                                                    </div>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <div class="alert alert-success">
+                                                        <i class="fas fa-check-circle"></i>
+                                                        ${debugInfo}
+                                                    </div>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <div class="table-container">
+                                                <table class="data-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><i class="fas fa-id-card"></i> Placa</th>
+                                                            <th><i class="fas fa-hashtag"></i> Código Promoción
+                                                            </th>
+                                                            <th><i class="fas fa-tag"></i> Promoción</th>
+                                                            <th><i class="fas fa-map"></i> Departamento</th>
+                                                            <th><i class="fas fa-map-marker-alt"></i> Municipio
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:forEach items="${promocionesActivas}" var="promocion">
+                                                            <tr>
+                                                                <td class="codigo-col">${promocion.placa}</td>
+                                                                <td class="text-center">${promocion.codPromo}
+                                                                </td>
+                                                                <td>${promocion.promocion}</td>
+                                                                <td>${promocion.departamento}</td>
+                                                                <td>${promocion.municipio}</td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
 
-                                        <div class="promotions-display-area" id="promocionesAsignadasArea">
+                                                <!-- Paginación -->
+                                                <div class="pagination-container">
+                                                    <div class="pagination-info">
+                                                        <span>Tamaño de página:</span>
+                                                        <select id="pageSizeSelectActivas"
+                                                            onchange="changePageSizeActivas(this.value)">
+                                                            <option value="10" ${pageSize==10 ? 'selected="selected"'
+                                                                : '' }>10</option>
+                                                            <option value="20" ${pageSize==20 ? 'selected="selected"'
+                                                                : '' }>20</option>
+                                                            <option value="30" ${pageSize==30 ? 'selected="selected"'
+                                                                : '' }>30</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="pagination-controls">
+                                                        <button type="button" onclick="goToPageActivas(1)"
+                                                            class="pagination-btn" ${currentPage==1 ? 'disabled' : '' }>
+                                                            <i class="fas fa-angle-double-left"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            onclick="goToPageActivas(<c:out value='${currentPage - 1}'/>)"
+                                                            class="pagination-btn" ${currentPage==1 ? 'disabled' : '' }>
+                                                            <i class="fas fa-angle-left"></i>
+                                                        </button>
+                                                        <span class="current-page">Página ${currentPage} de
+                                                            ${totalPages}</span>
+                                                        <button type="button"
+                                                            onclick="goToPageActivas(<c:out value='${currentPage + 1}'/>)"
+                                                            class="pagination-btn" ${currentPage==totalPages
+                                                            ? 'disabled' : '' }>
+                                                            <i class="fas fa-angle-right"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            onclick="goToPageActivas(<c:out value='${totalPages}'/>)"
+                                                            class="pagination-btn" ${currentPage==totalPages
+                                                            ? 'disabled' : '' }>
+                                                            <i class="fas fa-angle-double-right"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${showPromocionesActivas == 'true' && recordCount == 0}">
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                ${debugInfo}
+                                                <br><small>Intente con un número de placa diferente.</small>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
                                             <div class="no-promotions-assigned">
                                                 <i class="fas fa-search"></i>
-                                                <p>Ingrese un número de servicio y presione "Consultar" para ver las
-                                                    promociones asignadas</p>
+                                                <p>Cargando promociones activas... Si no ve datos, use el filtro
+                                                    para buscar por número específico.</p>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Form Actions -->
-                                    <div class="assigned-actions">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search"></i>
-                                            Consultar
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="cancelarConsulta()">
-                                            <i class="fas fa-times"></i>
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </form>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2610,6 +3320,10 @@
                 </footer>
 
                 <script>
+                    // Verificar que JavaScript se está cargando correctamente
+                    console.log('=== SCRIPT PROMOCIONES CARGADO CORRECTAMENTE ===');
+                    console.log('Las funciones de exportación deberían estar disponibles ahora');
+
                     function showSection(sectionId) {
                         // Hide all sections
                         document.querySelectorAll('.section').forEach(section => {
@@ -2625,7 +3339,9 @@
                         document.getElementById(sectionId).classList.add('active');
 
                         // Add active class to clicked nav link
-                        event.target.classList.add('active');
+                        if (event && event.target) {
+                            event.target.classList.add('active');
+                        }
 
                         // Close mobile menu if open
                         const navMenu = document.getElementById('navMenu');
@@ -2640,14 +3356,6 @@
                     function submitSearchForm(event) {
                         event.preventDefault();
 
-                        const nombrePromocion = document.getElementById('nombrePromocion').value.trim();
-
-                        if (nombrePromocion === '') {
-                            showAlert('Por favor, ingrese el nombre de la promoción para realizar la búsqueda.', 'warning');
-                            document.getElementById('nombrePromocion').focus();
-                            return false;
-                        }
-
                         // Show loading state
                         showLoadingState();
 
@@ -2656,9 +3364,39 @@
                         const formData = new FormData(form);
                         const params = new URLSearchParams(formData);
 
+                        // Add pagination parameters
+                        params.set('page', '1'); // Reset to first page on new search
+                        params.set('pageSize', document.getElementById('pageSizeSelect')?.value || '10');
+
                         window.location.href = '<%= request.getContextPath() %>/LoadPromotions?' + params.toString();
 
                         return false;
+                    }
+
+                    function goToPage(page) {
+                        // Mantener los parámetros de búsqueda actuales
+                        const form = document.querySelector('.search-form');
+                        const formData = new FormData(form);
+                        const params = new URLSearchParams(formData);
+
+                        // Agregar página y tamaño de página
+                        params.set('page', page);
+                        params.set('pageSize', document.getElementById('pageSizeSelect')?.value || '10');
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadPromotions?' + params.toString();
+                    }
+
+                    function changePageSize(size) {
+                        // Mantener los parámetros de búsqueda actuales
+                        const form = document.querySelector('.search-form');
+                        const formData = new FormData(form);
+                        const params = new URLSearchParams(formData);
+
+                        // Agregar nuevo tamaño de página y resetear a primera página
+                        params.set('pageSize', size);
+                        params.set('page', '1');
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadPromotions?' + params.toString();
                     }
 
                     function clearForm() {
@@ -2669,6 +3407,80 @@
                         // Navigate to clean state
                         window.location.href = '<%= request.getContextPath() %>/views/index.jsp';
                     }
+
+                    function exportToCSV() {
+                        console.log('=== FUNCIÓN EXPORTTOCSV LLAMADA ===');
+                        console.log('Verificando que JavaScript funciona correctamente...');
+
+                        const recordCount = '${recordCount}';
+                        console.log('Record count:', recordCount);
+                        console.log('Record count type:', typeof recordCount);
+                        console.log('Record count length:', recordCount.length);
+
+                        // Revisar si hay datos en la tabla en lugar de confiar solo en recordCount
+                        const tableRows = document.querySelectorAll('.data-table tbody tr');
+                        console.log('Filas en tabla:', tableRows.length);
+
+                        if (tableRows.length === 0) {
+                            console.log('No hay filas en la tabla, mostrando alert...');
+                            alert('No hay datos para exportar. Realice una consulta primero.');
+                            return;
+                        }
+
+                        // Obtener los parámetros actuales de búsqueda
+                        const nombrePromocion = document.getElementById('nombrePromocion').value;
+                        const vigenciaInicio = document.getElementById('vigenciaInicio').value;
+                        const vigenciaFin = document.getElementById('vigenciaFin').value;
+                        const pageSize = document.getElementById('pageSizeSelect').value || '10';
+
+                        console.log('Parámetros de exportación:');
+                        console.log('- nombrePromocion:', nombrePromocion);
+                        console.log('- vigenciaInicio:', vigenciaInicio);
+                        console.log('- vigenciaFin:', vigenciaFin);
+                        console.log('- pageSize:', pageSize);
+
+                        console.log('Pasando validación, construyendo URL...');
+
+                        // Construir URL con parámetros
+                        const params = new URLSearchParams();
+                        params.set('format', 'csv');
+                        console.log('Parámetros agregados: format=csv');
+
+                        if (nombrePromocion) {
+                            params.set('nombrePromocion', nombrePromocion);
+                            console.log('Agregado nombrePromocion:', nombrePromocion);
+                        }
+                        if (vigenciaInicio) {
+                            params.set('vigenciaInicio', vigenciaInicio);
+                            console.log('Agregado vigenciaInicio:', vigenciaInicio);
+                        }
+                        if (vigenciaFin) {
+                            params.set('vigenciaFin', vigenciaFin);
+                            console.log('Agregado vigenciaFin:', vigenciaFin);
+                        }
+                        params.set('pageSize', pageSize);
+                        console.log('Agregado pageSize:', pageSize);
+
+                        const exportUrl = '<%= request.getContextPath() %>/ExportPromotions?' + params.toString();
+                        console.log('URL de exportación completa:', exportUrl);
+
+                        // Mostrar mensaje de descarga
+                        console.log('Mostrando alert...');
+                        showAlert('Generando archivo CSV...', 'info');
+
+                        // Probar con window.location primero en lugar de window.open
+                        try {
+                            console.log('Intentando navegar a:', exportUrl);
+                            console.log('Ejecutando window.location.href...');
+                            window.location.href = exportUrl;
+                            console.log('window.location.href ejecutado');
+                        } catch (error) {
+                            console.error('Error al exportar:', error);
+                            alert('Error al exportar: ' + error.message);
+                        }
+                    }
+
+                    // Funciones exportToPDF y testExport eliminadas - solo mantenemos exportToCSV
 
                     function showAlert(message, type) {
                         const alertDiv = document.createElement('div');
@@ -2691,11 +3503,28 @@
                             '</div>';
                     }
 
-                    // Auto-show promotions section if there are search results
+                    // Auto-show sections if there are search results
                     document.addEventListener('DOMContentLoaded', function () {
                         var showPromotions = '<c:out value="${showPromotions}" default="false"/>';
+                        var showPromocionesActivas = '<c:out value="${showPromocionesActivas}" default="false"/>';
+                        var showProducts = '<c:out value="${showProducts}" default="false"/>';
+
                         if (showPromotions === 'true') {
                             showSection('check_promotions');
+                        } else if (showPromocionesActivas === 'true') {
+                            showSection('assigned_promotions');
+
+                            // Rellenar el campo de placa desde la URL
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const placa = urlParams.get('placa');
+                            if (placa) {
+                                const placaInput = document.getElementById('numeroServicioAsignado');
+                                if (placaInput) {
+                                    placaInput.value = placa;
+                                }
+                            }
+                        } else if (showProducts === 'true') {
+                            showSection('product_management');
                         }
                     });
 
@@ -3359,425 +4188,56 @@
                         }
                     }
 
-                    function exportToCSV() {
-                        if (reportsData.length === 0) {
-                            showAlert('No hay datos para exportar. Realice una consulta primero.', 'warning');
-                            return;
-                        }
 
-                        showAlert('Generando archivo CSV...', 'info');
 
-                        // Simulate CSV export
-                        setTimeout(() => {
-                            let csvContent = 'Código Promoción,Nombre Promoción,Departamento,Localidad,Mercado,Estrato,Tipo Plan\n';
 
-                            reportsData.forEach(item => {
-                                csvContent += item.codigo + ',' +
-                                    '"' + item.nombre + '",' +
-                                    item.departamento + ',' +
-                                    item.localidad + ',' +
-                                    item.mercado + ',' +
-                                    item.estrato + ',' +
-                                    item.tipoPlan + '\n';
-                            });
 
-                            // Create and download file
-                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                            const link = document.createElement('a');
-                            link.href = URL.createObjectURL(blob);
-                            link.download = 'reporte_promociones_' + new Date().toISOString().split('T')[0] + '.csv';
-                            link.click();
 
-                            showAlert('Archivo CSV descargado exitosamente', 'success');
-                        }, 1000);
-                    }
 
-                    function exportToPDF() {
-                        if (reportsData.length === 0) {
-                            showAlert('No hay datos para exportar. Realice una consulta primero.', 'warning');
-                            return;
-                        }
-
-                        showAlert('Generando archivo PDF...', 'info');
-
-                        // Simulate PDF export
-                        setTimeout(() => {
-                            showAlert('Funcionalidad de exportación PDF/XLS en desarrollo. Use la exportación CSV por el momento.', 'warning');
-                        }, 1000);
-                    }
-
-                    // Product Management Functions
-                    let products = [];
-                    let currentProductIndex = 0;
-
-                    function loadProducts() {
-                        showAlert('Cargando productos...', 'info');
-
-                        // Simulate API call - Replace with actual service call
-                        setTimeout(() => {
-                            products = [
-                                { id: 1, nombre: 'Banda Ancha' },
-                                { id: 2, nombre: 'Televisión Digital' },
-                                { id: 3, nombre: 'Telefonía Fija' },
-                                { id: 4, nombre: 'Combo Triple Play' },
-                                { id: 5, nombre: 'Internet Empresarial' }
-                            ];
-
-                            currentProductIndex = 0;
-                            updateProductNavigation();
-                            displayCurrentProduct();
-
-                            showAlert('Se cargaron ' + products.length + ' productos exitosamente', 'success');
-                        }, 1000);
-                    }
-
-                    function updateProductNavigation() {
-                        document.getElementById('currentProductIndex').textContent = products.length > 0 ? currentProductIndex + 1 : 0;
-                        document.getElementById('totalProducts').textContent = products.length;
-
-                        // Update navigation buttons state
-                        const navBtns = document.querySelectorAll('.nav-btn');
-                        navBtns[0].disabled = currentProductIndex === 0 || products.length === 0; // First
-                        navBtns[1].disabled = currentProductIndex === 0 || products.length === 0; // Previous
-                        navBtns[2].disabled = currentProductIndex >= products.length - 1 || products.length === 0; // Next
-                        navBtns[3].disabled = currentProductIndex >= products.length - 1 || products.length === 0; // Last
-                    }
-
-                    function displayCurrentProduct() {
-                        const nombreProducto = document.getElementById('nombreProducto');
-
-                        if (products.length > 0 && currentProductIndex >= 0 && currentProductIndex < products.length) {
-                            nombreProducto.value = products[currentProductIndex].nombre;
-                        } else {
-                            nombreProducto.value = '';
-                        }
-
-                        // Clear association results
-                        clearAssociationResults();
-                    }
-
-                    function firstProduct() {
-                        if (products.length > 0) {
-                            currentProductIndex = 0;
-                            updateProductNavigation();
-                            displayCurrentProduct();
-                        }
-                    }
-
-                    function previousProduct() {
-                        if (currentProductIndex > 0) {
-                            currentProductIndex--;
-                            updateProductNavigation();
-                            displayCurrentProduct();
-                        }
-                    }
-
-                    function nextProduct() {
-                        if (currentProductIndex < products.length - 1) {
-                            currentProductIndex++;
-                            updateProductNavigation();
-                            displayCurrentProduct();
-                        }
-                    }
-
-                    function lastProduct() {
-                        if (products.length > 0) {
-                            currentProductIndex = products.length - 1;
-                            updateProductNavigation();
-                            displayCurrentProduct();
-                        }
-                    }
-
-                    function addNewProduct() {
-                        const nombreProducto = document.getElementById('nombreProducto').value.trim();
-
-                        if (nombreProducto === '') {
-                            showAlert('Por favor, ingrese el nombre del producto antes de agregarlo.', 'warning');
-                            document.getElementById('nombreProducto').focus();
-                            return;
-                        }
-
-                        // Check if product already exists
-                        const existingProduct = products.find(p => p.nombre.toLowerCase() === nombreProducto.toLowerCase());
-                        if (existingProduct) {
-                            showAlert('Ya existe un producto con ese nombre.', 'warning');
-                            return;
-                        }
-
-                        const newProduct = {
-                            id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                            nombre: nombreProducto
-                        };
-
-                        products.push(newProduct);
-                        currentProductIndex = products.length - 1;
-                        updateProductNavigation();
-
-                        showAlert('Producto "' + nombreProducto + '" agregado exitosamente', 'success');
-                    }
-
-                    function saveProduct() {
-                        const nombreProducto = document.getElementById('nombreProducto').value.trim();
-
-                        if (nombreProducto === '') {
-                            showAlert('Por favor, ingrese el nombre del producto.', 'warning');
-                            return;
-                        }
-
-                        if (products.length === 0 || currentProductIndex < 0) {
-                            showAlert('No hay un producto seleccionado para guardar.', 'warning');
-                            return;
-                        }
-
-                        // Update current product
-                        products[currentProductIndex].nombre = nombreProducto;
-
-                        showAlert('Producto guardado exitosamente', 'success');
-                    }
-
-                    function deleteProduct() {
-                        if (products.length === 0 || currentProductIndex < 0) {
-                            showAlert('No hay un producto seleccionado para eliminar.', 'warning');
-                            return;
-                        }
-
-                        const productName = products[currentProductIndex].nombre;
-
-                        if (confirm('¿Está seguro que desea eliminar el producto "' + productName + '"?')) {
-                            products.splice(currentProductIndex, 1);
-
-                            // Adjust current index
-                            if (currentProductIndex >= products.length) {
-                                currentProductIndex = products.length - 1;
-                            }
-                            if (currentProductIndex < 0) {
-                                currentProductIndex = 0;
-                            }
-
-                            updateProductNavigation();
-                            displayCurrentProduct();
-
-                            showAlert('Producto "' + productName + '" eliminado exitosamente', 'success');
-                        }
-                    }
-
-                    function clearProductForm() {
-                        document.getElementById('nombreProducto').value = '';
-                        clearAssociationResults();
-                        showAlert('Formulario limpiado', 'info');
-                    }
-
-                    function clearAssociationResults() {
-                        document.getElementById('associationResults').innerHTML = '<div class="no-association">' +
-                            '<i class="fas fa-info-circle"></i>' +
-                            '<p>Seleccione "Conceptos" o "Servicios" para gestionar las asociaciones del producto actual</p>' +
-                            '</div>';
-                    }
-
-                    function manageConceptos() {
-                        if (products.length === 0 || currentProductIndex < 0) {
-                            showAlert('Seleccione un producto primero.', 'warning');
-                            return;
-                        }
-
-                        const currentProduct = products[currentProductIndex];
-                        showAlert('Cargando conceptos para el producto "' + currentProduct.nombre + '"...', 'info');
-
-                        // Simulate API call for concepts
-                        setTimeout(() => {
-                            const mockConceptos = [
-                                { id: 1, codigo: 'INTERNET_BASIC', descripcion: 'Internet Básico', activo: true },
-                                { id: 2, codigo: 'INTERNET_PREMIUM', descripcion: 'Internet Premium', activo: true },
-                                { id: 3, codigo: 'INSTALACION', descripcion: 'Instalación', activo: false },
-                                { id: 4, codigo: 'MANTENIMIENTO', descripcion: 'Mantenimiento Técnico', activo: true }
-                            ];
-
-                            displayAssociations('Conceptos', mockConceptos, 'concepto');
-                        }, 1000);
-                    }
-
-                    function manageServicios() {
-                        if (products.length === 0 || currentProductIndex < 0) {
-                            showAlert('Seleccione un producto primero.', 'warning');
-                            return;
-                        }
-
-                        const currentProduct = products[currentProductIndex];
-                        showAlert('Cargando servicios para el producto "' + currentProduct.nombre + '"...', 'info');
-
-                        // Simulate API call for services
-                        setTimeout(() => {
-                            const mockServicios = [
-                                { id: 1, codigo: 'SRV_001', descripcion: 'Soporte Técnico 24/7', activo: true },
-                                { id: 2, codigo: 'SRV_002', descripcion: 'Instalación Domiciliaria', activo: true },
-                                { id: 3, codigo: 'SRV_003', descripcion: 'Configuración WiFi', activo: false },
-                                { id: 4, codigo: 'SRV_004', descripcion: 'Monitoreo de Red', activo: true }
-                            ];
-
-                            displayAssociations('Servicios', mockServicios, 'servicio');
-                        }, 1000);
-                    }
-
-                    function displayAssociations(type, items, itemType) {
-                        const resultsContainer = document.getElementById('associationResults');
-
-                        if (items.length === 0) {
-                            resultsContainer.innerHTML = '<div class="no-association">' +
-                                '<i class="fas fa-exclamation-triangle"></i>' +
-                                '<p>No se encontraron ' + type.toLowerCase() + ' para este producto</p>' +
-                                '</div>';
-                            return;
-                        }
-
-                        resultsContainer.innerHTML = '<h4><i class="fas fa-list"></i> ' + type + ' Asociados</h4>' +
-                            '<div class="associations-table-container">' +
-                            '<table class="associations-table">' +
-                            '<thead>' +
-                            '<tr>' +
-                            '<th>Código</th>' +
-                            '<th>Descripción</th>' +
-                            '<th>Estado</th>' +
-                            '<th>Acciones</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>' +
-                            items.map(item =>
-                                '<tr>' +
-                                '<td><strong>' + item.codigo + '</strong></td>' +
-                                '<td>' + item.descripcion + '</td>' +
-                                '<td>' +
-                                '<span class="status-badge ' + (item.activo ? 'status-active' : 'status-inactive') + '">' +
-                                (item.activo ? 'Activo' : 'Inactivo') +
-                                '</span>' +
-                                '</td>' +
-                                '<td>' +
-                                '<div class="action-buttons">' +
-                                '<button type="button" class="btn-action btn-edit" onclick="editAssociation(' + item.id + ', \'' + itemType + '\')" title="Editar">' +
-                                '<i class="fas fa-edit"></i>' +
-                                '</button>' +
-                                '<button type="button" class="btn-action btn-delete" onclick="removeAssociation(' + item.id + ', \'' + itemType + '\')" title="Eliminar asociación">' +
-                                '<i class="fas fa-unlink"></i>' +
-                                '</button>' +
-                                '</div>' +
-                                '</td>' +
-                                '</tr>'
-                            ).join('') +
-                            '</tbody>' +
-                            '</table>' +
-                            '</div>' +
-                            '<div style="margin-top: 1rem; text-align: center;">' +
-                            '<button type="button" class="btn btn-primary" onclick="addAssociation(\'' + itemType + '\')">' +
-                            '<i class="fas fa-plus"></i> Agregar ' + itemType +
-                            '</button>' +
-                            '</div>';
-                    }
-
-                    function editAssociation(id, type) {
-                        showAlert('Funcionalidad de edición en desarrollo para ' + type + ' ID: ' + id, 'info');
-                    }
-
-                    function removeAssociation(id, type) {
-                        if (confirm('¿Está seguro que desea eliminar esta asociación?')) {
-                            showAlert('Asociación eliminada exitosamente', 'success');
-                            // Here you would call the appropriate manage function to refresh the list
-                            if (type === 'concepto') {
-                                manageConceptos();
-                            } else {
-                                manageServicios();
-                            }
-                        }
-                    }
-
-                    function addAssociation(type) {
-                        showAlert('Funcionalidad para agregar ' + type + ' en desarrollo', 'info');
-                    }
-
-                    // Initialize product management
-                    document.addEventListener('DOMContentLoaded', function () {
-                        // Auto-load products if on product management section
-                        if (window.location.hash === '#product_management') {
-                            loadProducts();
-                        }
-                    });
-
-                    // Assigned Promotions Functions
-                    function consultarPromocionesAsignadas(event) {
-                        event.preventDefault();
-
+                    // Promociones Activas Functions
+                    function filtrarPromocionesActivas() {
                         const numeroServicio = document.getElementById('numeroServicioAsignado').value.trim();
 
-                        if (numeroServicio === '') {
-                            showAlert('Por favor, ingrese un número de servicio para consultar.', 'warning');
-                            document.getElementById('numeroServicioAsignado').focus();
-                            return false;
+                        // Construir URL con parámetros (permite filtro vacío para mostrar todos)
+                        const params = new URLSearchParams();
+                        if (numeroServicio !== '') {
+                            params.set('placa', numeroServicio);
                         }
+                        params.set('page', '1'); // Reset to first page on new search
+                        params.set('pageSize', '10'); // Default page size
 
-                        // Show loading state
-                        showAssignedPromotionsLoading(true);
-
-                        // Simulate API call for assigned promotions - Replace with actual service call
-                        setTimeout(() => {
-                            const mockServiceInfo = {
-                                numeroServicio: numeroServicio,
-                                cliente: 'María Elena González',
-                                direccion: 'Carrera 15 #32-45, Bogotá',
-                                tipoCliente: 'RESIDENCIAL',
-                                planActual: 'Internet 200MB + TV HD'
-                            };
-
-                            const mockAssignedPromotions = [
-                                {
-                                    id: 1,
-                                    nombre: 'Descuento Navidad 2025',
-                                    codigo: 'PROMO-NAV-2025',
-                                    descripcion: 'Descuento especial por temporada navideña',
-                                    valor: 25000,
-                                    fechaAsignacion: '2024-12-01',
-                                    fechaInicio: '2024-12-01',
-                                    fechaFin: '2025-01-31',
-                                    estado: 'VIGENTE',
-                                    tipoDescuento: 'Porcentual',
-                                    porcentaje: 15,
-                                    categoria: 'Internet'
-                                },
-                                {
-                                    id: 2,
-                                    nombre: 'Upgrade Gratis',
-                                    codigo: 'UPGRADE-FREE',
-                                    descripcion: 'Mejora de velocidad sin costo adicional',
-                                    valor: 30000,
-                                    fechaAsignacion: '2024-11-15',
-                                    fechaInicio: '2024-12-01',
-                                    fechaFin: '2025-05-31',
-                                    estado: 'VIGENTE',
-                                    tipoDescuento: 'Valor Fijo',
-                                    porcentaje: 0,
-                                    categoria: 'Internet'
-                                },
-                                {
-                                    id: 3,
-                                    nombre: 'Promo Estudiante',
-                                    codigo: 'EST-2024',
-                                    descripcion: 'Descuento especial para estudiantes',
-                                    valor: 20000,
-                                    fechaAsignacion: '2024-08-15',
-                                    fechaInicio: '2024-08-15',
-                                    fechaFin: '2024-12-15',
-                                    estado: 'VENCIDA',
-                                    tipoDescuento: 'Porcentual',
-                                    porcentaje: 20,
-                                    categoria: 'Combo'
-                                }
-                            ];
-
-                            displayAssignedPromotions(mockServiceInfo, mockAssignedPromotions);
-                            showAssignedPromotionsLoading(false);
-
-                            showAlert('Consulta realizada exitosamente. Se encontraron ' + mockAssignedPromotions.length + ' promociones asignadas.', 'success');
-                        }, 2000);
-
-                        return false;
+                        // Redirect to backend controller
+                        window.location.href = '<%= request.getContextPath() %>/LoadPromocionesActivas?' + params.toString();
                     }
+
+                    // Funciones de paginación para promociones activas
+                    function goToPageActivas(page) {
+                        const numeroServicio = document.getElementById('numeroServicioAsignado').value.trim();
+
+                        const params = new URLSearchParams();
+                        if (numeroServicio !== '') {
+                            params.set('placa', numeroServicio);
+                        }
+                        params.set('page', page);
+                        params.set('pageSize', document.getElementById('pageSizeSelectActivas')?.value || '10');
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadPromocionesActivas?' + params.toString();
+                    }
+
+                    function changePageSizeActivas(size) {
+                        const numeroServicio = document.getElementById('numeroServicioAsignado').value.trim();
+
+                        const params = new URLSearchParams();
+                        if (numeroServicio !== '') {
+                            params.set('placa', numeroServicio);
+                        }
+                        params.set('pageSize', size);
+                        params.set('page', '1'); // Reset to first page
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadPromocionesActivas?' + params.toString();
+                    }
+
+
 
                     function showAssignedPromotionsLoading(show) {
                         const displayArea = document.getElementById('promocionesAsignadasArea');
@@ -3938,25 +4398,883 @@
                         });
                     }
 
-                    function clearClientType() {
-                        document.getElementById('tipoClienteAsignado').value = '';
-                        showAlert('Tipo de cliente limpiado', 'info');
+                    // Funciones para el modal de detalle de producto
+                    let currentProductCode = null;
+                    let currentProductName = null;
+                    let originalConceptos = [];
+                    let originalServicios = [];
+                    let conceptosCargados = false;
+                    let serviciosCargados = false;
+
+                    function verDetalleProducto(codigo, nombre) {
+                        currentProductCode = codigo;
+                        currentProductName = nombre;
+
+                        // Actualizar información del producto en el modal
+                        document.getElementById('productNameModal').textContent = nombre;
+                        document.getElementById('productCodeModal').textContent = 'Código: ' + codigo;
+
+                        // Actualizar información extra (puedes personalizar estos datos según tu lógica)
+                        const today = new Date();
+                        const formattedDate = today.toLocaleDateString('es-ES');
+                        document.getElementById('productDateCreated').textContent = 'Último acceso: ' + formattedDate;
+
+                        // Mostrar modal
+                        document.getElementById('productDetailModal').style.display = 'flex';
+                        document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+
+                        // Precargar automáticamente los conceptos
+                        precargarDatosProducto();
                     }
 
-                    function cancelarConsulta() {
-                        if (confirm('¿Está seguro que desea cancelar la consulta? Se limpiarán todos los datos.')) {
-                            // Reset form
-                            document.querySelector('.assigned-form').reset();
+                    function cerrarDetalleProducto() {
+                        document.getElementById('productDetailModal').style.display = 'none';
+                        document.body.style.overflow = 'auto'; // Restaurar scroll del body
 
-                            // Reset display area
-                            document.getElementById('promocionesAsignadasArea').innerHTML = '<div class="no-promotions-assigned">' +
-                                '<i class="fas fa-search"></i>' +
-                                '<p>Ingrese un número de servicio y presione "Consultar" para ver las promociones asignadas</p>' +
-                                '</div>';
+                        // Limpiar variables globales
+                        currentProductCode = null;
+                        currentProductName = null;
+                        originalConceptos = [];
+                        originalServicios = [];
+                        conceptosCargados = false;
+                        serviciosCargados = false;
 
-                            showAlert('Consulta cancelada y formulario limpiado', 'info');
+                        // Resetear estado de botones
+                        const conceptosBtn = document.querySelector('[onclick="mostrarConceptos()"]');
+                        const serviciosBtn = document.querySelector('[onclick="mostrarServicios()"]');
+
+                        if (conceptosBtn && serviciosBtn) {
+                            conceptosBtn.classList.remove('btn-primary');
+                            conceptosBtn.classList.add('btn-secondary');
+                            serviciosBtn.classList.remove('btn-primary');
+                            serviciosBtn.classList.add('btn-secondary');
+                        }
+
+                        // Resetear área de resultados
+                        resetAssociationResults();
+                    }
+
+                    function resetAssociationResults() {
+                        const resultsArea = document.getElementById('associationResults');
+                        resultsArea.innerHTML = '<div class="no-association">' +
+                            '<i class="fas fa-info-circle"></i>' +
+                            '<p>Seleccione "Conceptos" o "Servicios" para gestionar las asociaciones del producto actual</p>' +
+                            '</div>';
+                    }
+
+                    function precargarDatosProducto() {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        // Mostrar loading inicial
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando información del producto...</p>' +
+                            '</div>';
+
+                        // Activar automáticamente el botón de conceptos
+                        const conceptosBtn = document.querySelector('[onclick="mostrarConceptos()"]');
+                        if (conceptosBtn) {
+                            conceptosBtn.classList.add('btn-primary');
+                            conceptosBtn.classList.remove('btn-secondary');
+                        }
+
+                        // Cargar conceptos automáticamente
+                        mostrarConceptos();
+                    }
+
+                    function actualizarEstadoBotones(tipoActivo) {
+                        // Obtener ambos botones
+                        const conceptosBtn = document.querySelector('[onclick="mostrarConceptos()"]');
+                        const serviciosBtn = document.querySelector('[onclick="mostrarServicios()"]');
+
+                        if (conceptosBtn && serviciosBtn) {
+                            if (tipoActivo === 'conceptos') {
+                                // Activar conceptos
+                                conceptosBtn.classList.remove('btn-secondary');
+                                conceptosBtn.classList.add('btn-primary');
+
+                                // Desactivar servicios
+                                serviciosBtn.classList.remove('btn-primary');
+                                serviciosBtn.classList.add('btn-secondary');
+                            } else if (tipoActivo === 'servicios') {
+                                // Activar servicios
+                                serviciosBtn.classList.remove('btn-secondary');
+                                serviciosBtn.classList.add('btn-primary');
+
+                                // Desactivar conceptos
+                                conceptosBtn.classList.remove('btn-primary');
+                                conceptosBtn.classList.add('btn-secondary');
+                            }
                         }
                     }
+
+                    function mostrarConceptos() {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        // Actualizar estado de botones
+                        actualizarEstadoBotones('conceptos');
+
+                        // Si ya están cargados, solo mostrarlos
+                        if (conceptosCargados && originalConceptos.length > 0) {
+                            displayConceptos(originalConceptos);
+                            return;
+                        }
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando conceptos...</p>' +
+                            '</div>';
+
+                        // Llamada real al backend
+                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=conceptos&productCode=' + currentProductCode;
+                        console.log('Cargando conceptos desde:', url);
+
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(conceptos => {
+                                console.log('Conceptos recibidos:', conceptos);
+                                originalConceptos = conceptos; // Guardar datos originales
+                                conceptosCargados = true; // Marcar como cargados
+                                displayConceptos(conceptos);
+                            })
+                            .catch(error => {
+                                console.error('Error cargando conceptos:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error cargando conceptos. Intente nuevamente.</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    function mostrarServicios() {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        // Actualizar estado de botones
+                        actualizarEstadoBotones('servicios');
+
+                        // Si ya están cargados, solo mostrarlos
+                        if (serviciosCargados && originalServicios.length > 0) {
+                            displayServicios(originalServicios);
+                            return;
+                        }
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando servicios...</p>' +
+                            '</div>';
+
+                        // Llamada real al backend
+                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=servicios&productCode=' + currentProductCode;
+                        console.log('Cargando servicios desde:', url);
+
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(servicios => {
+                                console.log('Servicios recibidos:', servicios);
+                                originalServicios = servicios; // Guardar datos originales
+                                serviciosCargados = true; // Marcar como cargados
+                                displayServicios(servicios);
+                            })
+                            .catch(error => {
+                                console.error('Error cargando servicios:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error cargando servicios. Intente nuevamente.</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    function displayConceptos(conceptos) {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        if (conceptos.length === 0) {
+                            resultsArea.innerHTML = '<div class="no-association">' +
+                                '<i class="fas fa-exclamation-triangle"></i>' +
+                                '<p>No se encontraron conceptos disponibles</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        // Campo de búsqueda
+                        let conceptosHtml = '<div class="search-filter-container">' +
+                            '<div class="search-filter-input">' +
+                            '<i class="fas fa-search"></i>' +
+                            '<input type="text" id="searchConceptos" placeholder="Buscar conceptos..." ' +
+                            'oninput="filtrarConceptos()" autocomplete="off">' +
+                            '<button type="button" class="clear-search-btn" onclick="limpiarBusquedaConceptos()" style="display: none;">' +
+                            '<i class="fas fa-times"></i>' +
+                            '</button>' +
+                            '</div>' +
+                            '</div>';
+
+                        // Botón Asociar Todo
+                        conceptosHtml += '<div class="associate-all-container">' +
+                            '<button type="button" class="btn btn-warning btn-associate-all" onclick="asociarTodosConceptos()">' +
+                            '<i class="fas fa-plus-circle"></i>' +
+                            'Asociar Todos los Conceptos' +
+                            '</button>' +
+                            '</div>';
+
+                        conceptosHtml += '<div class="concepts-list">';
+                        for (let i = 0; i < conceptos.length; i++) {
+                            const concepto = conceptos[i];
+                            const buttonClass = concepto.asociado ? 'btn-associated' : 'btn-associate';
+                            const buttonText = concepto.asociado ? 'Asociado' : 'Asociar';
+                            const buttonIcon = concepto.asociado ? 'fas fa-check' : 'fas fa-plus';
+                            const buttonAction = concepto.asociado ? '' : 'onclick="asociarConcepto(' + concepto.id + ', \'' + concepto.nombre + '\')"';
+
+                            conceptosHtml += '<div class="concept-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + concepto.nombre + '</div>' +
+                                '<div class="item-description">' + concepto.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        conceptosHtml += '</div>';
+
+                        resultsArea.innerHTML = conceptosHtml;
+                    }
+
+                    function displayServicios(servicios) {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        if (servicios.length === 0) {
+                            resultsArea.innerHTML = '<div class="no-association">' +
+                                '<i class="fas fa-exclamation-triangle"></i>' +
+                                '<p>No se encontraron servicios disponibles</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        // Campo de búsqueda
+                        let serviciosHtml = '<div class="search-filter-container">' +
+                            '<div class="search-filter-input">' +
+                            '<i class="fas fa-search"></i>' +
+                            '<input type="text" id="searchServicios" placeholder="Buscar servicios..." ' +
+                            'oninput="filtrarServicios()" autocomplete="off">' +
+                            '<button type="button" class="clear-search-btn" onclick="limpiarBusquedaServicios()" style="display: none;">' +
+                            '<i class="fas fa-times"></i>' +
+                            '</button>' +
+                            '</div>' +
+                            '</div>';
+
+                        // Botón Asociar Todo
+                        serviciosHtml += '<div class="associate-all-container">' +
+                            '<button type="button" class="btn btn-warning btn-associate-all" onclick="asociarTodosServicios()">' +
+                            '<i class="fas fa-plus-circle"></i>' +
+                            'Asociar Todos los Servicios' +
+                            '</button>' +
+                            '</div>';
+
+                        serviciosHtml += '<div class="services-list">';
+                        for (let i = 0; i < servicios.length; i++) {
+                            const servicio = servicios[i];
+                            const buttonClass = servicio.asociado ? 'btn-associated' : 'btn-associate';
+                            const buttonText = servicio.asociado ? 'Asociado' : 'Asociar';
+                            const buttonIcon = servicio.asociado ? 'fas fa-check' : 'fas fa-plus';
+                            const buttonAction = servicio.asociado ? '' : 'onclick="asociarServicio(' + servicio.id + ', \'' + servicio.nombre + '\')"';
+
+                            serviciosHtml += '<div class="service-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + servicio.nombre + '</div>' +
+                                '<div class="item-description">' + servicio.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        serviciosHtml += '</div>';
+
+                        resultsArea.innerHTML = serviciosHtml;
+                    }
+
+                    function asociarConcepto(conceptoId, conceptoNombre) {
+                        if (confirm('¿Está seguro que desea asociar el concepto "' + conceptoNombre + '" al producto "' + currentProductName + '"?')) {
+                            // Aquí harías la llamada al backend para asociar
+                            console.log('Asociando concepto', conceptoId, 'al producto', currentProductCode);
+
+                            showAlert('Concepto "' + conceptoNombre + '" asociado exitosamente', 'success');
+
+                            // Recargar conceptos para mostrar el cambio
+                            setTimeout(() => {
+                                mostrarConceptos();
+                            }, 1000);
+                        }
+                    }
+
+                    function asociarServicio(servicioId, servicioNombre) {
+                        if (confirm('¿Está seguro que desea asociar el servicio "' + servicioNombre + '" al producto "' + currentProductName + '"?')) {
+                            // Aquí harías la llamada al backend para asociar
+                            console.log('Asociando servicio', servicioId, 'al producto', currentProductCode);
+
+                            showAlert('Servicio "' + servicioNombre + '" asociado exitosamente', 'success');
+
+                            // Recargar servicios para mostrar el cambio
+                            setTimeout(() => {
+                                mostrarServicios();
+                            }, 1000);
+                        }
+                    }
+
+                    function asociarTodosConceptos() {
+                        if (confirm('¿Está seguro que desea asociar TODOS los conceptos al producto "' + currentProductName + '"?')) {
+                            // Aquí harías la llamada al backend para asociar todos
+                            console.log('Asociando todos los conceptos al producto', currentProductCode);
+
+                            showAlert('Todos los conceptos han sido asociados exitosamente', 'success');
+
+                            // Recargar conceptos para mostrar el cambio
+                            setTimeout(() => {
+                                mostrarConceptos();
+                            }, 1000);
+                        }
+                    }
+
+                    function asociarTodosServicios() {
+                        if (confirm('¿Está seguro que desea asociar TODOS los servicios al producto "' + currentProductName + '"?')) {
+                            // Aquí harías la llamada al backend para asociar todos
+                            console.log('Asociando todos los servicios al producto', currentProductCode);
+
+                            showAlert('Todos los servicios han sido asociados exitosamente', 'success');
+
+                            // Recargar servicios para mostrar el cambio
+                            setTimeout(() => {
+                                mostrarServicios();
+                            }, 1000);
+                        }
+                    }
+
+                    // Cerrar modal con ESC
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            cerrarDetalleProducto();
+                        }
+                    });
+
+                    // Funciones de filtrado para conceptos y servicios
+                    function filtrarConceptos() {
+                        const searchInput = document.getElementById('searchConceptos');
+                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
+                        const searchTerm = searchInput.value.toLowerCase().trim();
+
+                        // Mostrar/ocultar botón de limpiar
+                        if (searchTerm) {
+                            clearBtn.style.display = 'flex';
+                        } else {
+                            clearBtn.style.display = 'none';
+                        }
+
+                        // Filtrar conceptos
+                        const conceptosFiltrados = originalConceptos.filter(concepto =>
+                            concepto.nombre.toLowerCase().includes(searchTerm) ||
+                            concepto.descripcion.toLowerCase().includes(searchTerm)
+                        );
+
+                        // Mostrar solo la lista filtrada (mantener el buscador y botón "Asociar Todo")
+                        actualizarListaConceptos(conceptosFiltrados);
+                    }
+
+                    function filtrarServicios() {
+                        const searchInput = document.getElementById('searchServicios');
+                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
+                        const searchTerm = searchInput.value.toLowerCase().trim();
+
+                        // Mostrar/ocultar botón de limpiar
+                        if (searchTerm) {
+                            clearBtn.style.display = 'flex';
+                        } else {
+                            clearBtn.style.display = 'none';
+                        }
+
+                        // Filtrar servicios
+                        const serviciosFiltrados = originalServicios.filter(servicio =>
+                            servicio.nombre.toLowerCase().includes(searchTerm) ||
+                            servicio.descripcion.toLowerCase().includes(searchTerm)
+                        );
+
+                        // Mostrar solo la lista filtrada (mantener el buscador y botón "Asociar Todo")
+                        actualizarListaServicios(serviciosFiltrados);
+                    }
+
+                    function limpiarBusquedaConceptos() {
+                        const searchInput = document.getElementById('searchConceptos');
+                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
+
+                        searchInput.value = '';
+                        clearBtn.style.display = 'none';
+
+                        // Mostrar todos los conceptos
+                        actualizarListaConceptos(originalConceptos);
+                        searchInput.focus();
+                    }
+
+                    function limpiarBusquedaServicios() {
+                        const searchInput = document.getElementById('searchServicios');
+                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
+
+                        searchInput.value = '';
+                        clearBtn.style.display = 'none';
+
+                        // Mostrar todos los servicios
+                        actualizarListaServicios(originalServicios);
+                        searchInput.focus();
+                    }
+
+                    function actualizarListaConceptos(conceptos) {
+                        const conceptsList = document.querySelector('.concepts-list');
+
+                        if (!conceptsList) return;
+
+                        if (conceptos.length === 0) {
+                            conceptsList.innerHTML = '<div class="no-association" style="padding: 2rem;">' +
+                                '<i class="fas fa-search"></i>' +
+                                '<p>No se encontraron conceptos que coincidan con la búsqueda</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        let conceptosHtml = '';
+                        for (let i = 0; i < conceptos.length; i++) {
+                            const concepto = conceptos[i];
+                            const buttonClass = concepto.asociado ? 'btn-associated' : 'btn-associate';
+                            const buttonText = concepto.asociado ? 'Asociado' : 'Asociar';
+                            const buttonIcon = concepto.asociado ? 'fas fa-check' : 'fas fa-plus';
+                            const buttonAction = concepto.asociado ? '' : 'onclick="asociarConcepto(' + concepto.id + ', \'' + concepto.nombre + '\')"';
+
+                            conceptosHtml += '<div class="concept-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + concepto.nombre + '</div>' +
+                                '<div class="item-description">' + concepto.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+
+                        conceptsList.innerHTML = conceptosHtml;
+                    }
+
+                    function actualizarListaServicios(servicios) {
+                        const servicesList = document.querySelector('.services-list');
+
+                        if (!servicesList) return;
+
+                        if (servicios.length === 0) {
+                            servicesList.innerHTML = '<div class="no-association" style="padding: 2rem;">' +
+                                '<i class="fas fa-search"></i>' +
+                                '<p>No se encontraron servicios que coincidan con la búsqueda</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        let serviciosHtml = '';
+                        for (let i = 0; i < servicios.length; i++) {
+                            const servicio = servicios[i];
+                            const buttonClass = servicio.asociado ? 'btn-associated' : 'btn-associate';
+                            const buttonText = servicio.asociado ? 'Asociado' : 'Asociar';
+                            const buttonIcon = servicio.asociado ? 'fas fa-check' : 'fas fa-plus';
+                            const buttonAction = servicio.asociado ? '' : 'onclick="asociarServicio(' + servicio.id + ', \'' + servicio.nombre + '\')"';
+
+                            serviciosHtml += '<div class="service-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + servicio.nombre + '</div>' +
+                                '<div class="item-description">' + servicio.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+
+                        servicesList.innerHTML = serviciosHtml;
+                    }
+
+                    // Variables para el modal de crear producto
+                    let conceptosDisponiblesCrear = [];
+                    let serviciosDisponiblesCrear = [];
+                    let conceptosSeleccionados = [];
+                    let serviciosSeleccionados = [];
+
+                    // Funciones para el modal de crear producto
+                    function abrirModalCrearProducto() {
+                        document.getElementById('createProductModal').style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+
+                        // Limpiar formulario
+                        document.getElementById('newProductName').value = '';
+                        conceptosSeleccionados = [];
+                        serviciosSeleccionados = [];
+                        actualizarResumenSelecciones();
+
+                        // Resetear área de resultados
+                        document.getElementById('createAssociationResults').innerHTML =
+                            '<div class="no-association">' +
+                            '<i class="fas fa-info-circle"></i>' +
+                            '<p>Haga clic en "Seleccionar Conceptos" o "Seleccionar Servicios" para elegir las asociaciones</p>' +
+                            '</div>';
+                    }
+
+                    function cerrarModalCrearProducto() {
+                        document.getElementById('createProductModal').style.display = 'none';
+                        document.body.style.overflow = 'auto';
+
+                        // Limpiar variables
+                        conceptosDisponiblesCrear = [];
+                        serviciosDisponiblesCrear = [];
+                        conceptosSeleccionados = [];
+                        serviciosSeleccionados = [];
+                    }
+
+                    function cargarConceptosParaCrear() {
+                        const resultsArea = document.getElementById('createAssociationResults');
+
+                        // Actualizar botones
+                        actualizarBotonesCrear('conceptos');
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando conceptos...</p>' +
+                            '</div>';
+
+                        // Cargar conceptos desde el backend
+                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=conceptos&productCode=new';
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(conceptos => {
+                                conceptosDisponiblesCrear = conceptos;
+                                mostrarConceptosParaSeleccionar(conceptos);
+                            })
+                            .catch(error => {
+                                console.error('Error cargando conceptos:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error cargando conceptos. Intente nuevamente.</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    function cargarServiciosParaCrear() {
+                        const resultsArea = document.getElementById('createAssociationResults');
+
+                        // Actualizar botones
+                        actualizarBotonesCrear('servicios');
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando servicios...</p>' +
+                            '</div>';
+
+                        // Cargar servicios desde el backend
+                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=servicios&productCode=new';
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(servicios => {
+                                serviciosDisponiblesCrear = servicios;
+                                mostrarServiciosParaSeleccionar(servicios);
+                            })
+                            .catch(error => {
+                                console.error('Error cargando servicios:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error cargando servicios. Intente nuevamente.</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    function actualizarBotonesCrear(tipoActivo) {
+                        const conceptosBtn = document.querySelector('[onclick="cargarConceptosParaCrear()"]');
+                        const serviciosBtn = document.querySelector('[onclick="cargarServiciosParaCrear()"]');
+
+                        if (conceptosBtn && serviciosBtn) {
+                            if (tipoActivo === 'conceptos') {
+                                conceptosBtn.classList.remove('btn-secondary');
+                                conceptosBtn.classList.add('btn-primary');
+                                serviciosBtn.classList.remove('btn-primary');
+                                serviciosBtn.classList.add('btn-secondary');
+                            } else if (tipoActivo === 'servicios') {
+                                serviciosBtn.classList.remove('btn-secondary');
+                                serviciosBtn.classList.add('btn-primary');
+                                conceptosBtn.classList.remove('btn-primary');
+                                conceptosBtn.classList.add('btn-secondary');
+                            }
+                        }
+                    }
+
+                    function mostrarConceptosParaSeleccionar(conceptos) {
+                        const resultsArea = document.getElementById('createAssociationResults');
+
+                        if (conceptos.length === 0) {
+                            resultsArea.innerHTML = '<div class="no-association">' +
+                                '<i class="fas fa-exclamation-triangle"></i>' +
+                                '<p>No se encontraron conceptos disponibles</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        let conceptosHtml = '<div class="concepts-list">';
+                        for (let i = 0; i < conceptos.length; i++) {
+                            const concepto = conceptos[i];
+                            const isSelected = conceptosSeleccionados.some(c => c.id === concepto.id);
+                            const buttonClass = isSelected ? 'btn-associated' : 'btn-associate';
+                            const buttonText = isSelected ? 'Seleccionado' : 'Seleccionar';
+                            const buttonIcon = isSelected ? 'fas fa-check' : 'fas fa-plus';
+
+                            conceptosHtml += '<div class="concept-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + concepto.nombre + '</div>' +
+                                '<div class="item-description">' + concepto.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" onclick="toggleConceptoSeleccion(' + concepto.id + ', \'' + concepto.nombre + '\')">' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        conceptosHtml += '</div>';
+
+                        resultsArea.innerHTML = conceptosHtml;
+                    }
+
+                    function mostrarServiciosParaSeleccionar(servicios) {
+                        const resultsArea = document.getElementById('createAssociationResults');
+
+                        if (servicios.length === 0) {
+                            resultsArea.innerHTML = '<div class="no-association">' +
+                                '<i class="fas fa-exclamation-triangle"></i>' +
+                                '<p>No se encontraron servicios disponibles</p>' +
+                                '</div>';
+                            return;
+                        }
+
+                        let serviciosHtml = '<div class="services-list">';
+                        for (let i = 0; i < servicios.length; i++) {
+                            const servicio = servicios[i];
+                            const isSelected = serviciosSeleccionados.some(s => s.id === servicio.id);
+                            const buttonClass = isSelected ? 'btn-associated' : 'btn-associate';
+                            const buttonText = isSelected ? 'Seleccionado' : 'Seleccionar';
+                            const buttonIcon = isSelected ? 'fas fa-check' : 'fas fa-plus';
+
+                            serviciosHtml += '<div class="service-item">' +
+                                '<div class="item-info">' +
+                                '<div class="item-name">' + servicio.nombre + '</div>' +
+                                '<div class="item-description">' + servicio.descripcion + '</div>' +
+                                '</div>' +
+                                '<div class="item-actions">' +
+                                '<button type="button" class="' + buttonClass + '" onclick="toggleServicioSeleccion(' + servicio.id + ', \'' + servicio.nombre + '\')">' +
+                                '<i class="' + buttonIcon + '"></i>' +
+                                buttonText +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        serviciosHtml += '</div>';
+
+                        resultsArea.innerHTML = serviciosHtml;
+                    }
+
+                    function toggleConceptoSeleccion(conceptoId, conceptoNombre) {
+                        const index = conceptosSeleccionados.findIndex(c => c.id === conceptoId);
+
+                        if (index === -1) {
+                            // Agregar concepto
+                            conceptosSeleccionados.push({ id: conceptoId, nombre: conceptoNombre });
+                        } else {
+                            // Remover concepto
+                            conceptosSeleccionados.splice(index, 1);
+                        }
+
+                        // Actualizar vista
+                        mostrarConceptosParaSeleccionar(conceptosDisponiblesCrear);
+                        actualizarResumenSelecciones();
+                    }
+
+                    function toggleServicioSeleccion(servicioId, servicioNombre) {
+                        const index = serviciosSeleccionados.findIndex(s => s.id === servicioId);
+
+                        if (index === -1) {
+                            // Agregar servicio
+                            serviciosSeleccionados.push({ id: servicioId, nombre: servicioNombre });
+                        } else {
+                            // Remover servicio
+                            serviciosSeleccionados.splice(index, 1);
+                        }
+
+                        // Actualizar vista
+                        mostrarServiciosParaSeleccionar(serviciosDisponiblesCrear);
+                        actualizarResumenSelecciones();
+                    }
+
+                    function actualizarResumenSelecciones() {
+                        const summaryDiv = document.getElementById('selectionSummary');
+                        const conceptosDiv = document.getElementById('selectedConceptos');
+                        const serviciosDiv = document.getElementById('selectedServicios');
+
+                        if (conceptosSeleccionados.length === 0 && serviciosSeleccionados.length === 0) {
+                            summaryDiv.style.display = 'none';
+                            return;
+                        }
+
+                        summaryDiv.style.display = 'block';
+
+                        // Mostrar conceptos seleccionados
+                        if (conceptosSeleccionados.length > 0) {
+                            conceptosDiv.innerHTML = '<strong>Conceptos (' + conceptosSeleccionados.length + '):</strong> ' +
+                                conceptosSeleccionados.map(c => c.nombre).join(', ');
+                        } else {
+                            conceptosDiv.innerHTML = '<strong>Conceptos:</strong> Ninguno seleccionado';
+                        }
+
+                        // Mostrar servicios seleccionados
+                        if (serviciosSeleccionados.length > 0) {
+                            serviciosDiv.innerHTML = '<strong>Servicios (' + serviciosSeleccionados.length + '):</strong> ' +
+                                serviciosSeleccionados.map(s => s.nombre).join(', ');
+                        } else {
+                            serviciosDiv.innerHTML = '<strong>Servicios:</strong> Ninguno seleccionado';
+                        }
+                    }
+
+                    // Funciones para búsqueda y paginación de productos
+                    function buscarProductos(event) {
+                        event.preventDefault();
+
+                        const searchTerm = document.getElementById('buscarProducto').value.trim();
+
+                        // Construir URL con parámetros
+                        const params = new URLSearchParams();
+                        if (searchTerm !== '') {
+                            params.set('buscarProducto', searchTerm);
+                        }
+                        params.set('page', '1'); // Reset to first page on new search
+                        params.set('pageSize', document.getElementById('pageSizeSelectProducts')?.value || '10');
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadProducts?' + params.toString();
+                        return false;
+                    }
+
+                    function limpiarBusquedaProductos() {
+                        document.getElementById('buscarProducto').value = '';
+                        window.location.href = '<%= request.getContextPath() %>/LoadProducts';
+                    }
+
+                    function goToPageProducts(page) {
+                        const searchTerm = document.getElementById('buscarProducto')?.value.trim() || '';
+
+                        const params = new URLSearchParams();
+                        if (searchTerm !== '') {
+                            params.set('buscarProducto', searchTerm);
+                        }
+                        params.set('page', page);
+                        params.set('pageSize', document.getElementById('pageSizeSelectProducts')?.value || '10');
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadProducts?' + params.toString();
+                    }
+
+                    function changePageSizeProducts(size) {
+                        const searchTerm = document.getElementById('buscarProducto')?.value.trim() || '';
+
+                        const params = new URLSearchParams();
+                        if (searchTerm !== '') {
+                            params.set('buscarProducto', searchTerm);
+                        }
+                        params.set('pageSize', size);
+                        params.set('page', '1'); // Reset to first page
+
+                        window.location.href = '<%= request.getContextPath() %>/LoadProducts?' + params.toString();
+                    }
+
+                    function guardarNuevoProducto() {
+                        const productName = document.getElementById('newProductName').value.trim();
+
+                        if (!productName) {
+                            showAlert('Por favor, ingrese el nombre del producto', 'warning');
+                            document.getElementById('newProductName').focus();
+                            return;
+                        }
+
+                        if (conceptosSeleccionados.length === 0 && serviciosSeleccionados.length === 0) {
+                            if (!confirm('No ha seleccionado ningún concepto ni servicio. ¿Desea continuar creando el producto sin asociaciones?')) {
+                                return;
+                            }
+                        }
+
+                        // Preparar datos para enviar al backend
+                        const conceptosString = conceptosSeleccionados.map(c => c.nombre).join(';');
+                        const serviciosString = serviciosSeleccionados.map(s => s.nombre).join(';');
+
+                        // Mostrar loading en el botón
+                        const saveBtn = document.getElementById('saveProductBtn');
+                        const originalText = saveBtn.innerHTML;
+                        saveBtn.innerHTML = '<div class="spinner"></div> Creando...';
+                        saveBtn.disabled = true;
+
+                        // Preparar datos para el POST con URLSearchParams
+                        const params = new URLSearchParams();
+                        params.append('descripcion', productName);
+                        params.append('conceptos', conceptosString);
+                        params.append('servicios', serviciosString);
+
+                        console.log('Enviando datos:', {
+                            descripcion: productName,
+                            conceptos: conceptosString,
+                            servicios: serviciosString
+                        });
+
+                        // Llamar al backend
+                        fetch('<%= request.getContextPath() %>/CreateProduct', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: params
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    showAlert('Producto "' + productName + '" creado exitosamente', 'success');
+                                    cerrarModalCrearProducto();
+
+                                    // Recargar la página para mostrar el nuevo producto
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1500);
+                                } else {
+                                    showAlert('Error al crear el producto: ' + (data.message || 'Error desconocido'), 'warning');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showAlert('Error al crear el producto. Intente nuevamente.', 'warning');
+                            })
+                            .finally(() => {
+                                // Restaurar botón
+                                saveBtn.innerHTML = originalText;
+                                saveBtn.disabled = false;
+                            });
+                    }
+
                 </script>
             </body>
 
