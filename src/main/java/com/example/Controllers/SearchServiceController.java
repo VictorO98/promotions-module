@@ -226,7 +226,7 @@ public class SearchServiceController extends HttpServlet {
                 }
 
                 try {
-                    String codMunicipioValue = rs.getString("COD_MUNICPIO");
+                    String codMunicipioValue = rs.getString("COD_MUNICIPIO");
                     servicio.setCodMunicipio(codMunicipioValue);
                     System.out.println("COD_MUNICIPIO: " + codMunicipioValue);
                 } catch (Exception e) {
