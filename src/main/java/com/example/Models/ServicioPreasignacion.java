@@ -9,13 +9,20 @@ public class ServicioPreasignacion {
     private String subcategoria;
     private String plan;
 
+    // Campos adicionales para consultas (no se muestran en web)
+    private String codDepartamento;
+    private String codMunicipio;
+    private String codCategoria;
+    private String codSubcategoria;
+
     // Constructor vacío
     public ServicioPreasignacion() {
     }
 
     // Constructor completo
     public ServicioPreasignacion(String placa, String suscripcion, String departamento,
-            String municipio, String categoria, String subcategoria, String plan) {
+            String municipio, String categoria, String subcategoria, String plan,
+            String codDepartamento, String codMunicipio, String codCategoria, String codSubcategoria) {
         this.placa = placa;
         this.suscripcion = suscripcion;
         this.departamento = departamento;
@@ -23,6 +30,10 @@ public class ServicioPreasignacion {
         this.categoria = categoria;
         this.subcategoria = subcategoria;
         this.plan = plan;
+        this.codDepartamento = codDepartamento;
+        this.codMunicipio = codMunicipio;
+        this.codCategoria = codCategoria;
+        this.codSubcategoria = codSubcategoria;
     }
 
     // Getters y Setters
@@ -80,6 +91,38 @@ public class ServicioPreasignacion {
 
     public void setPlan(String plan) {
         this.plan = plan;
+    }
+
+    public String getCodDepartamento() {
+        return codDepartamento;
+    }
+
+    public void setCodDepartamento(String codDepartamento) {
+        this.codDepartamento = codDepartamento;
+    }
+
+    public String getCodMunicipio() {
+        return codMunicipio;
+    }
+
+    public void setCodMunicipio(String codMunicipio) {
+        this.codMunicipio = codMunicipio;
+    }
+
+    public String getCodCategoria() {
+        return codCategoria;
+    }
+
+    public void setCodCategoria(String codCategoria) {
+        this.codCategoria = codCategoria;
+    }
+
+    public String getCodSubcategoria() {
+        return codSubcategoria;
+    }
+
+    public void setCodSubcategoria(String codSubcategoria) {
+        this.codSubcategoria = codSubcategoria;
     }
 
     @Override

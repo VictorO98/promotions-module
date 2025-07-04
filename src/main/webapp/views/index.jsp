@@ -1917,6 +1917,129 @@
                         border: 1px solid rgba(52, 152, 219, 0.3);
                     }
 
+                    /* Estilos para las tarjetas de promociones */
+                    .promotion-card {
+                        background: var(--surface-color);
+                        border: 1px solid var(--border-color);
+                        border-radius: var(--border-radius);
+                        padding: 1.5rem;
+                        margin-bottom: 1rem;
+                        transition: var(--transition);
+                        box-shadow: var(--shadow-sm);
+                    }
+
+                    .promotion-card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                        border-color: var(--primary-color);
+                    }
+
+                    .promotion-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 1rem;
+                        padding-bottom: 1rem;
+                        border-bottom: 1px solid var(--border-color);
+                    }
+
+                    .promotion-code {
+                        background: var(--primary-color);
+                        color: white;
+                        padding: 0.25rem 0.75rem;
+                        border-radius: 20px;
+                        font-weight: bold;
+                        font-size: 0.9rem;
+                    }
+
+                    .promotion-title {
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        color: var(--text-primary);
+                        flex: 1;
+                        margin-left: 1rem;
+                    }
+
+                    .promotion-details-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                        gap: 0.75rem;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .promotion-detail {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.25rem;
+                    }
+
+                    .promotion-detail label {
+                        font-size: 0.8rem;
+                        color: var(--text-secondary);
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                    }
+
+                    .promotion-detail span {
+                        font-size: 0.9rem;
+                        color: var(--text-primary);
+                        font-weight: 500;
+                    }
+
+                    .discount-percentage {
+                        background: linear-gradient(45deg, #27ae60, #2ecc71);
+                        color: white !important;
+                        padding: 0.25rem 0.5rem;
+                        border-radius: 4px;
+                        font-weight: bold;
+                        display: inline-block;
+                    }
+
+                    .promotion-actions {
+                        display: flex;
+                        justify-content: center;
+                        padding-top: 1rem;
+                        border-top: 1px solid var(--border-color);
+                    }
+
+                    .btn-associate {
+                        background: linear-gradient(45deg, var(--primary-color), #2980b9);
+                        color: white;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: var(--border-radius);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: var(--transition);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .btn-associate:hover {
+                        background: linear-gradient(45deg, #2980b9, #1e6091);
+                        transform: translateY(-1px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    .no-promotions {
+                        text-align: center;
+                        padding: 3rem;
+                        color: var(--text-secondary);
+                    }
+
+                    .no-promotions i {
+                        font-size: 3rem;
+                        margin-bottom: 1rem;
+                        color: var(--warning-color);
+                    }
+
+                    .no-promotions p {
+                        font-size: 1.1rem;
+                        margin: 0;
+                    }
+
                     .assigned-actions {
                         display: flex;
                         justify-content: center;
@@ -3775,10 +3898,11 @@
                                 showServiceLoading(false);
                                 if (data.success) {
                                     displayServiceInfo(data.data);
-                                    loadAvailablePromotions(numeroServicio);
+                                    displayPromotionsFromService(data.promociones);
                                 } else {
                                     alert('Error: ' + data.message);
                                     document.getElementById('serviceInfo').style.display = 'none';
+                                    showNoPromotionsMessage();
                                 }
                             })
                             .catch(error => {
@@ -3786,6 +3910,7 @@
                                 console.error('Error:', error);
                                 alert('Error al buscar el servicio. Por favor, intente nuevamente.');
                                 document.getElementById('serviceInfo').style.display = 'none';
+                                showNoPromotionsMessage();
                             });
                     }
 
@@ -3921,6 +4046,95 @@
                                 '</div>';
                         }
                         promotionsList.innerHTML = promotionsHtml;
+                    }
+
+                    function displayPromotionsFromService(promociones) {
+                        const promotionsLoading = document.getElementById('promotionsLoading');
+                        const promotionsList = document.getElementById('promotionsList');
+
+                        promotionsLoading.style.display = 'none';
+
+                        if (!promociones || promociones.length === 0) {
+                            showNoPromotionsMessage();
+                            return;
+                        }
+
+                        var promotionsHtml = '';
+                        for (var i = 0; i < promociones.length; i++) {
+                            var promo = promociones[i];
+                            var duracionText = '';
+                            if (promo.cocotiap && promo.ticoperiodicidad) {
+                                duracionText = promo.cocotiap + ' ' +
+                                    (promo.ticoperiodicidad === 'M' ? 'meses' :
+                                        promo.ticoperiodicidad === 'A' ? 'años' : 'periodos');
+                            }
+
+                            promotionsHtml += '<div class="promotion-card" data-promo-id="' + promo.ticocodi + '">' +
+                                '<div class="promotion-header">' +
+                                '<div class="promotion-code">' + promo.ticocodi + '</div>' +
+                                '<div class="promotion-title">' + (promo.ticodesc || '-') + '</div>' +
+                                '</div>' +
+                                '<div class="promotion-details-grid">' +
+                                '<div class="promotion-detail">' +
+                                '<label>Departamento:</label>' +
+                                '<span>' + (promo.depadesc || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Localidad:</label>' +
+                                '<span>' + (promo.locanomb || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Mercado:</label>' +
+                                '<span>' + (promo.catedesc || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Estrato:</label>' +
+                                '<span>' + (promo.sucadesc || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Tipo Plan:</label>' +
+                                '<span>' + (promo.plsudesc || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Tipo Producto:</label>' +
+                                '<span>' + (promo.paradesc || '-') + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>% Descuento:</label>' +
+                                '<span class="discount-percentage">' + (promo.cocoporc || 0) + '%</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Duración:</label>' +
+                                '<span>' + duracionText + '</span>' +
+                                '</div>' +
+                                '<div class="promotion-detail">' +
+                                '<label>Usuario:</label>' +
+                                '<span>' + (promo.ticouser || '-') + '</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="promotion-actions">' +
+                                '<button type="button" class="btn btn-primary btn-associate" ' +
+                                'onclick="associatePromotion(' + promo.ticocodi + ')">' +
+                                '<i class="fas fa-link"></i> Asociar Promoción' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+                        }
+
+                        promotionsList.innerHTML = promotionsHtml;
+                    }
+
+                    function showNoPromotionsMessage() {
+                        const promotionsList = document.getElementById('promotionsList');
+                        promotionsList.innerHTML = '<div class="no-promotions">' +
+                            '<i class="fas fa-exclamation-triangle"></i>' +
+                            '<p>No hay promociones disponibles para este servicio</p>' +
+                            '</div>';
+                    }
+
+                    function associatePromotion(promotionId) {
+                        // Por ahora solo mostrar un mensaje
+                        alert('Asociar promoción ID: ' + promotionId + ' (funcionalidad pendiente)');
                     }
 
                     let selectedPromotionId = null;
