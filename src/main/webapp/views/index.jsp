@@ -2340,6 +2340,131 @@
                         box-shadow: var(--shadow-lg);
                     }
 
+                    /* Confirmation Modal Styles (Equivalente a FrmConfAsignacion) */
+                    .confirmation-modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.6);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2000;
+                        animation: fadeIn 0.3s ease-out;
+                    }
+
+                    .confirmation-modal {
+                        background: var(--surface-color);
+                        border-radius: var(--border-radius);
+                        box-shadow: var(--shadow-lg);
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        animation: slideIn 0.3s ease-out;
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .confirmation-header {
+                        background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+                        color: white;
+                        padding: 1.5rem;
+                        border-radius: var(--border-radius) var(--border-radius) 0 0;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                    }
+
+                    .confirmation-header h3 {
+                        margin: 0;
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                    }
+
+                    .confirmation-header i {
+                        font-size: 1.5rem;
+                        color: rgba(255, 255, 255, 0.9);
+                    }
+
+                    .confirmation-body {
+                        padding: 2rem;
+                        border-bottom: 1px solid var(--border-color);
+                    }
+
+                    .confirmation-message {
+                        font-size: 1rem;
+                        line-height: 1.6;
+                        color: var(--text-primary);
+                        margin: 0;
+                        white-space: pre-line;
+                        background: var(--background-color);
+                        padding: 1.25rem;
+                        border-radius: 8px;
+                        border-left: 4px solid var(--warning-color);
+                    }
+
+                    .confirmation-actions {
+                        padding: 1.5rem;
+                        display: flex;
+                        gap: 1rem;
+                        justify-content: flex-end;
+                        background: var(--background-color);
+                        border-radius: 0 0 var(--border-radius) var(--border-radius);
+                    }
+
+                    .confirmation-actions .btn {
+                        min-width: 120px;
+                        padding: 0.75rem 1.5rem;
+                        font-weight: 600;
+                        border-radius: 8px;
+                        transition: var(--transition);
+                        border: none;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        justify-content: center;
+                    }
+
+                    .confirmation-actions .btn-primary {
+                        background: var(--primary-color);
+                        color: white;
+                    }
+
+                    .confirmation-actions .btn-primary:hover {
+                        background: var(--primary-dark);
+                        transform: translateY(-1px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    .confirmation-actions .btn-secondary {
+                        background: var(--secondary-color);
+                        color: white;
+                    }
+
+                    .confirmation-actions .btn-secondary:hover {
+                        background: #475569;
+                        transform: translateY(-1px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                    @keyframes slideIn {
+                        from {
+                            opacity: 0;
+                            transform: scale(0.95) translateY(-20px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: scale(1) translateY(0);
+                        }
+                    }
+
                     /* Mobile Responsive for Product Detail Modal */
                     @media (max-width: 768px) {
                         .association-buttons {
@@ -2357,6 +2482,19 @@
 
                         .association-results {
                             min-height: 250px;
+                        }
+
+                        .confirmation-modal {
+                            width: 95%;
+                            max-width: none;
+                        }
+
+                        .confirmation-actions {
+                            flex-direction: column;
+                        }
+
+                        .confirmation-actions .btn {
+                            width: 100%;
                         }
                     }
                 </style>
@@ -2763,11 +2901,7 @@
                                             <select id="departamento" name="departamento" class="form-input" required
                                                 onchange="loadLocalidades()">
                                                 <option value="">Seleccione Departamento</option>
-                                                <option value="META">META</option>
-                                                <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                                                <option value="ANTIOQUIA">ANTIOQUIA</option>
-                                                <option value="VALLE">VALLE DEL CAUCA</option>
-                                                <option value="ATLANTICO">ATLÁNTICO</option>
+                                                <!-- Los departamentos se cargan dinámicamente desde la BD -->
                                             </select>
                                         </div>
 
@@ -2788,10 +2922,7 @@
                                             </label>
                                             <select id="mercado" name="mercado" class="form-input">
                                                 <option value="">Selección Mercado</option>
-                                                <option value="RESIDENCIAL">RESIDENCIAL</option>
-                                                <option value="COMERCIAL">COMERCIAL</option>
-                                                <option value="EMPRESARIAL">EMPRESARIAL</option>
-                                                <option value="CORPORATIVO">CORPORATIVO</option>
+                                                <!-- Las categorías de mercado se cargan dinámicamente desde la BD -->
                                             </select>
                                         </div>
 
@@ -2959,7 +3090,7 @@
                                                             <td>${producto.paradesc}</td>
                                                             <td class="text-center">
                                                                 <button type="button" class="btn-details"
-                                                                    onclick="verDetalleProducto('${producto.tiposervcodi}', '${producto.paradesc}')">
+                                                                    onclick="verDetalleProducto('${producto.tiposervcodi}')">
                                                                     <i class="fas fa-eye"></i>
                                                                     Ver Detalle
                                                                 </button>
@@ -3031,7 +3162,7 @@
                     <!-- Modal para Ver Detalle del Producto -->
                     <div id="productDetailModal" class="product-modal" style="display: none;">
                         <div class="modal-overlay" onclick="cerrarDetalleProducto()"></div>
-                        <div class="modal-content">
+                        <div class="modal-content modal-wide">
                             <div class="modal-header">
                                 <h3><i class="fas fa-box"></i> Detalle del Producto</h3>
                                 <button type="button" class="modal-close-btn" onclick="cerrarDetalleProducto()">
@@ -3097,7 +3228,7 @@
                     <!-- Modal para Crear Nuevo Producto -->
                     <div id="createProductModal" class="product-modal" style="display: none;">
                         <div class="modal-overlay" onclick="cerrarModalCrearProducto()"></div>
-                        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+                        <div class="modal-content" style="max-width: 500px;">
                             <div class="modal-header">
                                 <h3><i class="fas fa-plus"></i> Crear Nuevo Producto</h3>
                                 <button type="button" class="modal-close-btn" onclick="cerrarModalCrearProducto()">
@@ -3116,51 +3247,17 @@
                                             </label>
                                             <input type="text" id="newProductName" name="newProductName"
                                                 class="form-input" placeholder="Ej: Internet Fibra Óptica" required
-                                                maxlength="100">
-                                        </div>
-
-                                        <!-- Sección de Asociaciones -->
-                                        <div class="association-section">
-                                            <h4><i class="fas fa-link"></i> Asociar al Producto</h4>
-                                            <p
-                                                style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">
-                                                <i class="fas fa-info-circle"></i> Seleccione los conceptos y servicios
-                                                que desea asociar al nuevo producto.
-                                            </p>
-
-                                            <div class="association-buttons">
-                                                <button type="button" class="btn btn-primary btn-association"
-                                                    onclick="cargarConceptosParaCrear()">
-                                                    <i class="fas fa-lightbulb"></i>
-                                                    Seleccionar Conceptos
-                                                </button>
-                                                <button type="button" class="btn btn-secondary btn-association"
-                                                    onclick="cargarServiciosParaCrear()">
-                                                    <i class="fas fa-cogs"></i>
-                                                    Seleccionar Servicios
-                                                </button>
+                                                maxlength="30" oninput="validarDescripcionEnTiempoReal()">
+                                            <div id="descripcionValidation" class="validation-feedback"
+                                                style="display: none;">
+                                                <span id="validationMessage"></span>
+                                                <span id="characterCounter" class="character-counter">0/30</span>
                                             </div>
-
-                                            <!-- Área de resultados -->
-                                            <div class="association-results" id="createAssociationResults">
-                                                <div class="no-association">
-                                                    <i class="fas fa-info-circle"></i>
-                                                    <p>Haga clic en "Seleccionar Conceptos" o "Seleccionar Servicios"
-                                                        para elegir las asociaciones</p>
-                                                </div>
-                                            </div>
-
-                                            <!-- Resumen de selecciones -->
-                                            <div id="selectionSummary" style="display: none; margin-top: 1.5rem;">
-                                                <div
-                                                    style="background: var(--background-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                                                    <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
-                                                        <i class="fas fa-check-circle"></i> Elementos Seleccionados
-                                                    </h5>
-                                                    <div id="selectedConceptos" style="margin-bottom: 0.5rem;"></div>
-                                                    <div id="selectedServicios"></div>
-                                                </div>
-                                            </div>
+                                            <small class="form-help">
+                                                <i class="fas fa-info-circle"></i>
+                                                Ingrese una descripción clara del tipo de servicio o producto (máximo 30
+                                                caracteres).
+                                            </small>
                                         </div>
                                     </div>
                                 </form>
@@ -3170,10 +3267,49 @@
                                     <i class="fas fa-times"></i>
                                     Cancelar
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="guardarNuevoProducto()"
+                                <button type="button" class="btn btn-primary" onclick="crearNuevoProducto()"
                                     id="saveProductBtn">
                                     <i class="fas fa-save"></i>
                                     Crear Producto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Confirmación Personalizado -->
+                    <div id="confirmationModal" class="product-modal" style="display: none;">
+                        <div class="modal-overlay" onclick="cerrarModalConfirmacion()"></div>
+                        <div class="modal-content" style="max-width: 500px;">
+                            <div class="modal-header">
+                                <h3><i class="fas fa-question-circle" style="color: #f39c12;"></i> Confirmación</h3>
+                                <button type="button" class="modal-close-btn" onclick="cerrarModalConfirmacion()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div style="text-align: center; padding: 1rem 0;">
+                                    <div style="font-size: 3rem; color: #f39c12; margin-bottom: 1rem;">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <h4 id="confirmationTitle" style="color: var(--text-primary); margin-bottom: 1rem;">
+                                        ¿Está seguro de realizar esta acción?
+                                    </h4>
+                                    <p id="confirmationMessage"
+                                        style="color: var(--text-secondary); font-size: 1rem; line-height: 1.5;">
+                                        Esta acción no se puede deshacer.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="justify-content: center; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="cerrarModalConfirmacion()"
+                                    style="min-width: 120px;">
+                                    <i class="fas fa-times"></i>
+                                    Cancelar
+                                </button>
+                                <button type="button" id="confirmActionBtn" class="btn btn-danger"
+                                    style="min-width: 120px;">
+                                    <i class="fas fa-check"></i>
+                                    Confirmar
                                 </button>
                             </div>
                         </div>
@@ -3324,6 +3460,12 @@
                     console.log('=== SCRIPT PROMOCIONES CARGADO CORRECTAMENTE ===');
                     console.log('Las funciones de exportación deberían estar disponibles ahora');
 
+                    // Test inicial de notificaciones después de 2 segundos
+                    setTimeout(() => {
+                        console.log('Probando sistema de notificaciones...');
+                        console.log('Sistema de notificaciones funcionando correctamente');
+                    }, 2000);
+
                     function showSection(sectionId) {
                         // Hide all sections
                         document.querySelectorAll('.section').forEach(section => {
@@ -3341,6 +3483,12 @@
                         // Add active class to clicked nav link
                         if (event && event.target) {
                             event.target.classList.add('active');
+                        }
+
+                        // Load data specific to each section
+                        if (sectionId === 'manage_promotions') {
+                            loadDepartamentos();
+                            loadCategorias();
                         }
 
                         // Close mobile menu if open
@@ -3466,7 +3614,7 @@
 
                         // Mostrar mensaje de descarga
                         console.log('Mostrando alert...');
-                        showAlert('Generando archivo CSV...', 'info');
+                        console.log('Generando archivo CSV...');
 
                         // Probar con window.location primero en lugar de window.open
                         try {
@@ -3482,17 +3630,84 @@
 
                     // Funciones exportToPDF y testExport eliminadas - solo mantenemos exportToCSV
 
-                    function showAlert(message, type) {
-                        const alertDiv = document.createElement('div');
-                        alertDiv.className = 'alert alert-' + type;
-                        alertDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
 
-                        const form = document.querySelector('.search-form');
-                        form.insertBefore(alertDiv, form.firstChild);
 
-                        setTimeout(() => {
-                            alertDiv.remove();
-                        }, 5000);
+                    // Función de validación en tiempo real para la descripción del producto
+                    function validarDescripcionEnTiempoReal() {
+                        const input = document.getElementById('newProductName');
+                        const validationDiv = document.getElementById('descripcionValidation');
+                        const messageSpan = document.getElementById('validationMessage');
+                        const counterSpan = document.getElementById('characterCounter');
+                        const saveBtn = document.getElementById('saveProductBtn');
+
+                        const valor = input.value;
+                        const valorTrimmed = valor.trim();
+                        const length = valor.length;
+
+                        // Actualizar contador
+                        counterSpan.textContent = length + '/30';
+
+                        // Resetear estilos
+                        input.style.borderColor = '';
+                        validationDiv.style.display = 'none';
+
+                        let isValid = true;
+                        let message = '';
+
+                        if (length > 0) {
+                            validationDiv.style.display = 'flex';
+                            validationDiv.style.justifyContent = 'space-between';
+                            validationDiv.style.alignItems = 'center';
+                            validationDiv.style.marginTop = '0.5rem';
+                            validationDiv.style.fontSize = '0.85rem';
+
+                            if (length > 30) {
+                                isValid = false;
+                                message = '⚠️ Excede el límite de caracteres';
+                                input.style.borderColor = '#ef4444';
+                                messageSpan.style.color = '#ef4444';
+                                counterSpan.style.color = '#ef4444';
+                                counterSpan.style.fontWeight = 'bold';
+                            } else if (valorTrimmed.length === 0) {
+                                isValid = false;
+                                message = '⚠️ No puede ser solo espacios';
+                                input.style.borderColor = '#f59e0b';
+                                messageSpan.style.color = '#f59e0b';
+                                counterSpan.style.color = '#6b7280';
+                            } else if (valor.includes("'") || valor.includes('"')) {
+                                isValid = false;
+                                message = '⚠️ No puede contener comillas';
+                                input.style.borderColor = '#f59e0b';
+                                messageSpan.style.color = '#f59e0b';
+                                counterSpan.style.color = '#6b7280';
+                            } else if (length >= 25) {
+                                message = '⚡ Cerca del límite';
+                                input.style.borderColor = '#f59e0b';
+                                messageSpan.style.color = '#f59e0b';
+                                counterSpan.style.color = '#f59e0b';
+                            } else {
+                                message = '✅ Válido';
+                                input.style.borderColor = '#10b981';
+                                messageSpan.style.color = '#10b981';
+                                counterSpan.style.color = '#6b7280';
+                            }
+
+                            messageSpan.textContent = message;
+                        } else {
+                            counterSpan.style.color = '#6b7280';
+                        }
+
+                        // Habilitar/deshabilitar botón de guardar
+                        if (saveBtn) {
+                            saveBtn.disabled = !isValid || valorTrimmed.length === 0;
+                            if (saveBtn.disabled) {
+                                saveBtn.style.opacity = '0.5';
+                                saveBtn.style.cursor = 'not-allowed';
+                            } else {
+                                saveBtn.style.opacity = '1';
+                                saveBtn.style.cursor = 'pointer';
+                            }
+                        }
                     }
 
                     function showLoadingState() {
@@ -3543,7 +3758,7 @@
                         const numeroServicio = document.getElementById('numeroServicio').value.trim();
 
                         if (numeroServicio === '') {
-                            showAlert('Por favor, ingrese un número de servicio para buscar.', 'warning');
+                            alert('Por favor, ingrese un número de servicio para buscar.');
                             document.getElementById('numeroServicio').focus();
                             return;
                         }
@@ -3714,40 +3929,196 @@
                         const tipoCliente = document.getElementById('tipoCliente').value;
 
                         if (numeroServicio === '') {
-                            showAlert('Por favor, ingrese un número de servicio.', 'warning');
+                            alert('Por favor, ingrese un número de servicio.');
                             return false;
                         }
 
                         if (selectedPromotionId === null) {
-                            showAlert('Por favor, seleccione una promoción para asociar.', 'warning');
+                            alert('Por favor, seleccione una promoción para asociar.');
                             return false;
                         }
 
-                        // Show loading state on assign button
+                        // Obtener datos de la promoción seleccionada para la confirmación
+                        const selectedPromoElement = document.querySelector('[data-promo-id="' + selectedPromotionId + '"]');
+                        const descripcionPromo = selectedPromoElement ?
+                            selectedPromoElement.querySelector('.promotion-title').textContent.trim().replace('🏷️', '').trim() :
+                            'Promoción seleccionada';
+
+                        // Verificar promociones existentes antes de asignar (equivalente al constructor de FrmConfAsignacion)
+                        checkExistingPromotionsAndConfirm(numeroServicio, tipoCliente, selectedPromotionId, descripcionPromo);
+
+                        return false;
+                    }
+
+                    /**
+                     * Verifica promociones existentes y muestra modal de confirmación
+                     * Equivalente a la funcionalidad del constructor de FrmConfAsignacion en C#
+                     */
+                    function checkExistingPromotionsAndConfirm(numeroServicio, tipoCliente, promotionId, descripcionPromo) {
+                        // Mostrar loading
+                        const assignBtn = document.getElementById('assignBtn');
+                        const originalText = assignBtn.innerHTML;
+                        assignBtn.innerHTML = '<div class="spinner"></div> Verificando...';
+                        assignBtn.disabled = true;
+
+                        // Llamar al endpoint para verificar promociones existentes
+                        const params = new URLSearchParams({
+                            action: 'checkExistingPromotions',
+                            suscriptor: numeroServicio,
+                            tipoPromo: tipoCliente, // 'I' para Individual, 'D' para Departamento
+                            inPromocion: promotionId,
+                            descripcionPromo: descripcionPromo
+                        });
+
+                        fetch('LoadProductAssociations?' + params.toString(), {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error en la respuesta del servidor');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                // Restaurar el botón
+                                assignBtn.innerHTML = originalText;
+                                assignBtn.disabled = false;
+
+                                if (data.promocionYaExiste) {
+                                    // Mostrar mensaje de error si la promoción ya existe
+                                    alert(data.mensajeError);
+                                } else {
+                                    // Mostrar modal de confirmación con el mensaje equivalente al de C#
+                                    showConfirmationModal(data, numeroServicio, tipoCliente, promotionId);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error verificando promociones existentes:', error);
+                                assignBtn.innerHTML = originalText;
+                                assignBtn.disabled = false;
+                                alert('Error al verificar promociones existentes: ' + error.message);
+                            });
+                    }
+
+                    /**
+                     * Muestra el modal de confirmación equivalente a FrmConfAsignacion
+                     */
+                    function showConfirmationModal(data, numeroServicio, tipoCliente, promotionId) {
+                        // Crear modal dinámicamente (equivalente a la ventana de confirmación del C#)
+                        const modal = document.createElement('div');
+                        modal.className = 'confirmation-modal-overlay';
+                        modal.innerHTML =
+                            '<div class="confirmation-modal">' +
+                            '<div class="confirmation-header">' +
+                            '<h3><i class="fas fa-exclamation-triangle"></i> Confirmación de Asignación</h3>' +
+                            '</div>' +
+                            '<div class="confirmation-body">' +
+                            '<p class="confirmation-message">' + data.mensajeConfirmacion.replace(/\\n/g, '<br>') + '</p>' +
+                            '</div>' +
+                            '<div class="confirmation-actions">' +
+                            '<button type="button" class="btn btn-primary" onclick="confirmAssignment(\'' + numeroServicio + '\', \'' + tipoCliente + '\', \'' + promotionId + '\', \'' + data.promocionRegistrado + '\', \'' + data.inPromocion + '\', \'' + data.suscriptor + '\')">' +
+                            '<i class="fas fa-check"></i> Aceptar' +
+                            '</button>' +
+                            '<button type="button" class="btn btn-secondary" onclick="cancelConfirmation()">' +
+                            '<i class="fas fa-times"></i> Cancelar' +
+                            '</button>' +
+                            '</div>' +
+                            '</div>';
+
+                        document.body.appendChild(modal);
+
+                        // Almacenar datos adicionales para la asignación
+                        window.confirmationData = {
+                            departamentoPromo: data.departamentoPromo || 0,
+                            localidadPromo: data.localidadPromo || 0,
+                            categoriaPromo: data.categoriaPromo || 0
+                        };
+                    }
+
+                    /**
+                     * Ejecuta la asignación después de la confirmación
+                     * Equivalente al btnAceptar_Click del código C#
+                     */
+                    function confirmAssignment(numeroServicio, tipoCliente, promotionId, promocionRegistrado, inPromocion, suscriptor) {
+                        // Remover modal
+                        const modal = document.querySelector('.confirmation-modal-overlay');
+                        if (modal) {
+                            modal.remove();
+                        }
+
+                        // Mostrar loading en el botón
                         const assignBtn = document.getElementById('assignBtn');
                         const originalText = assignBtn.innerHTML;
                         assignBtn.innerHTML = '<div class="spinner"></div> Asignando...';
                         assignBtn.disabled = true;
 
-                        // Simulate API call for association - Replace with actual service call
-                        setTimeout(() => {
-                            showAlert('Promoción asociada exitosamente al servicio ' + numeroServicio, 'success');
+                        // Preparar datos para la asignación
+                        const formData = new URLSearchParams({
+                            action: 'assignPromotion',
+                            suscriptor: numeroServicio,
+                            tipoPromo: tipoCliente,
+                            inPromocion: promotionId,
+                            promocionRegistrado: promocionRegistrado,
+                            departamentoPromo: window.confirmationData?.departamentoPromo || 0,
+                            localidadPromo: window.confirmationData?.localidadPromo || 0,
+                            categoriaPromo: window.confirmationData?.categoriaPromo || 0
+                        });
 
-                            // Reset form
-                            document.querySelector('.association-form').reset();
-                            document.getElementById('serviceInfo').style.display = 'none';
-                            document.getElementById('promotionsList').innerHTML = '<div class="no-promotions">' +
-                                '<i class="fas fa-search"></i>' +
-                                '<p>Busque un servicio para ver las promociones disponibles</p>' +
-                                '</div>';
-                            selectedPromotionId = null;
+                        // Realizar la asignación (equivalente al método asignarPromocion del C#)
+                        fetch('LoadProductAssociations', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error en la respuesta del servidor');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Mostrar mensaje de éxito (equivalente al MessageBox.Show del C#)
+                                    alert(data.message);
 
-                            // Reset button
-                            assignBtn.innerHTML = originalText;
-                            assignBtn.disabled = true;
-                        }, 2000);
+                                    // Reset form
+                                    document.querySelector('.association-form').reset();
+                                    document.getElementById('serviceInfo').style.display = 'none';
+                                    document.getElementById('promotionsList').innerHTML = '<div class="no-promotions">' +
+                                        '<i class="fas fa-search"></i>' +
+                                        '<p>Busque un servicio para ver las promociones disponibles</p>' +
+                                        '</div>';
+                                    selectedPromotionId = null;
 
-                        return false;
+                                    // Reset button
+                                    assignBtn.innerHTML = originalText;
+                                    assignBtn.disabled = true;
+                                } else {
+                                    throw new Error(data.message || 'Error en la asignación');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error asignando promoción:', error);
+                                assignBtn.innerHTML = originalText;
+                                assignBtn.disabled = false;
+                                alert('Error al asignar promoción: ' + error.message);
+                            });
+                    }
+
+                    /**
+                     * Cancela la confirmación
+                     * Equivalente al btnCancelar_Click del código C#
+                     */
+                    function cancelConfirmation() {
+                        const modal = document.querySelector('.confirmation-modal-overlay');
+                        if (modal) {
+                            modal.remove();
+                        }
                     }
 
                     function cancelAssociation() {
@@ -3765,6 +4136,103 @@
                     }
 
                     // Promotion Management Functions
+
+                    /**
+                     * Carga los departamentos desde la base de datos
+                     */
+                    function loadDepartamentos() {
+                        const departamentoSelect = document.getElementById('departamento');
+
+                        // Mostrar loading en el select
+                        departamentoSelect.innerHTML = '<option value="">Cargando departamentos...</option>';
+                        departamentoSelect.disabled = true;
+
+                        // Realizar llamada AJAX
+                        fetch('<%= request.getContextPath() %>/LoadDepartamentos')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al cargar departamentos: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Limpiar el select
+                                    departamentoSelect.innerHTML = '<option value="">Seleccione Departamento</option>';
+
+                                    // Agregar los departamentos
+                                    data.departamentos.forEach(dept => {
+                                        const option = document.createElement('option');
+                                        option.value = dept.codigo;
+                                        option.textContent = dept.descripcion;
+                                        departamentoSelect.appendChild(option);
+                                    });
+
+                                    departamentoSelect.disabled = false;
+                                    console.log('Departamentos cargados exitosamente:', data.departamentos.length);
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al cargar departamentos');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error cargando departamentos:', error);
+                                departamentoSelect.innerHTML = '<option value="">Error al cargar departamentos</option>';
+                                departamentoSelect.disabled = false;
+
+                                // Mostrar mensaje de error al usuario
+                                alert('Error al cargar departamentos: ' + error.message);
+                            });
+                    }
+
+                    /**
+                     * Carga las categorías de mercado desde la base de datos
+                     */
+                    function loadCategorias() {
+                        const mercadoSelect = document.getElementById('mercado');
+
+                        // Mostrar loading en el select
+                        mercadoSelect.innerHTML = '<option value="">Cargando categorías...</option>';
+                        mercadoSelect.disabled = true;
+
+                        // Realizar llamada AJAX
+                        fetch('<%= request.getContextPath() %>/LoadCategorias')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al cargar categorías: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Limpiar el select
+                                    mercadoSelect.innerHTML = '<option value="">Selección Mercado</option>';
+
+                                    // Agregar las categorías
+                                    data.categorias.forEach(categoria => {
+                                        const option = document.createElement('option');
+                                        option.value = categoria.codigo;
+                                        option.textContent = categoria.descripcion;
+                                        // Agregar información adicional como data attributes si es necesario
+                                        option.setAttribute('data-evalco', categoria.evalco);
+                                        mercadoSelect.appendChild(option);
+                                    });
+
+                                    mercadoSelect.disabled = false;
+                                    console.log('Categorías cargadas exitosamente:', data.categorias.length);
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al cargar categorías');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error cargando categorías:', error);
+                                mercadoSelect.innerHTML = '<option value="">Error al cargar categorías</option>';
+                                mercadoSelect.disabled = false;
+
+                                // Mostrar mensaje de error al usuario
+                                alert('Error al cargar categorías: ' + error.message);
+                            });
+                    }
+
                     function loadLocalidades() {
                         const departamento = document.getElementById('departamento').value;
                         const localidadSelect = document.getElementById('localidad');
@@ -3772,24 +4240,52 @@
                         // Clear current options
                         localidadSelect.innerHTML = '<option value="">Selección Localidad</option>';
 
-                        if (departamento === '') return;
+                        if (departamento === '') {
+                            localidadSelect.disabled = false;
+                            return;
+                        }
 
-                        // Mock data - Replace with actual API call
-                        const localidadesPorDepartamento = {
-                            'META': ['Villavicencio', 'Acacías', 'Granada', 'San Martín'],
-                            'CUNDINAMARCA': ['Bogotá', 'Soacha', 'Chía', 'Zipaquirá'],
-                            'ANTIOQUIA': ['Medellín', 'Bello', 'Itagüí', 'Envigado'],
-                            'VALLE': ['Cali', 'Palmira', 'Buenaventura', 'Cartago'],
-                            'ATLANTICO': ['Barranquilla', 'Soledad', 'Malambo', 'Sabanalarga']
-                        };
+                        // Mostrar loading en el select
+                        localidadSelect.innerHTML = '<option value="">Cargando localidades...</option>';
+                        localidadSelect.disabled = true;
 
-                        const localidades = localidadesPorDepartamento[departamento] || [];
-                        localidades.forEach(localidad => {
-                            const option = document.createElement('option');
-                            option.value = localidad;
-                            option.textContent = localidad;
-                            localidadSelect.appendChild(option);
-                        });
+                        // Realizar llamada AJAX para cargar localidades del departamento seleccionado
+                        fetch('<%= request.getContextPath() %>/LoadLocalidades?departamento=' + encodeURIComponent(departamento))
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al cargar localidades: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Limpiar el select
+                                    localidadSelect.innerHTML = '<option value="">Selección Localidad</option>';
+
+                                    // Agregar las localidades
+                                    data.localidades.forEach(localidad => {
+                                        const option = document.createElement('option');
+                                        option.value = localidad.locacodi;
+                                        option.textContent = localidad.locanomb;
+                                        // Agregar información adicional como data attributes si es necesario
+                                        option.setAttribute('data-departamento', localidad.locadepa);
+                                        localidadSelect.appendChild(option);
+                                    });
+
+                                    localidadSelect.disabled = false;
+                                    console.log('Localidades cargadas exitosamente para departamento ' + departamento + ':', data.localidades.length);
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al cargar localidades');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error cargando localidades:', error);
+                                localidadSelect.innerHTML = '<option value="">Error al cargar localidades</option>';
+                                localidadSelect.disabled = false;
+
+                                // Mostrar mensaje de error al usuario
+                                alert('Error al cargar localidades: ' + error.message);
+                            });
                     }
 
                     let detailRowCounter = 0;
@@ -3887,19 +4383,19 @@
                         const departamento = document.getElementById('departamento').value;
 
                         if (descripcion === '') {
-                            showAlert('Por favor, ingrese la descripción de la promoción.', 'warning');
+                            alert('Por favor, ingrese la descripción de la promoción.');
                             return false;
                         }
 
                         if (departamento === '') {
-                            showAlert('Por favor, seleccione un departamento.', 'warning');
+                            alert('Por favor, seleccione un departamento.');
                             return false;
                         }
 
                         // Validate details table has at least one row
                         const detailsRows = document.querySelectorAll('#promotionDetailsBody tr');
                         if (detailsRows.length === 0) {
-                            showAlert('Por favor, agregue al menos un detalle de promoción.', 'warning');
+                            alert('Por favor, agregue al menos un detalle de promoción.');
                             return false;
                         }
 
@@ -3911,7 +4407,7 @@
 
                         // Simulate API call for saving promotion - Replace with actual service call
                         setTimeout(() => {
-                            showAlert('Promoción guardada exitosamente', 'success');
+                            console.log('Promoción guardada exitosamente');
 
                             // Reset button
                             saveBtn.innerHTML = originalText;
@@ -3926,7 +4422,7 @@
                             document.querySelector('.promotion-management-form').reset();
                             document.getElementById('promotionDetailsBody').innerHTML = '';
                             detailRowCounter = 0;
-                            showAlert('Formulario limpiado correctamente', 'info');
+                            console.log('Formulario limpiado correctamente');
                         }
                     }
 
@@ -3938,7 +4434,7 @@
                         }
 
                         // Show loading message
-                        showAlert('Cargando promoción...', 'info');
+                        console.log('Cargando promoción...');
 
                         // Simulate API call for loading promotion - Replace with actual service call
                         setTimeout(() => {
@@ -3985,7 +4481,7 @@
                             detailRow.querySelector('[name^="index"]').value = '1';
                             detailRow.querySelector('[name^="confIndex"]').value = '1';
 
-                            showAlert('Promoción cargada exitosamente', 'success');
+                            console.log('Promoción cargada exitosamente');
                         }, 1500);
                     }
 
@@ -4061,7 +4557,7 @@
                             displayReportsResults(reportsData);
                             showReportsLoading(false);
 
-                            showAlert('Consulta realizada exitosamente. Se encontraron ' + reportsData.length + ' registros.', 'success');
+                            console.log('Consulta realizada exitosamente. Se encontraron ' + reportsData.length + ' registros.');
                         }, 2000);
 
                         return false;
@@ -4184,7 +4680,7 @@
                             currentPage = 1;
                             totalPages = 1;
 
-                            showAlert('Formulario limpiado correctamente', 'info');
+                            console.log('Formulario limpiado correctamente');
                         }
                     }
 
@@ -4399,33 +4895,10 @@
                     }
 
                     // Funciones para el modal de detalle de producto
-                    let currentProductCode = null;
-                    let currentProductName = null;
-                    let originalConceptos = [];
                     let originalServicios = [];
-                    let conceptosCargados = false;
                     let serviciosCargados = false;
 
-                    function verDetalleProducto(codigo, nombre) {
-                        currentProductCode = codigo;
-                        currentProductName = nombre;
 
-                        // Actualizar información del producto en el modal
-                        document.getElementById('productNameModal').textContent = nombre;
-                        document.getElementById('productCodeModal').textContent = 'Código: ' + codigo;
-
-                        // Actualizar información extra (puedes personalizar estos datos según tu lógica)
-                        const today = new Date();
-                        const formattedDate = today.toLocaleDateString('es-ES');
-                        document.getElementById('productDateCreated').textContent = 'Último acceso: ' + formattedDate;
-
-                        // Mostrar modal
-                        document.getElementById('productDetailModal').style.display = 'flex';
-                        document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-
-                        // Precargar automáticamente los conceptos
-                        precargarDatosProducto();
-                    }
 
                     function cerrarDetalleProducto() {
                         document.getElementById('productDetailModal').style.display = 'none';
@@ -4434,10 +4907,10 @@
                         // Limpiar variables globales
                         currentProductCode = null;
                         currentProductName = null;
-                        originalConceptos = [];
                         originalServicios = [];
-                        conceptosCargados = false;
                         serviciosCargados = false;
+                        conceptosCargadosNuevos = [];
+                        serviciosCargadosNuevos = [];
 
                         // Resetear estado de botones
                         const conceptosBtn = document.querySelector('[onclick="mostrarConceptos()"]');
@@ -4509,410 +4982,199 @@
                     }
 
                     function mostrarConceptos() {
-                        const resultsArea = document.getElementById('associationResults');
-
                         // Actualizar estado de botones
                         actualizarEstadoBotones('conceptos');
 
-                        // Si ya están cargados, solo mostrarlos
-                        if (conceptosCargados && originalConceptos.length > 0) {
-                            displayConceptos(originalConceptos);
+                        // Si ya están cargados los conceptos, mostrar la vista drag & drop directamente
+                        if (conceptosCargadosNuevos.length > 0) {
+                            mostrarConceptosEnModal(conceptosCargadosNuevos);
                             return;
                         }
 
-                        // Mostrar loading
-                        resultsArea.innerHTML = '<div class="loading-message">' +
-                            '<div class="spinner"></div>' +
-                            '<p>Cargando conceptos...</p>' +
-                            '</div>';
-
-                        // Llamada real al backend
-                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=conceptos&productCode=' + currentProductCode;
-                        console.log('Cargando conceptos desde:', url);
-
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(conceptos => {
-                                console.log('Conceptos recibidos:', conceptos);
-                                originalConceptos = conceptos; // Guardar datos originales
-                                conceptosCargados = true; // Marcar como cargados
-                                displayConceptos(conceptos);
-                            })
-                            .catch(error => {
-                                console.error('Error cargando conceptos:', error);
-                                resultsArea.innerHTML = '<div class="no-association">' +
-                                    '<i class="fas fa-exclamation-triangle"></i>' +
-                                    '<p>Error cargando conceptos. Intente nuevamente.</p>' +
-                                    '</div>';
-                            });
+                        // Si no hay datos cargados, recargar
+                        if (currentProductCode) {
+                            cargarConceptosAsociados(currentProductCode);
+                        } else {
+                            const resultsArea = document.getElementById('associationResults');
+                            resultsArea.innerHTML = '<div class="no-association">' +
+                                '<i class="fas fa-exclamation-triangle"></i>' +
+                                '<p>No hay producto seleccionado</p>' +
+                                '</div>';
+                        }
                     }
 
                     function mostrarServicios() {
-                        const resultsArea = document.getElementById('associationResults');
-
                         // Actualizar estado de botones
                         actualizarEstadoBotones('servicios');
 
-                        // Si ya están cargados, solo mostrarlos
-                        if (serviciosCargados && originalServicios.length > 0) {
-                            displayServicios(originalServicios);
+                        // Si ya están cargados los servicios, mostrar la vista drag & drop directamente
+                        if (serviciosCargadosNuevos.length > 0) {
+                            mostrarServiciosEnModal(serviciosCargadosNuevos);
                             return;
                         }
 
-                        // Mostrar loading
-                        resultsArea.innerHTML = '<div class="loading-message">' +
-                            '<div class="spinner"></div>' +
-                            '<p>Cargando servicios...</p>' +
-                            '</div>';
-
-                        // Llamada real al backend
-                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=servicios&productCode=' + currentProductCode;
-                        console.log('Cargando servicios desde:', url);
-
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(servicios => {
-                                console.log('Servicios recibidos:', servicios);
-                                originalServicios = servicios; // Guardar datos originales
-                                serviciosCargados = true; // Marcar como cargados
-                                displayServicios(servicios);
-                            })
-                            .catch(error => {
-                                console.error('Error cargando servicios:', error);
-                                resultsArea.innerHTML = '<div class="no-association">' +
-                                    '<i class="fas fa-exclamation-triangle"></i>' +
-                                    '<p>Error cargando servicios. Intente nuevamente.</p>' +
-                                    '</div>';
-                            });
-                    }
-
-                    function displayConceptos(conceptos) {
-                        const resultsArea = document.getElementById('associationResults');
-
-                        if (conceptos.length === 0) {
+                        // Si no hay datos cargados, recargar
+                        if (currentProductCode) {
+                            cargarServiciosAsociados(currentProductCode);
+                        } else {
+                            const resultsArea = document.getElementById('associationResults');
                             resultsArea.innerHTML = '<div class="no-association">' +
                                 '<i class="fas fa-exclamation-triangle"></i>' +
-                                '<p>No se encontraron conceptos disponibles</p>' +
-                                '</div>';
-                            return;
-                        }
-
-                        // Campo de búsqueda
-                        let conceptosHtml = '<div class="search-filter-container">' +
-                            '<div class="search-filter-input">' +
-                            '<i class="fas fa-search"></i>' +
-                            '<input type="text" id="searchConceptos" placeholder="Buscar conceptos..." ' +
-                            'oninput="filtrarConceptos()" autocomplete="off">' +
-                            '<button type="button" class="clear-search-btn" onclick="limpiarBusquedaConceptos()" style="display: none;">' +
-                            '<i class="fas fa-times"></i>' +
-                            '</button>' +
-                            '</div>' +
-                            '</div>';
-
-                        // Botón Asociar Todo
-                        conceptosHtml += '<div class="associate-all-container">' +
-                            '<button type="button" class="btn btn-warning btn-associate-all" onclick="asociarTodosConceptos()">' +
-                            '<i class="fas fa-plus-circle"></i>' +
-                            'Asociar Todos los Conceptos' +
-                            '</button>' +
-                            '</div>';
-
-                        conceptosHtml += '<div class="concepts-list">';
-                        for (let i = 0; i < conceptos.length; i++) {
-                            const concepto = conceptos[i];
-                            const buttonClass = concepto.asociado ? 'btn-associated' : 'btn-associate';
-                            const buttonText = concepto.asociado ? 'Asociado' : 'Asociar';
-                            const buttonIcon = concepto.asociado ? 'fas fa-check' : 'fas fa-plus';
-                            const buttonAction = concepto.asociado ? '' : 'onclick="asociarConcepto(' + concepto.id + ', \'' + concepto.nombre + '\')"';
-
-                            conceptosHtml += '<div class="concept-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + concepto.nombre + '</div>' +
-                                '<div class="item-description">' + concepto.descripcion + '</div>' +
-                                '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
-                                '</button>' +
-                                '</div>' +
+                                '<p>No hay producto seleccionado</p>' +
                                 '</div>';
                         }
-                        conceptosHtml += '</div>';
-
-                        resultsArea.innerHTML = conceptosHtml;
                     }
 
-                    function displayServicios(servicios) {
-                        const resultsArea = document.getElementById('associationResults');
 
-                        if (servicios.length === 0) {
-                            resultsArea.innerHTML = '<div class="no-association">' +
-                                '<i class="fas fa-exclamation-triangle"></i>' +
-                                '<p>No se encontraron servicios disponibles</p>' +
-                                '</div>';
-                            return;
-                        }
 
-                        // Campo de búsqueda
-                        let serviciosHtml = '<div class="search-filter-container">' +
-                            '<div class="search-filter-input">' +
-                            '<i class="fas fa-search"></i>' +
-                            '<input type="text" id="searchServicios" placeholder="Buscar servicios..." ' +
-                            'oninput="filtrarServicios()" autocomplete="off">' +
-                            '<button type="button" class="clear-search-btn" onclick="limpiarBusquedaServicios()" style="display: none;">' +
-                            '<i class="fas fa-times"></i>' +
-                            '</button>' +
-                            '</div>' +
-                            '</div>';
 
-                        // Botón Asociar Todo
-                        serviciosHtml += '<div class="associate-all-container">' +
-                            '<button type="button" class="btn btn-warning btn-associate-all" onclick="asociarTodosServicios()">' +
-                            '<i class="fas fa-plus-circle"></i>' +
-                            'Asociar Todos los Servicios' +
-                            '</button>' +
-                            '</div>';
-
-                        serviciosHtml += '<div class="services-list">';
-                        for (let i = 0; i < servicios.length; i++) {
-                            const servicio = servicios[i];
-                            const buttonClass = servicio.asociado ? 'btn-associated' : 'btn-associate';
-                            const buttonText = servicio.asociado ? 'Asociado' : 'Asociar';
-                            const buttonIcon = servicio.asociado ? 'fas fa-check' : 'fas fa-plus';
-                            const buttonAction = servicio.asociado ? '' : 'onclick="asociarServicio(' + servicio.id + ', \'' + servicio.nombre + '\')"';
-
-                            serviciosHtml += '<div class="service-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + servicio.nombre + '</div>' +
-                                '<div class="item-description">' + servicio.descripcion + '</div>' +
-                                '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
-                                '</button>' +
-                                '</div>' +
-                                '</div>';
-                        }
-                        serviciosHtml += '</div>';
-
-                        resultsArea.innerHTML = serviciosHtml;
-                    }
 
                     function asociarConcepto(conceptoId, conceptoNombre) {
-                        if (confirm('¿Está seguro que desea asociar el concepto "' + conceptoNombre + '" al producto "' + currentProductName + '"?')) {
-                            // Aquí harías la llamada al backend para asociar
-                            console.log('Asociando concepto', conceptoId, 'al producto', currentProductCode);
+                        mostrarConfirmacion(
+                            'Asociar Concepto',
+                            '¿Está seguro que desea asociar el concepto "' + conceptoNombre + '" al producto "' + currentProductName + '"?',
+                            function () {
+                                // Aquí harías la llamada al backend para asociar
+                                console.log('Asociando concepto', conceptoId, 'al producto', currentProductCode);
 
-                            showAlert('Concepto "' + conceptoNombre + '" asociado exitosamente', 'success');
+                                console.log('Concepto "' + conceptoNombre + '" asociado exitosamente');
 
-                            // Recargar conceptos para mostrar el cambio
-                            setTimeout(() => {
-                                mostrarConceptos();
-                            }, 1000);
-                        }
+                                // Recargar conceptos para mostrar el cambio
+                                setTimeout(() => {
+                                    mostrarConceptos();
+                                }, 1000);
+                            },
+                            false // No es una acción peligrosa
+                        );
                     }
 
                     function asociarServicio(servicioId, servicioNombre) {
-                        if (confirm('¿Está seguro que desea asociar el servicio "' + servicioNombre + '" al producto "' + currentProductName + '"?')) {
-                            // Aquí harías la llamada al backend para asociar
-                            console.log('Asociando servicio', servicioId, 'al producto', currentProductCode);
+                        mostrarConfirmacion(
+                            'Asociar Servicio',
+                            '¿Está seguro que desea asociar el servicio "' + servicioNombre + '" al producto "' + currentProductName + '"?',
+                            function () {
+                                // Aquí harías la llamada al backend para asociar
+                                console.log('Asociando servicio', servicioId, 'al producto', currentProductCode);
 
-                            showAlert('Servicio "' + servicioNombre + '" asociado exitosamente', 'success');
+                                console.log('Servicio "' + servicioNombre + '" asociado exitosamente');
 
-                            // Recargar servicios para mostrar el cambio
-                            setTimeout(() => {
-                                mostrarServicios();
-                            }, 1000);
-                        }
+                                // Recargar servicios para mostrar el cambio
+                                setTimeout(() => {
+                                    mostrarServicios();
+                                }, 1000);
+                            },
+                            false // No es una acción peligrosa
+                        );
                     }
 
                     function asociarTodosConceptos() {
-                        if (confirm('¿Está seguro que desea asociar TODOS los conceptos al producto "' + currentProductName + '"?')) {
-                            // Aquí harías la llamada al backend para asociar todos
-                            console.log('Asociando todos los conceptos al producto', currentProductCode);
+                        mostrarConfirmacion(
+                            'Asociar Todos los Conceptos',
+                            '¿Está seguro que desea asociar TODOS los conceptos al producto "' + currentProductName + '"? Esta acción aplicará todos los conceptos disponibles.',
+                            function () {
+                                // Aquí harías la llamada al backend para asociar todos
+                                console.log('Asociando todos los conceptos al producto', currentProductCode);
 
-                            showAlert('Todos los conceptos han sido asociados exitosamente', 'success');
+                                console.log('Todos los conceptos han sido asociados exitosamente');
 
-                            // Recargar conceptos para mostrar el cambio
-                            setTimeout(() => {
-                                mostrarConceptos();
-                            }, 1000);
-                        }
+                                // Recargar conceptos para mostrar el cambio
+                                setTimeout(() => {
+                                    mostrarConceptos();
+                                }, 1000);
+                            },
+                            true // Marcar como acción peligrosa para usar el botón rojo
+                        );
                     }
 
                     function asociarTodosServicios() {
-                        if (confirm('¿Está seguro que desea asociar TODOS los servicios al producto "' + currentProductName + '"?')) {
-                            // Aquí harías la llamada al backend para asociar todos
-                            console.log('Asociando todos los servicios al producto', currentProductCode);
+                        mostrarConfirmacion(
+                            'Asociar Todos los Servicios',
+                            '¿Está seguro que desea asociar TODOS los servicios al producto "' + currentProductName + '"? Esta acción aplicará todos los servicios disponibles.',
+                            function () {
+                                // Aquí harías la llamada al backend para asociar todos
+                                console.log('Asociando todos los servicios al producto', currentProductCode);
 
-                            showAlert('Todos los servicios han sido asociados exitosamente', 'success');
+                                console.log('Todos los servicios han sido asociados exitosamente');
 
-                            // Recargar servicios para mostrar el cambio
-                            setTimeout(() => {
-                                mostrarServicios();
-                            }, 1000);
-                        }
+                                // Recargar servicios para mostrar el cambio
+                                setTimeout(() => {
+                                    mostrarServicios();
+                                }, 1000);
+                            },
+                            true // Marcar como acción peligrosa para usar el botón rojo
+                        );
                     }
 
                     // Cerrar modal con ESC
                     document.addEventListener('keydown', function (event) {
                         if (event.key === 'Escape') {
                             cerrarDetalleProducto();
+                            cerrarModalConfirmacion(); // También cerrar modal de confirmación con ESC
                         }
                     });
 
-                    // Funciones de filtrado para conceptos y servicios
-                    function filtrarConceptos() {
-                        const searchInput = document.getElementById('searchConceptos');
-                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
-                        const searchTerm = searchInput.value.toLowerCase().trim();
+                    // Funciones para el modal de confirmación personalizado
+                    let confirmActionCallback = null;
 
-                        // Mostrar/ocultar botón de limpiar
-                        if (searchTerm) {
-                            clearBtn.style.display = 'flex';
+                    function mostrarConfirmacion(titulo, mensaje, callback, peligroso = false) {
+                        // Actualizar contenido del modal
+                        document.getElementById('confirmationTitle').textContent = titulo;
+                        document.getElementById('confirmationMessage').textContent = mensaje;
+
+                        // Configurar el botón de confirmar
+                        const confirmBtn = document.getElementById('confirmActionBtn');
+                        if (peligroso) {
+                            confirmBtn.className = 'btn btn-danger';
+                            confirmBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Confirmar';
                         } else {
-                            clearBtn.style.display = 'none';
+                            confirmBtn.className = 'btn btn-primary';
+                            confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirmar';
                         }
 
-                        // Filtrar conceptos
-                        const conceptosFiltrados = originalConceptos.filter(concepto =>
-                            concepto.nombre.toLowerCase().includes(searchTerm) ||
-                            concepto.descripcion.toLowerCase().includes(searchTerm)
-                        );
+                        // Guardar callback para ejecutar al confirmar
+                        confirmActionCallback = callback;
 
-                        // Mostrar solo la lista filtrada (mantener el buscador y botón "Asociar Todo")
-                        actualizarListaConceptos(conceptosFiltrados);
+                        // Configurar evento del botón confirmar
+                        confirmBtn.onclick = function () {
+                            if (confirmActionCallback) {
+                                confirmActionCallback();
+                            }
+                            cerrarModalConfirmacion();
+                        };
+
+                        // Mostrar modal
+                        document.getElementById('confirmationModal').style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    }
+
+                    function cerrarModalConfirmacion() {
+                        document.getElementById('confirmationModal').style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                        confirmActionCallback = null;
+                    }
+
+                    // Funciones de filtrado para conceptos y servicios
+                    function filtrarConceptos() {
+                        // Ya no es necesaria porque los conceptos usan el sistema drag & drop
+                        // Función mantenida solo para compatibilidad
+                        console.log('Búsqueda de conceptos ya no es necesaria - usar sistema drag & drop');
                     }
 
                     function filtrarServicios() {
-                        const searchInput = document.getElementById('searchServicios');
-                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
-                        const searchTerm = searchInput.value.toLowerCase().trim();
-
-                        // Mostrar/ocultar botón de limpiar
-                        if (searchTerm) {
-                            clearBtn.style.display = 'flex';
-                        } else {
-                            clearBtn.style.display = 'none';
-                        }
-
-                        // Filtrar servicios
-                        const serviciosFiltrados = originalServicios.filter(servicio =>
-                            servicio.nombre.toLowerCase().includes(searchTerm) ||
-                            servicio.descripcion.toLowerCase().includes(searchTerm)
-                        );
-
-                        // Mostrar solo la lista filtrada (mantener el buscador y botón "Asociar Todo")
-                        actualizarListaServicios(serviciosFiltrados);
+                        // Ya no es necesaria porque los servicios usan el sistema drag & drop
+                        // Función mantenida solo para compatibilidad
+                        console.log('Búsqueda de servicios ya no es necesaria - usar sistema drag & drop');
                     }
 
                     function limpiarBusquedaConceptos() {
-                        const searchInput = document.getElementById('searchConceptos');
-                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
-
-                        searchInput.value = '';
-                        clearBtn.style.display = 'none';
-
-                        // Mostrar todos los conceptos
-                        actualizarListaConceptos(originalConceptos);
-                        searchInput.focus();
+                        // Ya no es necesaria porque usa el sistema drag & drop
+                        console.log('Limpiar búsqueda de conceptos ya no es necesario - usar sistema drag & drop');
                     }
 
                     function limpiarBusquedaServicios() {
-                        const searchInput = document.getElementById('searchServicios');
-                        const clearBtn = searchInput.parentElement.querySelector('.clear-search-btn');
-
-                        searchInput.value = '';
-                        clearBtn.style.display = 'none';
-
-                        // Mostrar todos los servicios
-                        actualizarListaServicios(originalServicios);
-                        searchInput.focus();
+                        // Ya no es necesaria porque los servicios usan el sistema drag & drop
+                        console.log('Limpiar búsqueda de servicios ya no es necesario - usar sistema drag & drop');
                     }
-
-                    function actualizarListaConceptos(conceptos) {
-                        const conceptsList = document.querySelector('.concepts-list');
-
-                        if (!conceptsList) return;
-
-                        if (conceptos.length === 0) {
-                            conceptsList.innerHTML = '<div class="no-association" style="padding: 2rem;">' +
-                                '<i class="fas fa-search"></i>' +
-                                '<p>No se encontraron conceptos que coincidan con la búsqueda</p>' +
-                                '</div>';
-                            return;
-                        }
-
-                        let conceptosHtml = '';
-                        for (let i = 0; i < conceptos.length; i++) {
-                            const concepto = conceptos[i];
-                            const buttonClass = concepto.asociado ? 'btn-associated' : 'btn-associate';
-                            const buttonText = concepto.asociado ? 'Asociado' : 'Asociar';
-                            const buttonIcon = concepto.asociado ? 'fas fa-check' : 'fas fa-plus';
-                            const buttonAction = concepto.asociado ? '' : 'onclick="asociarConcepto(' + concepto.id + ', \'' + concepto.nombre + '\')"';
-
-                            conceptosHtml += '<div class="concept-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + concepto.nombre + '</div>' +
-                                '<div class="item-description">' + concepto.descripcion + '</div>' +
-                                '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
-                                '</button>' +
-                                '</div>' +
-                                '</div>';
-                        }
-
-                        conceptsList.innerHTML = conceptosHtml;
-                    }
-
-                    function actualizarListaServicios(servicios) {
-                        const servicesList = document.querySelector('.services-list');
-
-                        if (!servicesList) return;
-
-                        if (servicios.length === 0) {
-                            servicesList.innerHTML = '<div class="no-association" style="padding: 2rem;">' +
-                                '<i class="fas fa-search"></i>' +
-                                '<p>No se encontraron servicios que coincidan con la búsqueda</p>' +
-                                '</div>';
-                            return;
-                        }
-
-                        let serviciosHtml = '';
-                        for (let i = 0; i < servicios.length; i++) {
-                            const servicio = servicios[i];
-                            const buttonClass = servicio.asociado ? 'btn-associated' : 'btn-associate';
-                            const buttonText = servicio.asociado ? 'Asociado' : 'Asociar';
-                            const buttonIcon = servicio.asociado ? 'fas fa-check' : 'fas fa-plus';
-                            const buttonAction = servicio.asociado ? '' : 'onclick="asociarServicio(' + servicio.id + ', \'' + servicio.nombre + '\')"';
-
-                            serviciosHtml += '<div class="service-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + servicio.nombre + '</div>' +
-                                '<div class="item-description">' + servicio.descripcion + '</div>' +
-                                '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" ' + buttonAction + '>' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
-                                '</button>' +
-                                '</div>' +
-                                '</div>';
-                        }
-
-                        servicesList.innerHTML = serviciosHtml;
-                    }
-
-                    // Variables para el modal de crear producto
-                    let conceptosDisponiblesCrear = [];
-                    let serviciosDisponiblesCrear = [];
-                    let conceptosSeleccionados = [];
-                    let serviciosSeleccionados = [];
 
                     // Funciones para el modal de crear producto
                     function abrirModalCrearProducto() {
@@ -4920,109 +5182,219 @@
                         document.body.style.overflow = 'hidden';
 
                         // Limpiar formulario
-                        document.getElementById('newProductName').value = '';
-                        conceptosSeleccionados = [];
-                        serviciosSeleccionados = [];
-                        actualizarResumenSelecciones();
+                        const input = document.getElementById('newProductName');
+                        input.value = '';
 
-                        // Resetear área de resultados
-                        document.getElementById('createAssociationResults').innerHTML =
-                            '<div class="no-association">' +
-                            '<i class="fas fa-info-circle"></i>' +
-                            '<p>Haga clic en "Seleccionar Conceptos" o "Seleccionar Servicios" para elegir las asociaciones</p>' +
-                            '</div>';
+                        // Resetear validación
+                        const validationDiv = document.getElementById('descripcionValidation');
+                        const messageSpan = document.getElementById('validationMessage');
+                        const counterSpan = document.getElementById('characterCounter');
+                        const saveBtn = document.getElementById('saveProductBtn');
+
+                        validationDiv.style.display = 'none';
+                        input.style.borderColor = '';
+                        counterSpan.textContent = '0/30';
+                        counterSpan.style.color = '#6b7280';
+
+                        // Deshabilitar botón inicialmente
+                        if (saveBtn) {
+                            saveBtn.disabled = true;
+                            saveBtn.style.opacity = '0.5';
+                            saveBtn.style.cursor = 'not-allowed';
+                        }
+
+                        // Enfocar input
+                        setTimeout(() => {
+                            input.focus();
+                        }, 100);
                     }
 
                     function cerrarModalCrearProducto() {
                         document.getElementById('createProductModal').style.display = 'none';
                         document.body.style.overflow = 'auto';
-
-                        // Limpiar variables
-                        conceptosDisponiblesCrear = [];
-                        serviciosDisponiblesCrear = [];
-                        conceptosSeleccionados = [];
-                        serviciosSeleccionados = [];
                     }
 
-                    function cargarConceptosParaCrear() {
-                        const resultsArea = document.getElementById('createAssociationResults');
 
-                        // Actualizar botones
-                        actualizarBotonesCrear('conceptos');
 
-                        // Mostrar loading
-                        resultsArea.innerHTML = '<div class="loading-message">' +
-                            '<div class="spinner"></div>' +
-                            '<p>Cargando conceptos...</p>' +
-                            '</div>';
+                    function crearNuevoProducto() {
+                        console.log('=== FUNCIÓN CREARNEUVOPRODUCTO INICIADA ===');
 
-                        // Cargar conceptos desde el backend
-                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=conceptos&productCode=new';
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(conceptos => {
-                                conceptosDisponiblesCrear = conceptos;
-                                mostrarConceptosParaSeleccionar(conceptos);
-                            })
-                            .catch(error => {
-                                console.error('Error cargando conceptos:', error);
-                                resultsArea.innerHTML = '<div class="no-association">' +
-                                    '<i class="fas fa-exclamation-triangle"></i>' +
-                                    '<p>Error cargando conceptos. Intente nuevamente.</p>' +
-                                    '</div>';
-                            });
-                    }
-
-                    function cargarServiciosParaCrear() {
-                        const resultsArea = document.getElementById('createAssociationResults');
-
-                        // Actualizar botones
-                        actualizarBotonesCrear('servicios');
-
-                        // Mostrar loading
-                        resultsArea.innerHTML = '<div class="loading-message">' +
-                            '<div class="spinner"></div>' +
-                            '<p>Cargando servicios...</p>' +
-                            '</div>';
-
-                        // Cargar servicios desde el backend
-                        const url = '<%= request.getContextPath() %>/LoadProductAssociations?type=servicios&productCode=new';
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(servicios => {
-                                serviciosDisponiblesCrear = servicios;
-                                mostrarServiciosParaSeleccionar(servicios);
-                            })
-                            .catch(error => {
-                                console.error('Error cargando servicios:', error);
-                                resultsArea.innerHTML = '<div class="no-association">' +
-                                    '<i class="fas fa-exclamation-triangle"></i>' +
-                                    '<p>Error cargando servicios. Intente nuevamente.</p>' +
-                                    '</div>';
-                            });
-                    }
-
-                    function actualizarBotonesCrear(tipoActivo) {
-                        const conceptosBtn = document.querySelector('[onclick="cargarConceptosParaCrear()"]');
-                        const serviciosBtn = document.querySelector('[onclick="cargarServiciosParaCrear()"]');
-
-                        if (conceptosBtn && serviciosBtn) {
-                            if (tipoActivo === 'conceptos') {
-                                conceptosBtn.classList.remove('btn-secondary');
-                                conceptosBtn.classList.add('btn-primary');
-                                serviciosBtn.classList.remove('btn-primary');
-                                serviciosBtn.classList.add('btn-secondary');
-                            } else if (tipoActivo === 'servicios') {
-                                serviciosBtn.classList.remove('btn-secondary');
-                                serviciosBtn.classList.add('btn-primary');
-                                conceptosBtn.classList.remove('btn-primary');
-                                conceptosBtn.classList.add('btn-secondary');
-                            }
+                        // Obtener el valor del input
+                        const input = document.getElementById('newProductName');
+                        if (!input) {
+                            console.error('ERROR: Input newProductName no encontrado');
+                            alert('Error: No se encontró el campo de texto');
+                            return;
                         }
+
+                        const descripcion = input.value.trim();
+                        console.log('Descripción obtenida:', descripcion);
+
+                        // Validación básica
+                        if (!descripcion) {
+                            alert('Por favor ingrese una descripción');
+                            return;
+                        }
+
+                        if (descripcion.length > 30) {
+                            alert('Descripción muy larga (máximo 30 caracteres)');
+                            return;
+                        }
+
+                        // Deshabilitar botón
+                        const btn = document.getElementById('saveProductBtn');
+                        const originalText = btn.innerHTML;
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+
+                        console.log('Enviando petición al servidor...');
+
+                        // Preparar datos
+                        const formData = new URLSearchParams();
+                        formData.append('descripcion', descripcion);
+
+                        // Enviar al servidor
+                        fetch('<%= request.getContextPath() %>/CreateProduct', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            },
+                            body: formData
+                        })
+                            .then(response => {
+                                console.log('Respuesta del servidor:', response.status);
+                                return response.text();
+                            })
+                            .then(responseText => {
+                                console.log('Texto de respuesta:', responseText);
+
+                                try {
+                                    const data = JSON.parse(responseText);
+                                    console.log('JSON parseado:', data);
+
+                                    if (data.success) {
+                                        console.log(data.message || '¡Producto creado exitosamente!');
+                                        input.value = '';
+                                        document.getElementById('createProductModal').style.display = 'none';
+                                        document.body.style.overflow = 'auto';
+                                        // Recargar inmediatamente
+                                        setTimeout(() => location.reload(), 1000);
+                                    } else {
+                                        alert(data.message || 'Error desconocido al crear producto');
+                                    }
+                                } catch (e) {
+                                    console.error('Error parseando JSON:', e);
+                                    console.error('Respuesta que causó el error:', responseText);
+                                    alert('Error al procesar respuesta del servidor: ' + responseText.substring(0, 100));
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error en fetch:', error);
+                                alert('Error de conectividad: ' + error.message);
+                            })
+                            .finally(() => {
+                                // Restaurar botón
+                                btn.disabled = false;
+                                btn.innerHTML = originalText;
+                            });
                     }
 
-                    function mostrarConceptosParaSeleccionar(conceptos) {
-                        const resultsArea = document.getElementById('createAssociationResults');
+                    // Variables para el modal de detalle
+                    let currentProductCode = null;
+                    let currentProductName = null;
+                    let conceptosCargadosNuevos = [];
+                    let serviciosCargadosNuevos = [];
+
+                    // Función para ver detalle del producto (usar modal existente)
+                    function verDetalleProducto(codProducto) {
+                        console.log('Ver detalle producto:', codProducto);
+
+                        // Buscar el nombre del producto en la tabla actual de manera más segura
+                        let productName = 'Producto ' + codProducto;
+                        try {
+                            const buttons = document.querySelectorAll('button.btn-details');
+                            for (let button of buttons) {
+                                if (button.onclick && button.onclick.toString().includes(codProducto)) {
+                                    const row = button.closest('tr');
+                                    if (row && row.children.length > 1) {
+                                        productName = row.children[1].textContent.trim();
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.log('No se pudo obtener el nombre del producto, usando valor por defecto');
+                        }
+
+                        currentProductCode = codProducto;
+                        currentProductName = productName;
+
+                        // Actualizar información del producto en el modal
+                        document.getElementById('productNameModal').textContent = productName;
+                        document.getElementById('productCodeModal').textContent = 'Código: ' + codProducto;
+
+                        // Actualizar información extra
+                        const today = new Date();
+                        const formattedDate = today.toLocaleDateString('es-ES');
+                        document.getElementById('productDateCreated').textContent = 'Último acceso: ' + formattedDate;
+
+                        // Mostrar modal existente
+                        document.getElementById('productDetailModal').style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+
+                        // Cargar conceptos asociados automáticamente al abrir el modal
+                        cargarConceptosAsociados(codProducto);
+                    }
+
+                    // Nueva función para cargar conceptos asociados
+                    function cargarConceptosAsociados(codProducto) {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando conceptos asociados...</p>' +
+                            '</div>';
+
+                        fetch('<%= request.getContextPath() %>/ProductDetail?codProducto=' + codProducto, {
+                            method: 'GET'
+                        })
+                            .then(response => response.text())
+                            .then(responseText => {
+                                console.log('Respuesta del detalle:', responseText);
+
+                                try {
+                                    const data = JSON.parse(responseText);
+                                    console.log('Datos parseados:', data);
+
+                                    if (data.success) {
+                                        mostrarConceptosEnModal(data.conceptos);
+                                    } else {
+                                        resultsArea.innerHTML = '<div class="no-association">' +
+                                            '<i class="fas fa-exclamation-triangle"></i>' +
+                                            '<p>Error: ' + (data.message || 'No se pudieron cargar los conceptos') + '</p>' +
+                                            '</div>';
+                                    }
+                                } catch (e) {
+                                    console.error('Error parseando respuesta:', e);
+                                    resultsArea.innerHTML = '<div class="no-association">' +
+                                        '<i class="fas fa-exclamation-triangle"></i>' +
+                                        '<p>Error al procesar respuesta del servidor</p>' +
+                                        '</div>';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error al cargar detalle:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error de conectividad al cargar detalles</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    // Función para mostrar conceptos en el modal existente
+                    function mostrarConceptosEnModal(conceptos) {
+                        const resultsArea = document.getElementById('associationResults');
 
                         if (conceptos.length === 0) {
                             resultsArea.innerHTML = '<div class="no-association">' +
@@ -5032,34 +5404,455 @@
                             return;
                         }
 
-                        let conceptosHtml = '<div class="concepts-list">';
-                        for (let i = 0; i < conceptos.length; i++) {
-                            const concepto = conceptos[i];
-                            const isSelected = conceptosSeleccionados.some(c => c.id === concepto.id);
-                            const buttonClass = isSelected ? 'btn-associated' : 'btn-associate';
-                            const buttonText = isSelected ? 'Seleccionado' : 'Seleccionar';
-                            const buttonIcon = isSelected ? 'fas fa-check' : 'fas fa-plus';
+                        // Los conceptos ya vienen separados desde el backend
+                        const asociados = conceptos.filter(c => c.asociado);
+                        const disponibles = conceptos.filter(c => !c.asociado);
 
-                            conceptosHtml += '<div class="concept-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + concepto.nombre + '</div>' +
-                                '<div class="item-description">' + concepto.descripcion + '</div>' +
+                        console.log('Conceptos asociados:', asociados);
+                        console.log('Conceptos disponibles:', disponibles);
+
+                        let html = '<div class="dual-column-container">';
+
+                        // Columna izquierda: Conceptos Asociados
+                        html += '<div class="column-left">';
+                        html += '<div class="column-header associated-header">';
+                        html += '<h4 style="color: white;"><i class="fas fa-check-circle"></i> Conceptos Asociados (' + asociados.length + ')</h4>';
+                        html += '</div>';
+                        html += '<div class="concepts-list associated-list" id="associatedList" ondrop="dropConcept(event, \'associated\')" ondragover="allowDrop(event)">';
+
+                        if (asociados.length > 0) {
+                            asociados.forEach(concepto => {
+                                html += '<div class="concept-item associated-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + concepto.codConcepto + '" data-concept-name="' + concepto.concepto + '">' +
+                                    '<div class="concept-content">' +
+                                    '<div class="concept-title">' + concepto.concepto + '</div>' +
+                                    '<div class="concept-code">Código: ' + concepto.codConcepto + '</div>' +
+                                    '</div>' +
+                                    '<div class="concept-actions">' +
+                                    '<button type="button" class="move-btn" onclick="moveToAvailable(\'' + concepto.codConcepto + '\', \'' + concepto.concepto + '\')" title="Mover a disponibles">' +
+                                    '<i class="fas fa-arrow-right"></i>' +
+                                    '</button>' +
+                                    '</div>' +
+                                    '</div>';
+                            });
+                        } else {
+                            html += '<div class="empty-state">No hay conceptos asociados</div>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+
+                        // Columna del centro con controles
+                        html += '<div class="column-center">';
+                        html += '<div class="transfer-controls">';
+                        html += '<button type="button" class="transfer-btn" onclick="associateAllConcepts()" title="Asociar todos">';
+                        html += '<i class="fas fa-angle-double-right"></i>';
+                        html += '</button>';
+                        html += '<button type="button" class="transfer-btn" onclick="dissociateAllConcepts()" title="Quitar todos">';
+                        html += '<i class="fas fa-angle-double-left"></i>';
+                        html += '</button>';
+                        html += '</div>';
+                        html += '</div>';
+
+                        // Columna derecha: Conceptos Disponibles
+                        html += '<div class="column-right">';
+                        html += '<div class="column-header available-header">';
+                        html += '<h4 style="color: white;"><i class="fas fa-plus-circle"></i> Conceptos Disponibles (' + disponibles.length + ')</h4>';
+                        html += '</div>';
+                        html += '<div class="concepts-list available-list" id="availableList" ondrop="dropConcept(event, \'available\')" ondragover="allowDrop(event)">';
+
+                        if (disponibles.length > 0) {
+                            disponibles.forEach(concepto => {
+                                html += '<div class="concept-item available-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + concepto.codConcepto + '" data-concept-name="' + concepto.concepto + '">' +
+                                    '<div class="concept-content">' +
+                                    '<div class="concept-title">' + concepto.concepto + '</div>' +
+                                    '<div class="concept-code">Código: ' + concepto.codConcepto + '</div>' +
+                                    '</div>' +
+                                    '<div class="concept-actions">' +
+                                    '<button type="button" class="move-btn" onclick="moveToAssociated(\'' + concepto.codConcepto + '\', \'' + concepto.concepto + '\')" title="Asociar concepto">' +
+                                    '<i class="fas fa-arrow-left"></i>' +
+                                    '</button>' +
+                                    '</div>' +
+                                    '</div>';
+                            });
+                        } else {
+                            html += '<div class="empty-state">Todos los conceptos están asociados</div>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+
+                        html += '</div>';
+
+                        // Estilos CSS mejorados
+                        html += '<style>' +
+                            '.dual-column-container { display: flex; gap: 1.5rem; min-height: 400px; max-height: 500px; }' +
+                            '.column-left, .column-right { flex: 1; display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; }' +
+                            '.column-center { width: 80px; display: flex; align-items: center; justify-content: center; }' +
+                            '.column-header { padding: 1.25rem; text-align: center; color: white; font-weight: bold; }' +
+                            '.associated-header { background: linear-gradient(135deg, #22c55e, #16a34a); }' +
+                            '.available-header { background: linear-gradient(135deg, #6366f1, #4f46e5); }' +
+                            '.column-header h4 { margin: 0; font-size: 1rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }' +
+                            '.concepts-list { flex: 1; padding: 1.25rem; overflow-y: auto; min-height: 300px; border: 2px dashed transparent; transition: all 0.3s ease; }' +
+                            '.associated-list { background: linear-gradient(to bottom, #f0fdf4, #dcfce7); }' +
+                            '.available-list { background: linear-gradient(to bottom, #eef2ff, #e0e7ff); }' +
+                            '.concept-item { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; cursor: grab; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-height: 60px; }' +
+                            '.concept-item:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }' +
+                            '.concept-item.dragging { opacity: 0.7; transform: rotate(2deg); }' +
+                            '.associated-item { border-left: 5px solid #22c55e; }' +
+                            '.available-item { border-left: 5px solid #6366f1; }' +
+                            '.concept-content { flex: 1; }' +
+                            '.concept-title { font-weight: 700; margin-bottom: 0.35rem; color: #1f2937; font-size: 0.9rem; line-height: 1.2; }' +
+                            '.concept-code { font-size: 0.75rem; color: #6b7280; background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; display: inline-block; }' +
+                            '.concept-actions { margin-left: 1rem; }' +
+                            '.move-btn { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 6px; padding: 0.4rem 0.6rem; cursor: pointer; transition: all 0.2s ease; font-weight: 600; min-width: 36px; height: 32px; display: flex; align-items: center; justify-content: center; }' +
+                            '.move-btn:hover { background: linear-gradient(135deg, #d97706, #b45309); transform: scale(1.05); }' +
+                            '.transfer-controls { display: flex; flex-direction: column; gap: 1rem; }' +
+                            '.transfer-btn { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; border-radius: 12px; width: 50px; height: 50px; cursor: pointer; transition: all 0.2s ease; font-size: 1.2rem; }' +
+                            '.transfer-btn:hover { background: linear-gradient(135deg, #7c3aed, #6d28d9); transform: scale(1.1); }' +
+                            '.empty-state { text-align: center; color: #9ca3af; font-style: italic; padding: 3rem 1rem; font-size: 1rem; }' +
+                            '.concepts-list.drag-over { border-color: #f59e0b; background: rgba(251, 191, 36, 0.1); }' +
+                            '.modal-wide { max-width: 95vw; width: 1300px; }' +
+                            '</style>';
+
+                        resultsArea.innerHTML = html;
+
+                        // Guardar los conceptos para el botón "Conceptos"
+                        conceptosCargadosNuevos = conceptos;
+                    }
+
+                    // ==================== FUNCIONES DE DRAG & DROP ====================
+
+                    let draggedElement = null;
+
+                    function dragConcept(event) {
+                        // Buscar el elemento concept-item más cercano
+                        draggedElement = event.target.closest('.concept-item');
+                        if (!draggedElement) return;
+
+                        event.dataTransfer.effectAllowed = 'move';
+                        event.dataTransfer.setData('text/plain', draggedElement.getAttribute('data-concept-id'));
+
+                        // Añadir clase visual de arrastre
+                        draggedElement.classList.add('dragging');
+
+                        console.log('Iniciando drag de:', draggedElement.getAttribute('data-concept-name'));
+                    }
+
+                    function allowDrop(event) {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+
+                        // Añadir efecto visual a la zona de drop
+                        const dropZone = event.target.closest('.concepts-list');
+                        if (dropZone) {
+                            dropZone.classList.add('drag-over');
+                        }
+                    }
+
+                    function dropConcept(event, targetType) {
+                        event.preventDefault();
+
+                        // Quitar efecto visual
+                        const dropZone = event.target.closest('.concepts-list');
+                        if (dropZone) {
+                            dropZone.classList.remove('drag-over');
+                        }
+
+                        if (draggedElement) {
+                            const conceptId = draggedElement.getAttribute('data-concept-id');
+                            const conceptName = draggedElement.getAttribute('data-concept-name');
+
+                            console.log('Drop en:', targetType, 'concepto:', conceptName);
+
+                            // Verificar si realmente necesitamos mover (no está ya en la lista correcta)
+                            const isInAssociated = draggedElement.classList.contains('associated-item');
+                            const shouldBeAssociated = (targetType === 'associated');
+
+                            if (isInAssociated !== shouldBeAssociated) {
+                                // Solo mover si realmente necesita cambiar de lista
+                                console.log('Moviendo de', isInAssociated ? 'asociados' : 'disponibles', 'a', targetType);
+
+                                // Quitar clase de arrastre
+                                draggedElement.classList.remove('dragging');
+
+                                // Mover directamente sin pasar por las funciones intermedias
+                                moveConceptDirectly(draggedElement, targetType);
+                            } else {
+                                console.log('El elemento ya está en la lista correcta');
+                                draggedElement.classList.remove('dragging');
+                            }
+
+                            draggedElement = null;
+                        }
+                    }
+
+                    function moveConceptDirectly(element, targetType) {
+                        const conceptId = element.getAttribute('data-concept-id');
+                        const conceptName = element.getAttribute('data-concept-name');
+
+                        console.log('Moviendo directamente:', conceptName, 'hacia:', targetType);
+
+                        // Remover del lugar actual
+                        element.remove();
+
+                        // Crear nuevo elemento en el destino
+                        let newHtml = '';
+                        if (targetType === 'associated') {
+                            newHtml = '<div class="concept-item associated-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + conceptId + '" data-concept-name="' + conceptName + '">' +
+                                '<div class="concept-content">' +
+                                '<div class="concept-title">' + conceptName + '</div>' +
+                                '<div class="concept-code">Código: ' + conceptId + '</div>' +
                                 '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" onclick="toggleConceptoSeleccion(' + concepto.id + ', \'' + concepto.nombre + '\')">' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
+                                '<div class="concept-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveToAvailable(\'' + conceptId + '\', \'' + conceptName + '\')" title="Mover a disponibles">' +
+                                '<i class="fas fa-arrow-right"></i>' +
                                 '</button>' +
                                 '</div>' +
                                 '</div>';
-                        }
-                        conceptosHtml += '</div>';
 
-                        resultsArea.innerHTML = conceptosHtml;
+                            const associatedList = document.getElementById('associatedList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = associatedList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            associatedList.insertAdjacentHTML('beforeend', newHtml);
+
+                            console.log('✓ ' + conceptName + ' asociado');
+
+                        } else {
+                            newHtml = '<div class="concept-item available-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + conceptId + '" data-concept-name="' + conceptName + '">' +
+                                '<div class="concept-content">' +
+                                '<div class="concept-title">' + conceptName + '</div>' +
+                                '<div class="concept-code">Código: ' + conceptId + '</div>' +
+                                '</div>' +
+                                '<div class="concept-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveToAssociated(\'' + conceptId + '\', \'' + conceptName + '\')" title="Asociar concepto">' +
+                                '<i class="fas fa-arrow-left"></i>' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+
+                            const availableList = document.getElementById('availableList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = availableList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            availableList.insertAdjacentHTML('beforeend', newHtml);
+
+                            console.log('◯ ' + conceptName + ' quitado de asociaciones');
+                        }
+
+                        // Verificar estados vacíos y actualizar contadores
+                        checkEmptyStates();
+                        updateConceptCounters();
                     }
 
-                    function mostrarServiciosParaSeleccionar(servicios) {
-                        const resultsArea = document.getElementById('createAssociationResults');
+                    // Agregar evento para quitar la clase cuando termine el drag
+                    document.addEventListener('dragend', function (event) {
+                        if (event.target.closest('.concept-item')) {
+                            event.target.closest('.concept-item').classList.remove('dragging');
+                        }
+                        // Quitar todos los drag-over
+                        document.querySelectorAll('.drag-over').forEach(el => {
+                            el.classList.remove('drag-over');
+                        });
+                    });
+
+                    function moveToAssociated(conceptId, conceptName) {
+                        console.log('Botón clicked - Moviendo concepto a asociados:', conceptId, conceptName);
+
+                        const conceptElement = document.querySelector('[data-concept-id="' + conceptId + '"]');
+                        if (conceptElement) {
+                            moveConceptDirectly(conceptElement, 'associated');
+                        } else {
+                            console.error('No se encontró el elemento con ID:', conceptId);
+                            console.error('Error: No se pudo encontrar el concepto');
+                        }
+                    }
+
+                    function moveToAvailable(conceptId, conceptName) {
+                        console.log('Botón clicked - Moviendo concepto a disponibles:', conceptId, conceptName);
+
+                        const conceptElement = document.querySelector('[data-concept-id="' + conceptId + '"]');
+                        if (conceptElement) {
+                            moveConceptDirectly(conceptElement, 'available');
+                        } else {
+                            console.error('No se encontró el elemento con ID:', conceptId);
+                            console.error('Error: No se pudo encontrar el concepto');
+                        }
+                    }
+
+                    function moveConceptVisually(conceptId, targetList) {
+                        console.log('Ejecutando moveConceptVisually para:', conceptId, 'hacia:', targetList);
+
+                        const conceptElement = document.querySelector('[data-concept-id="' + conceptId + '"]');
+                        if (!conceptElement) {
+                            console.error('No se encontró el elemento con ID:', conceptId);
+                            return;
+                        }
+
+                        const conceptName = conceptElement.getAttribute('data-concept-name');
+                        console.log('Moviendo elemento:', conceptName);
+
+                        // Remover del lugar actual
+                        conceptElement.remove();
+
+                        // Crear nuevo elemento en el destino
+                        let newHtml = '';
+                        if (targetList === 'associated') {
+                            newHtml = '<div class="concept-item associated-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + conceptId + '" data-concept-name="' + conceptName + '">' +
+                                '<div class="concept-content">' +
+                                '<div class="concept-title">' + conceptName + '</div>' +
+                                '<div class="concept-code">Código: ' + conceptId + '</div>' +
+                                '</div>' +
+                                '<div class="concept-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveToAvailable(\'' + conceptId + '\', \'' + conceptName + '\')" title="Mover a disponibles">' +
+                                '<i class="fas fa-arrow-right"></i>' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+
+                            const associatedList = document.getElementById('associatedList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = associatedList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            associatedList.insertAdjacentHTML('beforeend', newHtml);
+
+                        } else {
+                            newHtml = '<div class="concept-item available-item" draggable="true" ondragstart="dragConcept(event)" data-concept-id="' + conceptId + '" data-concept-name="' + conceptName + '">' +
+                                '<div class="concept-content">' +
+                                '<div class="concept-title">' + conceptName + '</div>' +
+                                '<div class="concept-code">Código: ' + conceptId + '</div>' +
+                                '</div>' +
+                                '<div class="concept-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveToAssociated(\'' + conceptId + '\', \'' + conceptName + '\')" title="Asociar concepto">' +
+                                '<i class="fas fa-arrow-left"></i>' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+
+                            const availableList = document.getElementById('availableList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = availableList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            availableList.insertAdjacentHTML('beforeend', newHtml);
+                        }
+
+                        // Verificar si alguna lista quedó vacía y agregar mensaje
+                        checkEmptyStates();
+
+                        // Actualizar contadores
+                        updateConceptCounters();
+                    }
+
+                    function checkEmptyStates() {
+                        const associatedList = document.getElementById('associatedList');
+                        const availableList = document.getElementById('availableList');
+
+                        // Verificar lista de asociados
+                        if (associatedList && associatedList.querySelectorAll('.concept-item').length === 0) {
+                            if (!associatedList.querySelector('.empty-state')) {
+                                associatedList.innerHTML = '<div class="empty-state">No hay conceptos asociados</div>';
+                            }
+                        }
+
+                        // Verificar lista de disponibles  
+                        if (availableList && availableList.querySelectorAll('.concept-item').length === 0) {
+                            if (!availableList.querySelector('.empty-state')) {
+                                availableList.innerHTML = '<div class="empty-state">Todos los conceptos están asociados</div>';
+                            }
+                        }
+                    }
+
+                    function associateAllConcepts() {
+                        const availableItems = document.querySelectorAll('.available-item');
+                        availableItems.forEach(item => {
+                            const conceptId = item.getAttribute('data-concept-id');
+                            const conceptName = item.getAttribute('data-concept-name');
+                            moveToAssociated(conceptId, conceptName);
+                        });
+                    }
+
+                    function dissociateAllConcepts() {
+                        const associatedItems = document.querySelectorAll('.associated-item');
+                        associatedItems.forEach(item => {
+                            const conceptId = item.getAttribute('data-concept-id');
+                            const conceptName = item.getAttribute('data-concept-name');
+                            moveToAvailable(conceptId, conceptName);
+                        });
+                    }
+
+                    function updateConceptCounters() {
+                        const associatedCount = document.querySelectorAll('.associated-item').length;
+                        const availableCount = document.querySelectorAll('.available-item').length;
+
+                        const associatedHeader = document.querySelector('.associated-header h4');
+                        const availableHeader = document.querySelector('.available-header h4');
+
+                        if (associatedHeader) {
+                            associatedHeader.innerHTML = '<i class="fas fa-check-circle"></i> Conceptos Asociados (' + associatedCount + ')';
+                            associatedHeader.style.color = 'white';
+                        }
+
+                        if (availableHeader) {
+                            availableHeader.innerHTML = '<i class="fas fa-plus-circle"></i> Conceptos Disponibles (' + availableCount + ')';
+                            availableHeader.style.color = 'white';
+                        }
+
+                        console.log('Contadores actualizados - Asociados:', associatedCount, 'Disponibles:', availableCount);
+                    }
+
+
+
+
+
+                    // ==================== FUNCIONES PARA SERVICIOS ====================
+
+                    // Función para cargar servicios asociados
+                    function cargarServiciosAsociados(codProducto) {
+                        const resultsArea = document.getElementById('associationResults');
+
+                        // Mostrar loading
+                        resultsArea.innerHTML = '<div class="loading-message">' +
+                            '<div class="spinner"></div>' +
+                            '<p>Cargando servicios asociados...</p>' +
+                            '</div>';
+
+                        fetch('<%= request.getContextPath() %>/ProductServices?codProducto=' + codProducto, {
+                            method: 'GET'
+                        })
+                            .then(response => response.text())
+                            .then(responseText => {
+                                console.log('Respuesta del detalle de servicios:', responseText);
+
+                                try {
+                                    const data = JSON.parse(responseText);
+                                    console.log('Datos de servicios parseados:', data);
+
+                                    if (data.success) {
+                                        mostrarServiciosEnModal(data.servicios);
+                                    } else {
+                                        resultsArea.innerHTML = '<div class="no-association">' +
+                                            '<i class="fas fa-exclamation-triangle"></i>' +
+                                            '<p>Error: ' + (data.message || 'No se pudieron cargar los servicios') + '</p>' +
+                                            '</div>';
+                                    }
+                                } catch (e) {
+                                    console.error('Error parseando respuesta de servicios:', e);
+                                    resultsArea.innerHTML = '<div class="no-association">' +
+                                        '<i class="fas fa-exclamation-triangle"></i>' +
+                                        '<p>Error al procesar respuesta del servidor</p>' +
+                                        '</div>';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error al cargar servicios:', error);
+                                resultsArea.innerHTML = '<div class="no-association">' +
+                                    '<i class="fas fa-exclamation-triangle"></i>' +
+                                    '<p>Error de conectividad al cargar servicios</p>' +
+                                    '</div>';
+                            });
+                    }
+
+                    // Función para mostrar servicios en el modal con drag & drop
+                    function mostrarServiciosEnModal(servicios) {
+                        const resultsArea = document.getElementById('associationResults');
 
                         if (servicios.length === 0) {
                             resultsArea.innerHTML = '<div class="no-association">' +
@@ -5069,91 +5862,328 @@
                             return;
                         }
 
-                        let serviciosHtml = '<div class="services-list">';
-                        for (let i = 0; i < servicios.length; i++) {
-                            const servicio = servicios[i];
-                            const isSelected = serviciosSeleccionados.some(s => s.id === servicio.id);
-                            const buttonClass = isSelected ? 'btn-associated' : 'btn-associate';
-                            const buttonText = isSelected ? 'Seleccionado' : 'Seleccionar';
-                            const buttonIcon = isSelected ? 'fas fa-check' : 'fas fa-plus';
+                        // Los servicios ya vienen separados desde el backend
+                        const asociados = servicios.filter(s => s.asociado);
+                        const disponibles = servicios.filter(s => !s.asociado);
 
-                            serviciosHtml += '<div class="service-item">' +
-                                '<div class="item-info">' +
-                                '<div class="item-name">' + servicio.nombre + '</div>' +
-                                '<div class="item-description">' + servicio.descripcion + '</div>' +
+                        console.log('Servicios asociados:', asociados);
+                        console.log('Servicios disponibles:', disponibles);
+
+                        let html = '<div class="dual-column-container">';
+
+                        // Columna izquierda: Servicios Asociados (Verde)
+                        html += '<div class="column-left">';
+                        html += '<div class="column-header associated-header">';
+                        html += '<h4 style="color: white;"><i class="fas fa-check-circle"></i> Servicios Asociados (' + asociados.length + ')</h4>';
+                        html += '</div>';
+                        html += '<div class="services-list associated-list" id="associatedServicesList" ondrop="dropService(event, \'associated\')" ondragover="allowDropService(event)">';
+
+                        if (asociados.length > 0) {
+                            asociados.forEach(servicio => {
+                                html += '<div class="service-item associated-item" draggable="true" ondragstart="dragService(event)" data-service-id="' + servicio.codServicio + '" data-service-name="' + servicio.servicio + '">' +
+                                    '<div class="service-content">' +
+                                    '<div class="service-title">' + servicio.servicio + '</div>' +
+                                    '<div class="service-code">Código: ' + servicio.codServicio + '</div>' +
+                                    '</div>' +
+                                    '<div class="service-actions">' +
+                                    '<button type="button" class="move-btn" onclick="moveServiceToAvailable(\'' + servicio.codServicio + '\', \'' + servicio.servicio + '\')" title="Mover a disponibles">' +
+                                    '<i class="fas fa-arrow-right"></i>' +
+                                    '</button>' +
+                                    '</div>' +
+                                    '</div>';
+                            });
+                        } else {
+                            html += '<div class="empty-state">No hay servicios asociados</div>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+
+                        // Columna del centro con controles
+                        html += '<div class="column-center">';
+                        html += '<div class="transfer-controls">';
+                        html += '<button type="button" class="transfer-btn" onclick="associateAllServices()" title="Asociar todos">';
+                        html += '<i class="fas fa-angle-double-right"></i>';
+                        html += '</button>';
+                        html += '<button type="button" class="transfer-btn" onclick="dissociateAllServices()" title="Quitar todos">';
+                        html += '<i class="fas fa-angle-double-left"></i>';
+                        html += '</button>';
+                        html += '</div>';
+                        html += '</div>';
+
+                        // Columna derecha: Servicios Disponibles (Azul/Púrpura)
+                        html += '<div class="column-right">';
+                        html += '<div class="column-header available-header">';
+                        html += '<h4 style="color: white;"><i class="fas fa-plus-circle"></i> Servicios Disponibles (' + disponibles.length + ')</h4>';
+                        html += '</div>';
+                        html += '<div class="services-list available-list" id="availableServicesList" ondrop="dropService(event, \'available\')" ondragover="allowDropService(event)">';
+
+                        if (disponibles.length > 0) {
+                            disponibles.forEach(servicio => {
+                                html += '<div class="service-item available-item" draggable="true" ondragstart="dragService(event)" data-service-id="' + servicio.codServicio + '" data-service-name="' + servicio.servicio + '">' +
+                                    '<div class="service-content">' +
+                                    '<div class="service-title">' + servicio.servicio + '</div>' +
+                                    '<div class="service-code">Código: ' + servicio.codServicio + '</div>' +
+                                    '</div>' +
+                                    '<div class="service-actions">' +
+                                    '<button type="button" class="move-btn" onclick="moveServiceToAssociated(\'' + servicio.codServicio + '\', \'' + servicio.servicio + '\')" title="Asociar servicio">' +
+                                    '<i class="fas fa-arrow-left"></i>' +
+                                    '</button>' +
+                                    '</div>' +
+                                    '</div>';
+                            });
+                        } else {
+                            html += '<div class="empty-state">Todos los servicios están asociados</div>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+
+                        html += '</div>';
+
+                        // Estilos CSS para servicios (idénticos a conceptos)
+                        html += '<style>' +
+                            '.dual-column-container { display: flex; gap: 1.5rem; min-height: 400px; max-height: 500px; }' +
+                            '.column-left, .column-right { flex: 1; display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; }' +
+                            '.column-center { width: 80px; display: flex; align-items: center; justify-content: center; }' +
+                            '.column-header { padding: 1.25rem; text-align: center; color: white; font-weight: bold; }' +
+                            '.associated-header { background: linear-gradient(135deg, #22c55e, #16a34a); }' +
+                            '.available-header { background: linear-gradient(135deg, #6366f1, #4f46e5); }' +
+                            '.column-header h4 { margin: 0; font-size: 1rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }' +
+                            '.services-list { flex: 1; padding: 1.25rem; overflow-y: auto; min-height: 300px; border: 2px dashed transparent; transition: all 0.3s ease; }' +
+                            '.associated-list { background: linear-gradient(to bottom, #f0fdf4, #dcfce7); }' +
+                            '.available-list { background: linear-gradient(to bottom, #eef2ff, #e0e7ff); }' +
+                            '.service-item { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; cursor: grab; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-height: 60px; }' +
+                            '.service-item:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }' +
+                            '.service-item.dragging { opacity: 0.7; transform: rotate(2deg); }' +
+                            '.associated-item { border-left: 5px solid #22c55e; }' +
+                            '.available-item { border-left: 5px solid #6366f1; }' +
+                            '.service-content { flex: 1; }' +
+                            '.service-title { font-weight: 700; margin-bottom: 0.35rem; color: #1f2937; font-size: 0.9rem; line-height: 1.2; }' +
+                            '.service-code { font-size: 0.75rem; color: #6b7280; background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; display: inline-block; }' +
+                            '.service-actions { margin-left: 1rem; }' +
+                            '.move-btn { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 6px; padding: 0.4rem 0.6rem; cursor: pointer; transition: all 0.2s ease; font-weight: 600; min-width: 36px; height: 32px; display: flex; align-items: center; justify-content: center; }' +
+                            '.move-btn:hover { background: linear-gradient(135deg, #d97706, #b45309); transform: scale(1.05); }' +
+                            '.transfer-controls { display: flex; flex-direction: column; gap: 1rem; }' +
+                            '.transfer-btn { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; border-radius: 12px; width: 50px; height: 50px; cursor: pointer; transition: all 0.2s ease; font-size: 1.2rem; }' +
+                            '.transfer-btn:hover { background: linear-gradient(135deg, #7c3aed, #6d28d9); transform: scale(1.1); }' +
+                            '.empty-state { text-align: center; color: #9ca3af; font-style: italic; padding: 3rem 1rem; font-size: 1rem; }' +
+                            '.services-list.drag-over { border-color: #f59e0b; background: rgba(251, 191, 36, 0.1); }' +
+                            '.modal-wide { max-width: 95vw; width: 1300px; }' +
+                            '</style>';
+
+                        resultsArea.innerHTML = html;
+
+                        // Guardar los servicios para el botón "Servicios"
+                        serviciosCargadosNuevos = servicios;
+                    }
+
+                    // ==================== FUNCIONES DE DRAG & DROP PARA SERVICIOS ====================
+
+                    let draggedServiceElement = null;
+
+                    function dragService(event) {
+                        // Buscar el elemento service-item más cercano
+                        draggedServiceElement = event.target.closest('.service-item');
+                        if (!draggedServiceElement) return;
+
+                        event.dataTransfer.effectAllowed = 'move';
+                        event.dataTransfer.setData('text/plain', draggedServiceElement.getAttribute('data-service-id'));
+
+                        // Añadir clase visual de arrastre
+                        draggedServiceElement.classList.add('dragging');
+
+                        console.log('Iniciando drag de servicio:', draggedServiceElement.getAttribute('data-service-name'));
+                    }
+
+                    function allowDropService(event) {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+
+                        // Añadir efecto visual a la zona de drop
+                        const dropZone = event.target.closest('.services-list');
+                        if (dropZone) {
+                            dropZone.classList.add('drag-over');
+                        }
+                    }
+
+                    function dropService(event, targetType) {
+                        event.preventDefault();
+
+                        // Quitar efecto visual
+                        const dropZone = event.target.closest('.services-list');
+                        if (dropZone) {
+                            dropZone.classList.remove('drag-over');
+                        }
+
+                        if (draggedServiceElement) {
+                            const serviceId = draggedServiceElement.getAttribute('data-service-id');
+                            const serviceName = draggedServiceElement.getAttribute('data-service-name');
+
+                            console.log('Drop servicio en:', targetType, 'servicio:', serviceName);
+
+                            // Verificar si realmente necesitamos mover
+                            const isInAssociated = draggedServiceElement.classList.contains('associated-item');
+                            const shouldBeAssociated = (targetType === 'associated');
+
+                            if (isInAssociated !== shouldBeAssociated) {
+                                console.log('Moviendo servicio de', isInAssociated ? 'asociados' : 'disponibles', 'a', targetType);
+
+                                // Quitar clase de arrastre
+                                draggedServiceElement.classList.remove('dragging');
+
+                                // Mover directamente
+                                moveServiceDirectly(draggedServiceElement, targetType);
+                            } else {
+                                console.log('El servicio ya está en la lista correcta');
+                                draggedServiceElement.classList.remove('dragging');
+                            }
+
+                            draggedServiceElement = null;
+                        }
+                    }
+
+                    function moveServiceDirectly(element, targetType) {
+                        const serviceId = element.getAttribute('data-service-id');
+                        const serviceName = element.getAttribute('data-service-name');
+
+                        console.log('Moviendo directamente servicio:', serviceName, 'hacia:', targetType);
+
+                        // Remover del lugar actual
+                        element.remove();
+
+                        // Crear nuevo elemento en el destino
+                        let newHtml = '';
+                        if (targetType === 'associated') {
+                            newHtml = '<div class="service-item associated-item" draggable="true" ondragstart="dragService(event)" data-service-id="' + serviceId + '" data-service-name="' + serviceName + '">' +
+                                '<div class="service-content">' +
+                                '<div class="service-title">' + serviceName + '</div>' +
+                                '<div class="service-code">Código: ' + serviceId + '</div>' +
                                 '</div>' +
-                                '<div class="item-actions">' +
-                                '<button type="button" class="' + buttonClass + '" onclick="toggleServicioSeleccion(' + servicio.id + ', \'' + servicio.nombre + '\')">' +
-                                '<i class="' + buttonIcon + '"></i>' +
-                                buttonText +
+                                '<div class="service-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveServiceToAvailable(\'' + serviceId + '\', \'' + serviceName + '\')" title="Mover a disponibles">' +
+                                '<i class="fas fa-arrow-right"></i>' +
                                 '</button>' +
                                 '</div>' +
                                 '</div>';
-                        }
-                        serviciosHtml += '</div>';
 
-                        resultsArea.innerHTML = serviciosHtml;
+                            const associatedList = document.getElementById('associatedServicesList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = associatedList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            associatedList.insertAdjacentHTML('beforeend', newHtml);
+
+                            console.log('✓ ' + serviceName + ' asociado');
+
+                        } else {
+                            newHtml = '<div class="service-item available-item" draggable="true" ondragstart="dragService(event)" data-service-id="' + serviceId + '" data-service-name="' + serviceName + '">' +
+                                '<div class="service-content">' +
+                                '<div class="service-title">' + serviceName + '</div>' +
+                                '<div class="service-code">Código: ' + serviceId + '</div>' +
+                                '</div>' +
+                                '<div class="service-actions">' +
+                                '<button type="button" class="move-btn" onclick="moveServiceToAssociated(\'' + serviceId + '\', \'' + serviceName + '\')" title="Asociar servicio">' +
+                                '<i class="fas fa-arrow-left"></i>' +
+                                '</button>' +
+                                '</div>' +
+                                '</div>';
+
+                            const availableList = document.getElementById('availableServicesList');
+                            // Quitar mensaje de vacío si existe
+                            const emptyState = availableList.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            availableList.insertAdjacentHTML('beforeend', newHtml);
+
+                            console.log('◯ ' + serviceName + ' quitado de asociaciones');
+                        }
+
+                        // Verificar estados vacíos y actualizar contadores
+                        checkEmptyStatesServices();
+                        updateServiceCounters();
                     }
 
-                    function toggleConceptoSeleccion(conceptoId, conceptoNombre) {
-                        const index = conceptosSeleccionados.findIndex(c => c.id === conceptoId);
-
-                        if (index === -1) {
-                            // Agregar concepto
-                            conceptosSeleccionados.push({ id: conceptoId, nombre: conceptoNombre });
-                        } else {
-                            // Remover concepto
-                            conceptosSeleccionados.splice(index, 1);
+                    // Agregar evento para quitar la clase cuando termine el drag de servicios
+                    document.addEventListener('dragend', function (event) {
+                        if (event.target.closest('.service-item')) {
+                            event.target.closest('.service-item').classList.remove('dragging');
                         }
+                    });
 
-                        // Actualizar vista
-                        mostrarConceptosParaSeleccionar(conceptosDisponiblesCrear);
-                        actualizarResumenSelecciones();
+                    function moveServiceToAssociated(serviceId, serviceName) {
+                        console.log('Botón clicked - Moviendo servicio a asociados:', serviceId, serviceName);
+
+                        const serviceElement = document.querySelector('[data-service-id="' + serviceId + '"]');
+                        if (serviceElement) {
+                            moveServiceDirectly(serviceElement, 'associated');
+                        } else {
+                            console.error('No se encontró el elemento servicio con ID:', serviceId);
+                        }
                     }
 
-                    function toggleServicioSeleccion(servicioId, servicioNombre) {
-                        const index = serviciosSeleccionados.findIndex(s => s.id === servicioId);
+                    function moveServiceToAvailable(serviceId, serviceName) {
+                        console.log('Botón clicked - Moviendo servicio a disponibles:', serviceId, serviceName);
 
-                        if (index === -1) {
-                            // Agregar servicio
-                            serviciosSeleccionados.push({ id: servicioId, nombre: servicioNombre });
+                        const serviceElement = document.querySelector('[data-service-id="' + serviceId + '"]');
+                        if (serviceElement) {
+                            moveServiceDirectly(serviceElement, 'available');
                         } else {
-                            // Remover servicio
-                            serviciosSeleccionados.splice(index, 1);
+                            console.error('No se encontró el elemento servicio con ID:', serviceId);
                         }
-
-                        // Actualizar vista
-                        mostrarServiciosParaSeleccionar(serviciosDisponiblesCrear);
-                        actualizarResumenSelecciones();
                     }
 
-                    function actualizarResumenSelecciones() {
-                        const summaryDiv = document.getElementById('selectionSummary');
-                        const conceptosDiv = document.getElementById('selectedConceptos');
-                        const serviciosDiv = document.getElementById('selectedServicios');
+                    function checkEmptyStatesServices() {
+                        const associatedList = document.getElementById('associatedServicesList');
+                        const availableList = document.getElementById('availableServicesList');
 
-                        if (conceptosSeleccionados.length === 0 && serviciosSeleccionados.length === 0) {
-                            summaryDiv.style.display = 'none';
-                            return;
+                        // Verificar lista de asociados
+                        if (associatedList && associatedList.querySelectorAll('.service-item').length === 0) {
+                            if (!associatedList.querySelector('.empty-state')) {
+                                associatedList.innerHTML = '<div class="empty-state">No hay servicios asociados</div>';
+                            }
                         }
 
-                        summaryDiv.style.display = 'block';
+                        // Verificar lista de disponibles  
+                        if (availableList && availableList.querySelectorAll('.service-item').length === 0) {
+                            if (!availableList.querySelector('.empty-state')) {
+                                availableList.innerHTML = '<div class="empty-state">Todos los servicios están asociados</div>';
+                            }
+                        }
+                    }
 
-                        // Mostrar conceptos seleccionados
-                        if (conceptosSeleccionados.length > 0) {
-                            conceptosDiv.innerHTML = '<strong>Conceptos (' + conceptosSeleccionados.length + '):</strong> ' +
-                                conceptosSeleccionados.map(c => c.nombre).join(', ');
-                        } else {
-                            conceptosDiv.innerHTML = '<strong>Conceptos:</strong> Ninguno seleccionado';
+                    function associateAllServices() {
+                        const availableItems = document.querySelectorAll('.available-item[data-service-id]');
+                        availableItems.forEach(item => {
+                            const serviceId = item.getAttribute('data-service-id');
+                            const serviceName = item.getAttribute('data-service-name');
+                            moveServiceToAssociated(serviceId, serviceName);
+                        });
+                    }
+
+                    function dissociateAllServices() {
+                        const associatedItems = document.querySelectorAll('.associated-item[data-service-id]');
+                        associatedItems.forEach(item => {
+                            const serviceId = item.getAttribute('data-service-id');
+                            const serviceName = item.getAttribute('data-service-name');
+                            moveServiceToAvailable(serviceId, serviceName);
+                        });
+                    }
+
+                    function updateServiceCounters() {
+                        const associatedCount = document.querySelectorAll('.associated-item[data-service-id]').length;
+                        const availableCount = document.querySelectorAll('.available-item[data-service-id]').length;
+
+                        const associatedHeader = document.querySelector('.associated-header h4');
+                        const availableHeader = document.querySelector('.available-header h4');
+
+                        if (associatedHeader) {
+                            associatedHeader.innerHTML = '<i class="fas fa-check-circle"></i> Servicios Asociados (' + associatedCount + ')';
+                            associatedHeader.style.color = 'white';
                         }
 
-                        // Mostrar servicios seleccionados
-                        if (serviciosSeleccionados.length > 0) {
-                            serviciosDiv.innerHTML = '<strong>Servicios (' + serviciosSeleccionados.length + '):</strong> ' +
-                                serviciosSeleccionados.map(s => s.nombre).join(', ');
-                        } else {
-                            serviciosDiv.innerHTML = '<strong>Servicios:</strong> Ninguno seleccionado';
+                        if (availableHeader) {
+                            availableHeader.innerHTML = '<i class="fas fa-plus-circle"></i> Servicios Disponibles (' + availableCount + ')';
+                            availableHeader.style.color = 'white';
                         }
+
+                        console.log('Contadores de servicios actualizados - Asociados:', associatedCount, 'Disponibles:', availableCount);
                     }
 
                     // Funciones para búsqueda y paginación de productos
@@ -5209,7 +6239,7 @@
                         const productName = document.getElementById('newProductName').value.trim();
 
                         if (!productName) {
-                            showAlert('Por favor, ingrese el nombre del producto', 'warning');
+                            alert('Por favor, ingrese el nombre del producto');
                             document.getElementById('newProductName').focus();
                             return;
                         }
@@ -5253,7 +6283,7 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    showAlert('Producto "' + productName + '" creado exitosamente', 'success');
+                                    console.log('Producto "' + productName + '" creado exitosamente');
                                     cerrarModalCrearProducto();
 
                                     // Recargar la página para mostrar el nuevo producto
@@ -5261,12 +6291,12 @@
                                         window.location.reload();
                                     }, 1500);
                                 } else {
-                                    showAlert('Error al crear el producto: ' + (data.message || 'Error desconocido'), 'warning');
+                                    alert('Error al crear el producto: ' + (data.message || 'Error desconocido'));
                                 }
                             })
                             .catch(error => {
                                 console.error('Error:', error);
-                                showAlert('Error al crear el producto. Intente nuevamente.', 'warning');
+                                alert('Error al crear el producto. Intente nuevamente.');
                             })
                             .finally(() => {
                                 // Restaurar botón
@@ -5274,6 +6304,8 @@
                                 saveBtn.disabled = false;
                             });
                     }
+
+
 
                 </script>
             </body>

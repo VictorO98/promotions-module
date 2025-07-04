@@ -35,8 +35,6 @@ public class DatabaseConnection {
             Locale.setDefault(new Locale("es", "ES"));
             System.setProperty("user.language", "es");
             System.setProperty("user.region", "ES");
-            System.setProperty("oracle.jdbc.defaultNChar", "true");
-
             Properties env = loadEnv();
 
             String url = env.getProperty("DB_URL");
@@ -44,8 +42,7 @@ public class DatabaseConnection {
             Properties props = new Properties();
             props.setProperty("user", env.getProperty("DB_USERNAME"));
             props.setProperty("password", env.getProperty("DB_PASSWORD"));
-            props.setProperty("oracle.jdbc.defaultNChar", "true");
-            props.setProperty("NLS_LANG", "LATIN AMERICAN SPANISH_AMERICA.US7ASCII");
+            props.setProperty("NLS_LANG", "AMERICAN_AMERICA.US7ASCII");
 
             connection = DriverManager.getConnection(url, props);
             System.out.println("Connection established");

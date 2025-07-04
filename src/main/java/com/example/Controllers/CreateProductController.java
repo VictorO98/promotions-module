@@ -2,8 +2,10 @@ package com.example.Controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.CallableStatement;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -20,70 +22,119 @@ public class CreateProductController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        System.out.println("=== CONTROLADOR INICIADO ===");
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
-            // Obtener parámetros del request
             String descripcion = request.getParameter("descripcion");
-            String conceptos = request.getParameter("conceptos");
-            String servicios = request.getParameter("servicios");
+            System.out.println("Descripción recibida: [" + descripcion + "]");
 
-            // Debug: Imprimir parámetros recibidos
-            System.out.println("=== CREAR PRODUCTO DEBUG ===");
-            System.out.println("Descripcion recibida: [" + descripcion + "]");
-            System.out.println("Conceptos recibidos: [" + conceptos + "]");
-            System.out.println("Servicios recibidos: [" + servicios + "]");
-            System.out.println("Content-Type: " + request.getContentType());
-
-            // Validar parámetros obligatorios
             if (descripcion == null || descripcion.trim().isEmpty()) {
-                out.print("{\"success\": false, \"message\": \"La descripción del producto es obligatoria\"}");
+                System.out.println("ERROR: Descripción vacía");
+                out.print("{\"success\": false, \"message\": \"Descripción vacía\"}");
+                out.flush();
                 return;
             }
 
-            // Limpiar parámetros
             descripcion = descripcion.trim();
-            conceptos = (conceptos != null) ? conceptos.trim() : "";
-            servicios = (servicios != null) ? servicios.trim() : "";
 
-            // Obtener conexión a la base de datos
+            // Convertir a ASCII puro para Oracle 8i
+            try {
+                byte[] asciiBytes = descripcion.getBytes("US-ASCII");
+                descripcion = new String(asciiBytes, "US-ASCII");
+            } catch (Exception e) {
+                // Si no se puede convertir a ASCII, limpiar caracteres problemáticos
+                descripcion = descripcion.replaceAll("[^a-zA-Z0-9 ]", "");
+            }
+
+            System.out.println("Descripción limpia: [" + descripcion + "]");
+            System.out.println("Longitud descripción: " + descripcion.length());
+
+            if (descripcion.length() > 30) {
+                System.out.println("ERROR: Descripción muy larga");
+                out.print("{\"success\": false, \"message\": \"Descripción muy larga\"}");
+                out.flush();
+                return;
+            }
+
+            // Validar caracteres problemáticos para Oracle 8i
+            if (descripcion.matches(".*[áéíóúñüÁÉÍÓÚÑÜ].*")) {
+                System.out.println("ERROR: Descripción contiene caracteres especiales");
+                out.print("{\"success\": false, \"message\": \"Evite usar acentos o caracteres especiales\"}");
+                out.flush();
+                return;
+            }
+
+            System.out.println("Obteniendo conexión...");
             DatabaseConnection dbConnection = new DatabaseConnection();
             dbConnection.getConnection();
-            Connection connection = dbConnection.connection;
+            Connection conn = dbConnection.connection;
 
-            if (connection == null) {
-                out.print("{\"success\": false, \"message\": \"Error de conexión a la base de datos\"}");
+            if (conn == null) {
+                System.out.println("ERROR: Conexión nula");
+                out.print("{\"success\": false, \"message\": \"No hay conexión\"}");
+                out.flush();
                 return;
             }
 
-            // Llamar al procedimiento almacenado pr_crearProductoPromocion
-            CallableStatement stmt = connection.prepareCall("{call pr_crearProductoPromocion(?, ?, ?)}");
+            System.out.println("Conexión obtenida exitosamente");
 
-            // Establecer parámetros
-            stmt.setString(1, descripcion); // PV_i_descripcion
-            stmt.setString(2, conceptos); // PV_i_concepto
-            stmt.setString(3, servicios); // PV_i_servicios
+            // Primero obtener el siguiente ID para la secuencia
+            String getMaxIdSql = "SELECT NVL(MAX(TIPOSERCODI), 0) + 1 FROM CRM_TIPOSERVPROMO";
+            System.out.println("Obteniendo siguiente ID...");
+            PreparedStatement maxPs = conn.prepareStatement(getMaxIdSql);
+            ResultSet rs = maxPs.executeQuery();
+            rs.next();
+            int nextId = rs.getInt(1);
+            rs.close();
+            maxPs.close();
+            System.out.println("Siguiente ID será: " + nextId);
 
-            // Ejecutar el procedimiento
-            boolean hasResultSet = stmt.execute();
+            String sql = "INSERT INTO CRM_TIPOSERVPROMO (TIPOSERCODI, PARADESC) VALUES (?, ?)";
+            System.out.println("SQL: " + sql);
 
-            // Cerrar recursos
-            stmt.close();
-            connection.close();
+            System.out.println("Creando PreparedStatement...");
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-            // Respuesta exitosa
-            out.print("{\"success\": true, \"message\": \"Producto creado exitosamente\"}");
+            System.out.println("Setting parameters...");
+            ps.setInt(1, nextId);
+            ps.setString(2, descripcion);
 
-        } catch (SQLException e) {
-            System.err.println("Error SQL al crear producto: " + e.getMessage());
-            e.printStackTrace();
-            out.print("{\"success\": false, \"message\": \"Error en la base de datos: " + e.getMessage() + "\"}");
+            System.out.println("Ejecutando UPDATE...");
+            int rows = ps.executeUpdate();
+
+            // Si falla con parámetros, intentar sin parámetros (solo para debug)
+            if (rows == 0) {
+                System.out.println("Intentando INSERT sin parámetros...");
+                ps.close();
+                String sqlDirect = "INSERT INTO CRM_TIPOSERVPROMO (TIPOSERCODI, PARADESC) VALUES (" + nextId + ", '"
+                        + descripcion + "')";
+                ps = conn.prepareStatement(sqlDirect);
+                rows = ps.executeUpdate();
+                System.out.println("INSERT directo ejecutado. Filas: " + rows);
+            }
+
+            System.out.println("Filas afectadas: " + rows);
+
+            ps.close();
+            conn.close();
+
+            System.out.println("Enviando respuesta exitosa...");
+            out.print("{\"success\": true, \"message\": \"Producto creado\"}");
+            out.flush();
+
+            System.out.println("=== CONTROLADOR TERMINADO EXITOSAMENTE ===");
+
         } catch (Exception e) {
-            System.err.println("Error general al crear producto: " + e.getMessage());
+            System.err.println("ERROR GENERAL: " + e.getMessage());
             e.printStackTrace();
-            out.print("{\"success\": false, \"message\": \"Error interno del servidor\"}");
+            out.print("{\"success\": false, \"message\": \"Error: " + e.getMessage() + "\"}");
+            out.flush();
         } finally {
             out.close();
         }
@@ -92,9 +143,8 @@ public class CreateProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.print("{\"success\": false, \"message\": \"Método no permitido. Use POST.\"}");
+        out.print("{\"success\": false, \"message\": \"Método no permitido\"}");
         out.close();
     }
 }
