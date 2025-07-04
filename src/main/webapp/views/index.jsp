@@ -1909,6 +1909,14 @@
                         font-size: 1.1rem;
                     }
 
+                    .highlight-placa {
+                        color: var(--primary-color);
+                        background-color: rgba(52, 152, 219, 0.1);
+                        padding: 0.25rem 0.5rem;
+                        border-radius: 4px;
+                        border: 1px solid rgba(52, 152, 219, 0.3);
+                    }
+
                     .assigned-actions {
                         display: flex;
                         justify-content: center;
@@ -2793,19 +2801,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="tipoCliente" class="form-label">
-                                            <i class="fas fa-user"></i>
-                                            Tipo de Cliente
-                                        </label>
-                                        <select id="tipoCliente" name="tipoCliente" class="form-input">
-                                            <option value="">Seleccione tipo de cliente</option>
-                                            <option value="residencial">Residencial</option>
-                                            <option value="comercial">Comercial</option>
-                                            <option value="empresarial">Empresarial</option>
-                                            <option value="corporativo">Corporativo</option>
-                                        </select>
-                                    </div>
+
                                 </div>
 
                                 <!-- Service Information Display -->
@@ -3766,18 +3762,31 @@
                         // Show loading state
                         showServiceLoading(true);
 
-                        // Simulate API call - Replace with actual service call
-                        setTimeout(() => {
-                            const mockServiceData = {
-                                cliente: 'Juan Pérez García',
-                                direccion: 'Calle 123 #45-67, Bogotá',
-                                estado: 'Activo',
-                                plan: 'Internet 100MB + TV Digital'
-                            };
-
-                            displayServiceInfo(mockServiceData);
-                            loadAvailablePromotions(numeroServicio);
-                        }, 1000);
+                        // Call the SearchService endpoint
+                        fetch('SearchService', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'numeroServicio=' + encodeURIComponent(numeroServicio)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                showServiceLoading(false);
+                                if (data.success) {
+                                    displayServiceInfo(data.data);
+                                    loadAvailablePromotions(numeroServicio);
+                                } else {
+                                    alert('Error: ' + data.message);
+                                    document.getElementById('serviceInfo').style.display = 'none';
+                                }
+                            })
+                            .catch(error => {
+                                showServiceLoading(false);
+                                console.error('Error:', error);
+                                alert('Error al buscar el servicio. Por favor, intente nuevamente.');
+                                document.getElementById('serviceInfo').style.display = 'none';
+                            });
                     }
 
                     function showServiceLoading(show) {
@@ -3796,26 +3805,36 @@
                     function displayServiceInfo(data) {
                         const serviceInfo = document.getElementById('serviceInfo');
 
-                        var statusClass = data.estado === 'Activo' ? 'status-active' : 'status-inactive';
-
                         serviceInfo.innerHTML = '<div class="info-card">' +
                             '<h4><i class="fas fa-info-circle"></i> Información del Servicio</h4>' +
                             '<div class="info-grid">' +
                             '<div class="info-item">' +
-                            '<label>Cliente:</label>' +
-                            '<span>' + data.cliente + '</span>' +
+                            '<label>Placa:</label>' +
+                            '<span class="highlight-placa"><strong>' + (data.placa || '-') + '</strong></span>' +
                             '</div>' +
                             '<div class="info-item">' +
-                            '<label>Dirección:</label>' +
-                            '<span>' + data.direccion + '</span>' +
+                            '<label>Suscripción:</label>' +
+                            '<span>' + (data.suscripcion || '-') + '</span>' +
                             '</div>' +
                             '<div class="info-item">' +
-                            '<label>Estado:</label>' +
-                            '<span class="status-badge ' + statusClass + '">' + data.estado + '</span>' +
+                            '<label>Departamento:</label>' +
+                            '<span>' + (data.departamento || '-') + '</span>' +
+                            '</div>' +
+                            '<div class="info-item">' +
+                            '<label>Municipio:</label>' +
+                            '<span>' + (data.municipio || '-') + '</span>' +
+                            '</div>' +
+                            '<div class="info-item">' +
+                            '<label>Categoría:</label>' +
+                            '<span>' + (data.categoria || '-') + '</span>' +
+                            '</div>' +
+                            '<div class="info-item">' +
+                            '<label>Subcategoría:</label>' +
+                            '<span>' + (data.subcategoria || '-') + '</span>' +
                             '</div>' +
                             '<div class="info-item">' +
                             '<label>Plan:</label>' +
-                            '<span>' + data.plan + '</span>' +
+                            '<span>' + (data.plan || '-') + '</span>' +
                             '</div>' +
                             '</div>' +
                             '</div>';
@@ -3926,7 +3945,7 @@
                         event.preventDefault();
 
                         const numeroServicio = document.getElementById('numeroServicio').value.trim();
-                        const tipoCliente = document.getElementById('tipoCliente').value;
+                        const tipoCliente = 'I'; // Valor por defecto: 'I' para Individual
 
                         if (numeroServicio === '') {
                             alert('Por favor, ingrese un número de servicio.');
