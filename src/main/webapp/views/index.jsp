@@ -4133,8 +4133,63 @@
                     }
 
                     function associatePromotion(promotionId) {
-                        // Por ahora solo mostrar un mensaje
-                        alert('Asociar promoción ID: ' + promotionId + ' (funcionalidad pendiente)');
+                        // Obtener el número de servicio del campo de entrada
+                        const numeroServicio = document.getElementById('numeroServicio').value.trim();
+
+                        if (!numeroServicio) {
+                            alert('Error: No hay número de servicio disponible. Por favor, busque un servicio primero.');
+                            return;
+                        }
+
+                        // Confirmar la acción con el usuario
+                        if (!confirm('¿Está seguro que desea asociar la promoción ID ' + promotionId + ' al servicio ' + numeroServicio + '?')) {
+                            return;
+                        }
+
+                        // Cambiar el texto del botón a "Procesando..."
+                        const button = document.querySelector('[onclick="associatePromotion(' + promotionId + ')"]');
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+                        button.disabled = true;
+
+                        // Llamar al endpoint para asociar la promoción directamente
+                        const params = new URLSearchParams({
+                            action: 'associatePromotionDirect',
+                            promotionId: promotionId,
+                            numeroServicio: numeroServicio
+                        });
+
+                        fetch('LoadProductAssociations?' + params.toString(), {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error en la respuesta del servidor');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                // Restaurar el botón
+                                button.innerHTML = originalText;
+                                button.disabled = false;
+
+                                if (data.success) {
+                                    alert('¡Éxito! ' + data.message);
+                                    // Opcional: Recargar las promociones para reflejar cambios
+                                    searchService();
+                                } else {
+                                    alert('Error: ' + (data.error || 'Error desconocido'));
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error asociando promoción:', error);
+                                button.innerHTML = originalText;
+                                button.disabled = false;
+                                alert('Error al asociar promoción: ' + error.message);
+                            });
                     }
 
                     let selectedPromotionId = null;

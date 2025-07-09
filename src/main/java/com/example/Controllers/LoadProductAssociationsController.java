@@ -32,6 +32,8 @@ public class LoadProductAssociationsController extends HttpServlet {
 
         if ("checkExistingPromotions".equals(action)) {
             checkExistingPromotions(request, response);
+        } else if ("associatePromotionDirect".equals(action)) {
+            associatePromotionDirect(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida");
         }
@@ -389,6 +391,138 @@ public class LoadProductAssociationsController extends HttpServlet {
 
         json.append("]");
         return json.toString();
+    }
+
+    /**
+     * Método para asociar promoción directamente desde el botón verde
+     * Llama al procedimiento PKG_PROMOCIONES.pr_asignarPromocion
+     */
+    private void associatePromotionDirect(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String promotionIdStr = request.getParameter("promotionId");
+        String numeroServicio = request.getParameter("numeroServicio");
+
+        if (promotionIdStr == null || numeroServicio == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter()
+                    .write("{\"error\": \"Parámetros requeridos faltantes (promotionId, numeroServicio)\"}");
+            return;
+        }
+
+        Long promotionId = Long.parseLong(promotionIdStr);
+
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        Connection connection = null;
+
+        try {
+            databaseConnection.getConnection();
+            connection = databaseConnection.connection;
+
+            // 1. Buscar datos del servicio
+            ServicioData servicioData = buscarDatosServicio(connection, numeroServicio);
+            if (servicioData == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter()
+                        .write("{\"error\": \"No se encontró información para el servicio: " + numeroServicio + "\"}");
+                return;
+            }
+
+            // 2. Llamar al procedimiento PKG_PROMOCIONES.pr_asignarPromocion
+            llamarProcedimientoAsignarPromocion(connection, promotionId, servicioData);
+
+            // 3. Respuesta exitosa
+            String jsonResponse = "{\"success\": true, \"message\": \"Promoción " + promotionId
+                    + " asociada exitosamente a la placa " + servicioData.placa + "\"}";
+            response.getWriter().write(jsonResponse);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error de base de datos: " + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error interno: " + e.getMessage() + "\"}");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Busca los datos del servicio necesarios para el procedimiento
+     */
+    private ServicioData buscarDatosServicio(Connection connection, String numeroServicio) throws SQLException {
+        String sql = "SELECT PLACA, COD_DEPARTAMENTO, COD_MUNICIPIO, COD_CATEGORIA " +
+                "FROM vw_preasignacion_placa WHERE PLACA = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, numeroServicio);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    ServicioData data = new ServicioData();
+                    data.placa = rs.getString("PLACA");
+                    data.codDepartamento = rs.getLong("COD_DEPARTAMENTO");
+                    data.codMunicipio = rs.getLong("COD_MUNICIPIO");
+                    data.codCategoria = rs.getLong("COD_CATEGORIA");
+                    return data;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Llama al procedimiento PKG_PROMOCIONES.pr_asignarPromocion con los parámetros
+     * requeridos
+     */
+    private void llamarProcedimientoAsignarPromocion(Connection connection, Long promotionId, ServicioData servicio)
+            throws SQLException {
+        String sql = "{CALL PKG_PROMOCIONES.pr_asignarPromocion(?, ?, ?, ?, ?, ?, ?)}";
+
+        try (java.sql.CallableStatement cstmt = connection.prepareCall(sql)) {
+            cstmt.setLong(1, promotionId); // 1er parámetro: ID de la promoción (TICOCODI)
+            cstmt.setString(2, servicio.placa); // 2do parámetro: Número de la placa
+            cstmt.setLong(3, servicio.codDepartamento); // 3er parámetro: ID del departamento
+            cstmt.setLong(4, servicio.codMunicipio); // 4to parámetro: ID de la localidad
+            cstmt.setLong(5, servicio.codCategoria); // 5to parámetro: ID de la categoría
+            cstmt.setInt(6, -1); // 6to parámetro: -1 (valor fijo)
+            cstmt.setString(7, ""); // 7mo parámetro: string vacío
+
+            System.out.println("=== EJECUTANDO PROCEDIMIENTO PKG_PROMOCIONES.pr_asignarPromocion ===");
+            System.out.println("Parámetros:");
+            System.out.println("  1. promotionId: " + promotionId);
+            System.out.println("  2. placa: " + servicio.placa);
+            System.out.println("  3. codDepartamento: " + servicio.codDepartamento);
+            System.out.println("  4. codMunicipio: " + servicio.codMunicipio);
+            System.out.println("  5. codCategoria: " + servicio.codCategoria);
+            System.out.println("  6. valor fijo: -1");
+            System.out.println("  7. string vacío: \"\"");
+
+            cstmt.execute();
+
+            System.out.println("=== PROCEDIMIENTO EJECUTADO EXITOSAMENTE ===");
+        }
+    }
+
+    /**
+     * Clase interna para almacenar datos del servicio
+     */
+    private static class ServicioData {
+        String placa;
+        Long codDepartamento;
+        Long codMunicipio;
+        Long codCategoria;
     }
 
     private String escapeJson(String str) {
