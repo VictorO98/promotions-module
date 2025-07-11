@@ -333,6 +333,79 @@
                         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
                     }
 
+                    /* Plan Search Container */
+                    .plan-search-container {
+                        position: relative;
+                        width: 100%;
+                    }
+
+                    .plan-search-input {
+                        width: 100%;
+                        padding-right: 2.5rem;
+                    }
+
+                    .plan-search-results {
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        right: 0;
+                        background: white;
+                        border: 2px solid var(--border-color);
+                        border-top: none;
+                        border-radius: 0 0 8px 8px;
+                        max-height: 250px;
+                        overflow-y: auto;
+                        z-index: 1000;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .plan-search-item {
+                        padding: 0.75rem 1rem;
+                        border-bottom: 1px solid var(--border-color);
+                        cursor: pointer;
+                        transition: background-color 0.2s;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.25rem;
+                    }
+
+                    .plan-search-item:hover {
+                        background-color: #f8fafc;
+                    }
+
+                    .plan-search-item:last-child {
+                        border-bottom: none;
+                    }
+
+                    .plan-search-item.selected {
+                        background-color: var(--primary-color);
+                        color: white;
+                    }
+
+                    .plan-codigo {
+                        font-size: 0.875rem;
+                        font-weight: 600;
+                        color: var(--primary-color);
+                    }
+
+                    .plan-descripcion {
+                        font-size: 0.8rem;
+                        color: var(--text-secondary);
+                    }
+
+                    .plan-search-item.selected .plan-codigo,
+                    .plan-search-item.selected .plan-descripcion {
+                        color: white;
+                    }
+
+                    .loading-message,
+                    .no-results-message {
+                        padding: 1rem;
+                        text-align: center;
+                        color: var(--text-secondary);
+                        font-style: italic;
+                    }
+
                     .date-range {
                         display: flex;
                         align-items: center;
@@ -443,6 +516,21 @@
                         background: var(--primary-dark);
                         transform: translateY(-1px);
                         box-shadow: var(--shadow-md);
+                    }
+
+                    .btn-primary:disabled {
+                        background: #94a3b8;
+                        color: #64748b;
+                        cursor: not-allowed;
+                        transform: none;
+                        box-shadow: none;
+                        opacity: 0.7;
+                    }
+
+                    .btn-primary:disabled:hover {
+                        background: #94a3b8;
+                        transform: none;
+                        box-shadow: none;
                     }
 
                     .btn-secondary {
@@ -3039,9 +3127,21 @@
                                                 <i class="fas fa-store"></i>
                                                 Mercado
                                             </label>
-                                            <select id="mercado" name="mercado" class="form-input">
+                                            <select id="mercado" name="mercado" class="form-input"
+                                                onchange="loadSubcategorias()">
                                                 <option value="">Selección Mercado</option>
                                                 <!-- Las categorías de mercado se cargan dinámicamente desde la BD -->
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="subcategoria" class="form-label">
+                                                <i class="fas fa-list"></i>
+                                                Subcategoría
+                                            </label>
+                                            <select id="subcategoria" name="subcategoria" class="form-input">
+                                                <option value="">Selección Subcategoría</option>
+                                                <!-- Las subcategorías se cargan dinámicamente según la categoría seleccionada -->
                                             </select>
                                         </div>
 
@@ -3050,13 +3150,18 @@
                                                 <i class="fas fa-layer-group"></i>
                                                 Tipo Plan
                                             </label>
-                                            <select id="tipoPlan" name="tipoPlan" class="form-input">
-                                                <option value="">Selección Tipo Plan</option>
-                                                <option value="INTERNET">INTERNET</option>
-                                                <option value="TV">TELEVISIÓN</option>
-                                                <option value="COMBO">COMBO</option>
-                                                <option value="TELEFONIA">TELEFONÍA</option>
-                                            </select>
+                                            <div class="plan-search-container">
+                                                <input type="text" id="tipoPlanSearch"
+                                                    class="form-input plan-search-input"
+                                                    placeholder="Buscar plan por descripción..."
+                                                    oninput="buscarPlanes(this.value)" onfocus="mostrarListaPlanes()"
+                                                    autocomplete="off">
+                                                <input type="hidden" id="tipoPlan" name="tipoPlan" value="">
+                                                <div id="planSearchResults" class="plan-search-results"
+                                                    style="display: none;">
+                                                    <div class="loading-message">Cargando planes...</div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
@@ -3076,10 +3181,7 @@
                                             <select id="periodicidad" name="periodicidad" class="form-input">
                                                 <option value="">Seleccione Periodicidad</option>
                                                 <option value="MENSUAL">Mensual</option>
-                                                <option value="BIMENSUAL">Bimensual</option>
-                                                <option value="TRIMESTRAL">Trimestral</option>
-                                                <option value="SEMESTRAL">Semestral</option>
-                                                <option value="ANUAL">Anual</option>
+                                                <option value="DIARIA">Diaria</option>
                                             </select>
                                         </div>
 
@@ -4521,6 +4623,240 @@
                             });
                     }
 
+                    /**
+                     * Carga las subcategorías filtradas por la categoría seleccionada
+                     */
+                    function loadSubcategorias() {
+                        const mercadoSelect = document.getElementById('mercado');
+                        const subcategoriaSelect = document.getElementById('subcategoria');
+                        const categoriaId = mercadoSelect.value;
+
+                        // Limpiar el select de subcategorías
+                        subcategoriaSelect.innerHTML = '<option value="">Selección Subcategoría</option>';
+
+                        // Si no hay categoría seleccionada, deshabilitar subcategorías
+                        if (categoriaId === '') {
+                            subcategoriaSelect.disabled = true;
+                            return;
+                        }
+
+                        // Mostrar loading en el select
+                        subcategoriaSelect.innerHTML = '<option value="">Cargando subcategorías...</option>';
+                        subcategoriaSelect.disabled = true;
+
+                        // Realizar llamada AJAX para cargar subcategorías de la categoría seleccionada
+                        fetch('<%= request.getContextPath() %>/LoadSubcategorias?categoriaId=' + encodeURIComponent(categoriaId))
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al cargar subcategorías: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Limpiar el select
+                                    subcategoriaSelect.innerHTML = '<option value="">Selección Subcategoría</option>';
+
+                                    // Agregar las subcategorías
+                                    data.subcategorias.forEach(subcategoria => {
+                                        const option = document.createElement('option');
+                                        option.value = subcategoria.codigo;
+                                        option.textContent = subcategoria.descripcion;
+                                        // Agregar información adicional como data attributes si es necesario
+                                        option.setAttribute('data-categoria', subcategoria.categoria);
+                                        subcategoriaSelect.appendChild(option);
+                                    });
+
+                                    subcategoriaSelect.disabled = false;
+                                    console.log('Subcategorías cargadas exitosamente para categoría ' + categoriaId + ':', data.subcategorias.length);
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al cargar subcategorías');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error cargando subcategorías:', error);
+                                subcategoriaSelect.innerHTML = '<option value="">Error al cargar subcategorías</option>';
+                                subcategoriaSelect.disabled = false;
+
+                                // Mostrar mensaje de error al usuario
+                                alert('Error al cargar subcategorías: ' + error.message);
+                            });
+                    }
+
+                    // Variables globales para el buscador de planes
+                    let planesData = [];
+                    let searchTimeout = null;
+                    let selectedPlanIndex = -1;
+
+                    /**
+                     * Busca planes en tiempo real mientras el usuario escribe
+                     */
+                    function buscarPlanes(busqueda) {
+                        // Limpiar timeout anterior
+                        if (searchTimeout) {
+                            clearTimeout(searchTimeout);
+                        }
+
+                        // Establecer nuevo timeout para evitar demasiadas llamadas
+                        searchTimeout = setTimeout(() => {
+                            realizarBusquedaPlanes(busqueda);
+                        }, 300);
+                    }
+
+                    /**
+                     * Realiza la búsqueda de planes en el servidor
+                     */
+                    function realizarBusquedaPlanes(busqueda) {
+                        const resultsContainer = document.getElementById('planSearchResults');
+
+                        // Mostrar el contenedor de resultados
+                        resultsContainer.style.display = 'block';
+                        resultsContainer.innerHTML = '<div class="loading-message">Buscando planes...</div>';
+
+                        // Construir URL con parámetro de búsqueda
+                        let url = '<%= request.getContextPath() %>/LoadPlanes';
+                        if (busqueda && busqueda.trim().length > 0) {
+                            url += '?busqueda=' + encodeURIComponent(busqueda.trim());
+                        }
+
+                        fetch(url)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al buscar planes: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    planesData = data.planes;
+                                    mostrarResultadosPlanes(data.planes);
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al buscar planes');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error buscando planes:', error);
+                                resultsContainer.innerHTML = '<div class="no-results-message">Error al buscar planes: ' + error.message + '</div>';
+                            });
+                    }
+
+                    /**
+                     * Muestra los resultados de la búsqueda de planes
+                     */
+                    function mostrarResultadosPlanes(planes) {
+                        const resultsContainer = document.getElementById('planSearchResults');
+                        selectedPlanIndex = -1;
+
+                        if (planes.length === 0) {
+                            resultsContainer.innerHTML = '<div class="no-results-message">No se encontraron planes</div>';
+                            return;
+                        }
+
+                        let html = '';
+                        planes.forEach((plan, index) => {
+                            html += '<div class="plan-search-item" data-index="' + index + '" onclick="seleccionarPlan(' + index + ')">' +
+                                '<div class="plan-codigo">' + plan.codigo + '</div>' +
+                                '<div class="plan-descripcion">' + plan.descripcion + '</div>' +
+                                '</div>';
+                        });
+
+                        resultsContainer.innerHTML = html;
+                    }
+
+                    /**
+                     * Selecciona un plan de la lista
+                     */
+                    function seleccionarPlan(index) {
+                        if (index >= 0 && index < planesData.length) {
+                            const plan = planesData[index];
+
+                            // Establecer valores en los campos
+                            document.getElementById('tipoPlanSearch').value = plan.descripcion;
+                            document.getElementById('tipoPlan').value = plan.codigo;
+
+                            // Ocultar resultados
+                            document.getElementById('planSearchResults').style.display = 'none';
+
+                            console.log('Plan seleccionado:', plan);
+                        }
+                    }
+
+                    /**
+                     * Muestra la lista de planes cuando se hace foco en el input
+                     */
+                    function mostrarListaPlanes() {
+                        const searchInput = document.getElementById('tipoPlanSearch');
+                        const busqueda = searchInput.value;
+
+                        // Si no hay búsqueda, cargar todos los planes
+                        if (!busqueda || busqueda.trim().length === 0) {
+                            realizarBusquedaPlanes('');
+                        } else {
+                            // Si ya hay una búsqueda, mostrar los resultados existentes
+                            const resultsContainer = document.getElementById('planSearchResults');
+                            if (resultsContainer.innerHTML.trim() !== '') {
+                                resultsContainer.style.display = 'block';
+                            }
+                        }
+                    }
+
+                    // Agregar event listeners para navegación con teclado y clic fuera
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Cargar tipos de servicio al inicializar la página
+                        loadTiposServicio().catch(error => {
+                            console.error('Error al cargar tipos de servicio iniciales:', error);
+                        });
+
+                        // Actualizar el estado del botón "Agregar Detalle" al cargar la página
+                        updateAddDetailButtonState();
+
+                        const searchInput = document.getElementById('tipoPlanSearch');
+                        const resultsContainer = document.getElementById('planSearchResults');
+
+                        // Navegación con teclado
+                        searchInput.addEventListener('keydown', function (e) {
+                            const items = resultsContainer.querySelectorAll('.plan-search-item');
+
+                            if (e.key === 'ArrowDown') {
+                                e.preventDefault();
+                                selectedPlanIndex = Math.min(selectedPlanIndex + 1, items.length - 1);
+                                actualizarSeleccionVisual(items);
+                            } else if (e.key === 'ArrowUp') {
+                                e.preventDefault();
+                                selectedPlanIndex = Math.max(selectedPlanIndex - 1, -1);
+                                actualizarSeleccionVisual(items);
+                            } else if (e.key === 'Enter') {
+                                e.preventDefault();
+                                if (selectedPlanIndex >= 0) {
+                                    seleccionarPlan(selectedPlanIndex);
+                                }
+                            } else if (e.key === 'Escape') {
+                                resultsContainer.style.display = 'none';
+                                selectedPlanIndex = -1;
+                            }
+                        });
+
+                        // Ocultar resultados al hacer clic fuera
+                        document.addEventListener('click', function (e) {
+                            if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                                resultsContainer.style.display = 'none';
+                            }
+                        });
+                    });
+
+                    /**
+                     * Actualiza la selección visual en la lista de planes
+                     */
+                    function actualizarSeleccionVisual(items) {
+                        items.forEach((item, index) => {
+                            if (index === selectedPlanIndex) {
+                                item.classList.add('selected');
+                            } else {
+                                item.classList.remove('selected');
+                            }
+                        });
+                    }
+
                     function loadLocalidades() {
                         const departamento = document.getElementById('departamento').value;
                         const localidadSelect = document.getElementById('localidad');
@@ -4577,14 +4913,82 @@
                     }
 
                     let detailRowCounter = 0;
+                    let tiposServicioData = [];
+
+                    /**
+                     * Carga los tipos de servicio desde la base de datos
+                     */
+                    function loadTiposServicio() {
+                        return fetch('<%= request.getContextPath() %>/LoadTiposServicio')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Error al cargar tipos de servicio: ' + response.statusText);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    tiposServicioData = data.tiposServicio;
+                                    console.log('Tipos de servicio cargados:', tiposServicioData.length);
+                                    return data.tiposServicio;
+                                } else {
+                                    throw new Error(data.error || 'Error desconocido al cargar tipos de servicio');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error cargando tipos de servicio:', error);
+                                throw error;
+                            });
+                    }
+
+                    /**
+                     * Genera las opciones HTML para el select de tipo producto
+                     */
+                    function generarOpcionesTipoProducto() {
+                        let opciones = '<option value="">Seleccione</option>';
+                        tiposServicioData.forEach(tipo => {
+                            opciones += '<option value="' + tipo.codigo + '">' + tipo.descripcion + '</option>';
+                        });
+                        return opciones;
+                    }
+
+                    /**
+                     * Actualiza el estado del botón "Agregar Detalle" según la cantidad de filas existentes
+                     */
+                    function updateAddDetailButtonState() {
+                        const tbody = document.getElementById('promotionDetailsBody');
+                        const existingRows = tbody.querySelectorAll('tr');
+                        const addButton = document.querySelector('button[onclick="addPromotionDetail()"]');
+
+                        if (addButton) {
+                            if (existingRows.length > 0) {
+                                addButton.disabled = true;
+                                addButton.innerHTML = '<i class="fas fa-check"></i> Detalle Agregado';
+                                addButton.title = 'Solo se permite un detalle por promoción';
+                            } else {
+                                addButton.disabled = false;
+                                addButton.innerHTML = '<i class="fas fa-plus"></i> Agregar Detalle';
+                                addButton.title = 'Agregar detalle de promoción';
+                            }
+                        }
+                    }
 
                     function addPromotionDetail() {
-                        detailRowCounter++;
+                        // Verificar si ya existe un detalle
                         const tbody = document.getElementById('promotionDetailsBody');
+                        const existingRows = tbody.querySelectorAll('tr');
+
+                        if (existingRows.length > 0) {
+                            alert('Solo se permite agregar un detalle de promoción. Si necesita modificar el detalle existente, puede editarlo o eliminarlo.');
+                            return;
+                        }
+
+                        detailRowCounter++;
 
                         const row = document.createElement('tr');
                         row.id = 'detail-row-' + detailRowCounter;
 
+                        // Crear la fila con el select de tipo producto inicialmente vacío
                         row.innerHTML = '<td>' +
                             '<input type="date" class="details-input" name="fechaInicio_' + detailRowCounter + '">' +
                             '</td>' +
@@ -4592,7 +4996,7 @@
                             '<input type="date" class="details-input" name="fechaFinalizacion_' + detailRowCounter + '">' +
                             '</td>' +
                             '<td>' +
-                            '<input type="number" class="details-input" name="tiempoAplicacion_' + detailRowCounter + '" placeholder="Días" min="1">' +
+                            '<input type="number" class="details-input" name="tiempoAplicacion_' + detailRowCounter + '" placeholder="Meses" min="1">' +
                             '</td>' +
                             '<td>' +
                             '<input type="number" class="details-input" name="porcentajeDesc_' + detailRowCounter + '" placeholder="%" min="0" max="100" step="0.01">' +
@@ -4602,11 +5006,7 @@
                             '</td>' +
                             '<td>' +
                             '<select class="details-select" name="tipoProducto_' + detailRowCounter + '">' +
-                            '<option value="">Seleccione</option>' +
-                            '<option value="INTERNET">Internet</option>' +
-                            '<option value="TV">Televisión</option>' +
-                            '<option value="TELEFONIA">Telefonía</option>' +
-                            '<option value="COMBO">Combo</option>' +
+                            '<option value="">Cargando tipos de producto...</option>' +
                             '</select>' +
                             '</td>' +
                             '<td class="text-center">' +
@@ -4633,6 +5033,28 @@
                             '</td>';
 
                         tbody.appendChild(row);
+
+                        // Cargar tipos de servicio y llenar el select
+                        const currentRowCounter = detailRowCounter; // Capturar el valor actual
+                        const tipoProductoSelect = row.querySelector('select[name="tipoProducto_' + currentRowCounter + '"]');
+
+                        // Si ya tenemos los datos cargados, usarlos directamente
+                        if (tiposServicioData.length > 0) {
+                            tipoProductoSelect.innerHTML = generarOpcionesTipoProducto();
+                        } else {
+                            // Cargar los datos por primera vez
+                            loadTiposServicio()
+                                .then(() => {
+                                    tipoProductoSelect.innerHTML = generarOpcionesTipoProducto();
+                                })
+                                .catch(error => {
+                                    tipoProductoSelect.innerHTML = '<option value="">Error al cargar tipos de producto</option>';
+                                    console.error('Error al cargar tipos de servicio para la fila:', error);
+                                });
+                        }
+
+                        // Actualizar el estado del botón "Agregar Detalle"
+                        updateAddDetailButtonState();
                     }
 
                     function editDetailRow(rowId) {
@@ -4661,6 +5083,9 @@
                         if (confirm('¿Está seguro que desea eliminar este detalle de promoción?')) {
                             const row = document.getElementById('detail-row-' + rowId);
                             row.remove();
+
+                            // Actualizar el estado del botón "Agregar Detalle"
+                            updateAddDetailButtonState();
                         }
                     }
 
@@ -4710,6 +5135,10 @@
                             document.querySelector('.promotion-management-form').reset();
                             document.getElementById('promotionDetailsBody').innerHTML = '';
                             detailRowCounter = 0;
+
+                            // Actualizar el estado del botón "Agregar Detalle"
+                            updateAddDetailButtonState();
+
                             console.log('Formulario limpiado correctamente');
                         }
                     }
