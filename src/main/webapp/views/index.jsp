@@ -2890,7 +2890,7 @@
                                                         <th><i class="fas fa-tag"></i> Nombre Promoción</th>
                                                         <th><i class="fas fa-map"></i> Departamento</th>
                                                         <th><i class="fas fa-map-marker-alt"></i> Localidad</th>
-                                                        <th><i class="fas fa-store"></i> Mercado</th>
+                                                        <th><i class="fas fa-tags"></i> Categoría</th>
                                                         <th><i class="fas fa-layer-group"></i> Estrato</th>
                                                         <th><i class="fas fa-cubes"></i> Tipo Plan</th>
                                                         <th><i class="fas fa-box"></i> Tipo Producto</th>
@@ -3124,13 +3124,13 @@
 
                                         <div class="form-group">
                                             <label for="mercado" class="form-label">
-                                                <i class="fas fa-store"></i>
-                                                Mercado
+                                                <i class="fas fa-tags"></i>
+                                                Categoría
                                             </label>
                                             <select id="mercado" name="mercado" class="form-input"
                                                 onchange="loadSubcategorias()">
-                                                <option value="">Selección Mercado</option>
-                                                <!-- Las categorías de mercado se cargan dinámicamente desde la BD -->
+                                                <option value="">Selección Categoría</option>
+                                                <!-- Las categorías se cargan dinámicamente desde la BD -->
                                             </select>
                                         </div>
 
@@ -4186,7 +4186,7 @@
                                 '<span>' + (promo.locanomb || '-') + '</span>' +
                                 '</div>' +
                                 '<div class="promotion-detail">' +
-                                '<label>Mercado:</label>' +
+                                '<label>Categoría:</label>' +
                                 '<span>' + (promo.catedesc || '-') + '</span>' +
                                 '</div>' +
                                 '<div class="promotion-detail">' +
@@ -4575,7 +4575,7 @@
                     }
 
                     /**
-                     * Carga las categorías de mercado desde la base de datos
+                     * Carga las categorías desde la base de datos
                      */
                     function loadCategorias() {
                         const mercadoSelect = document.getElementById('mercado');
@@ -4595,13 +4595,13 @@
                             .then(data => {
                                 if (data.success) {
                                     // Limpiar el select
-                                    mercadoSelect.innerHTML = '<option value="">Selección Mercado</option>';
+                                    mercadoSelect.innerHTML = '<option value="">Selección Categoría</option>';
 
-                                    // Agregar las categorías
+                                    // Agregar las categorías con formato "ID - Descripción"
                                     data.categorias.forEach(categoria => {
                                         const option = document.createElement('option');
                                         option.value = categoria.codigo;
-                                        option.textContent = categoria.descripcion;
+                                        option.textContent = categoria.codigo + ' - ' + categoria.descripcion;
                                         // Agregar información adicional como data attributes si es necesario
                                         option.setAttribute('data-evalco', categoria.evalco);
                                         mercadoSelect.appendChild(option);
