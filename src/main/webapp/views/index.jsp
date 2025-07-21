@@ -79,6 +79,12 @@
                         border-radius: 8px;
                     }
 
+                    .header-right {
+                        display: flex;
+                        align-items: center;
+                        gap: 2rem;
+                    }
+
                     .nav-menu {
                         display: flex;
                         gap: 0.5rem;
@@ -88,6 +94,45 @@
 
                     .nav-item {
                         position: relative;
+                    }
+
+                    .user-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                        color: white;
+                        font-size: 0.875rem;
+                    }
+
+                    .user-avatar {
+                        width: 32px;
+                        height: 32px;
+                        background: rgba(255, 255, 255, 0.2);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: 600;
+                    }
+
+                    .logout-btn {
+                        background: rgba(255, 255, 255, 0.1);
+                        color: white;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        transition: var(--transition);
+                        font-size: 0.875rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .logout-btn:hover {
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        text-decoration: none;
                     }
 
                     .nav-link {
@@ -2773,6 +2818,54 @@
                                 </li>
                             </ul>
                         </nav>
+
+                        <!-- Información del usuario logueado -->
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <c:choose>
+                                    <c:when test="${not empty currentUser.fullName}">
+                                        ${currentUser.fullName.substring(0,1).toUpperCase()}
+                                    </c:when>
+                                    <c:when test="${not empty currentUsername}">
+                                        ${currentUsername.substring(0,1).toUpperCase()}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fas fa-user"></i>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="user-details">
+                                <div style="font-weight: 600;">
+                                    <c:choose>
+                                        <c:when test="${not empty currentUser.fullName}">
+                                            ${currentUser.fullName}
+                                        </c:when>
+                                        <c:when test="${not empty currentUsername}">
+                                            ${currentUsername}
+                                        </c:when>
+                                        <c:otherwise>
+                                            Usuario
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div style="opacity: 0.8; font-size: 0.75rem;">
+                                    <c:choose>
+                                        <c:when test="${not empty currentUserRole}">
+                                            ${currentUserRole}
+                                        </c:when>
+                                        <c:otherwise>
+                                            Sistema
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+                            <a href="${pageContext.request.contextPath}/auth/logout" class="logout-btn"
+                                onclick="return confirm('¿Está seguro que desea cerrar sesión?')">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Salir
+                            </a>
+                        </div>
+                    </div>
                     </div>
                 </header>
 

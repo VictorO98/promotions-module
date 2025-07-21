@@ -20,7 +20,26 @@
     <!-- Error page configuration -->
     <error-page>
         <error-code>404</error-code>
-        <location>/views/index.jsp</location>
+        <location>/auth/login</location>
     </error-page>
+    
+    <error-page>
+        <error-code>403</error-code>
+        <location>/auth/login</location>
+    </error-page>
+    
+    <error-page>
+        <error-code>401</error-code>
+        <location>/auth/login</location>
+    </error-page>
+
+    <!-- Session timeout configuration (8 hours) -->
+    <session-config>
+        <session-timeout>480</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+    </session-config>
 
 </web-app>
