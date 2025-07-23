@@ -99,9 +99,20 @@
                     .user-info {
                         display: flex;
                         align-items: center;
-                        gap: 1rem;
+                        gap: 1.5rem;
                         color: white;
                         font-size: 0.875rem;
+                        padding: 0.5rem 1rem;
+                        background: rgba(255, 255, 255, 0.1);
+                        border-radius: 8px;
+                        min-width: 180px;
+                    }
+
+                    .user-display {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex: 1;
                     }
 
                     .user-avatar {
@@ -2729,6 +2740,355 @@
                         }
                     }
 
+                    /* Error Modal */
+                    .error-modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.6);
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 10001;
+                        animation: fadeIn 0.3s ease-out;
+                        backdrop-filter: blur(4px);
+                    }
+
+                    .error-modal-overlay.show {
+                        display: flex;
+                    }
+
+                    .error-modal {
+                        background: var(--surface-color);
+                        border-radius: 16px;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                        max-width: 450px;
+                        width: 90%;
+                        overflow: hidden;
+                        animation: slideInScale 0.3s ease-out;
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .error-modal-header {
+                        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                        color: white;
+                        padding: 2rem 2rem 1.5rem;
+                        text-align: center;
+                        position: relative;
+                    }
+
+                    .error-modal-icon {
+                        background: rgba(255, 255, 255, 0.2);
+                        width: 64px;
+                        height: 64px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 1rem;
+                        font-size: 1.8rem;
+                    }
+
+                    .error-modal-title {
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        margin: 0;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .error-modal-body {
+                        padding: 2rem;
+                        text-align: center;
+                    }
+
+                    .error-modal-message {
+                        font-size: 1.1rem;
+                        color: var(--text-primary);
+                        line-height: 1.6;
+                        margin: 0 0 2rem;
+                        background: var(--background-color);
+                        padding: 1.25rem;
+                        border-radius: 8px;
+                        border-left: 4px solid #ef4444;
+                    }
+
+                    .error-modal-actions {
+                        display: flex;
+                        justify-content: center;
+                    }
+
+                    .error-modal-btn {
+                        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 12px;
+                        padding: 0.875rem 2rem;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        min-width: 120px;
+                        justify-content: center;
+                    }
+
+                    .error-modal-btn:hover {
+                        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+                    }
+
+                    /* Success Modal */
+                    .success-modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.6);
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 10001;
+                        animation: fadeIn 0.3s ease-out;
+                        backdrop-filter: blur(4px);
+                    }
+
+                    .success-modal-overlay.show {
+                        display: flex;
+                    }
+
+                    .success-modal {
+                        background: var(--surface-color);
+                        border-radius: 16px;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                        max-width: 450px;
+                        width: 90%;
+                        overflow: hidden;
+                        animation: slideInScale 0.3s ease-out;
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .success-modal-header {
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                        color: white;
+                        padding: 2rem 2rem 1.5rem;
+                        text-align: center;
+                        position: relative;
+                    }
+
+                    .success-modal-icon {
+                        background: rgba(255, 255, 255, 0.2);
+                        width: 64px;
+                        height: 64px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 1rem;
+                        font-size: 1.8rem;
+                    }
+
+                    .success-modal-title {
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        margin: 0;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .success-modal-body {
+                        padding: 2rem;
+                        text-align: center;
+                    }
+
+                    .success-modal-message {
+                        font-size: 1.1rem;
+                        color: var(--text-primary);
+                        line-height: 1.6;
+                        margin: 0 0 2rem;
+                        background: var(--background-color);
+                        padding: 1.25rem;
+                        border-radius: 8px;
+                        border-left: 4px solid #10b981;
+                    }
+
+                    .success-modal-actions {
+                        display: flex;
+                        gap: 1rem;
+                        justify-content: center;
+                    }
+
+                    .success-modal-btn {
+                        padding: 0.875rem 1.5rem;
+                        border: none;
+                        border-radius: 12px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        min-width: 120px;
+                        justify-content: center;
+                    }
+
+                    .success-primary-btn {
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                        color: white;
+                    }
+
+                    .success-primary-btn:hover {
+                        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+                    }
+
+                    .success-secondary-btn {
+                        background: var(--secondary-color);
+                        color: white;
+                    }
+
+                    .success-secondary-btn:hover {
+                        background: #475569;
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(100, 116, 139, 0.4);
+                    }
+
+                    /* Logout Confirmation Modal */
+                    .logout-modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.6);
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 10000;
+                        animation: fadeIn 0.3s ease-out;
+                        backdrop-filter: blur(4px);
+                    }
+
+                    .logout-modal-overlay.show {
+                        display: flex;
+                    }
+
+                    .logout-modal {
+                        background: var(--surface-color);
+                        border-radius: 16px;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                        max-width: 420px;
+                        width: 90%;
+                        overflow: hidden;
+                        animation: slideInScale 0.3s ease-out;
+                        border: 1px solid var(--border-color);
+                    }
+
+                    .logout-modal-header {
+                        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                        color: white;
+                        padding: 2rem 2rem 1.5rem;
+                        text-align: center;
+                        position: relative;
+                    }
+
+                    .logout-modal-icon {
+                        background: rgba(255, 255, 255, 0.2);
+                        width: 64px;
+                        height: 64px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 1rem;
+                        font-size: 1.8rem;
+                    }
+
+                    .logout-modal-title {
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        margin: 0;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .logout-modal-body {
+                        padding: 2rem;
+                        text-align: center;
+                    }
+
+                    .logout-modal-message {
+                        font-size: 1.1rem;
+                        color: var(--text-secondary);
+                        line-height: 1.6;
+                        margin: 0 0 2rem;
+                    }
+
+                    .logout-modal-actions {
+                        display: flex;
+                        gap: 1rem;
+                        justify-content: center;
+                    }
+
+                    .logout-modal-btn {
+                        padding: 0.875rem 2rem;
+                        border: none;
+                        border-radius: 12px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        min-width: 120px;
+                        justify-content: center;
+                        text-decoration: none;
+                    }
+
+                    .logout-confirm-btn {
+                        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                        color: white;
+                        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+                    }
+
+                    .logout-confirm-btn:hover {
+                        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+                        color: white;
+                        text-decoration: none;
+                    }
+
+                    .logout-cancel-btn {
+                        background: var(--secondary-color);
+                        color: white;
+                        box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+                    }
+
+                    .logout-cancel-btn:hover {
+                        background: #475569;
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(100, 116, 139, 0.4);
+                    }
+
+                    @keyframes slideInScale {
+                        from {
+                            opacity: 0;
+                            transform: scale(0.9) translateY(-20px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: scale(1) translateY(0);
+                        }
+                    }
+
                     /* Mobile Responsive for Product Detail Modal */
                     @media (max-width: 768px) {
                         .association-buttons {
@@ -2751,6 +3111,19 @@
                         .confirmation-modal {
                             width: 95%;
                             max-width: none;
+                        }
+
+                        .logout-modal {
+                            width: 95%;
+                            max-width: 380px;
+                        }
+
+                        .logout-modal-actions {
+                            flex-direction: column;
+                        }
+
+                        .logout-modal-btn {
+                            width: 100%;
                         }
 
                         .confirmation-actions {
@@ -2821,46 +3194,10 @@
 
                         <!-- Información del usuario logueado -->
                         <div class="user-info">
-                            <div class="user-avatar">
-                                <c:choose>
-                                    <c:when test="${not empty currentUser.fullName}">
-                                        ${currentUser.fullName.substring(0,1).toUpperCase()}
-                                    </c:when>
-                                    <c:when test="${not empty currentUsername}">
-                                        ${currentUsername.substring(0,1).toUpperCase()}
-                                    </c:when>
-                                    <c:otherwise>
-                                        <i class="fas fa-user"></i>
-                                    </c:otherwise>
-                                </c:choose>
+                            <div class="user-display">
+                                <span style="font-weight: 600; font-size: 0.95rem;">USER: PROMO</span>
                             </div>
-                            <div class="user-details">
-                                <div style="font-weight: 600;">
-                                    <c:choose>
-                                        <c:when test="${not empty currentUser.fullName}">
-                                            ${currentUser.fullName}
-                                        </c:when>
-                                        <c:when test="${not empty currentUsername}">
-                                            ${currentUsername}
-                                        </c:when>
-                                        <c:otherwise>
-                                            Usuario
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-                                <div style="opacity: 0.8; font-size: 0.75rem;">
-                                    <c:choose>
-                                        <c:when test="${not empty currentUserRole}">
-                                            ${currentUserRole}
-                                        </c:when>
-                                        <c:otherwise>
-                                            Sistema
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/auth/logout" class="logout-btn"
-                                onclick="return confirm('¿Está seguro que desea cerrar sesión?')">
+                            <a href="#" class="logout-btn" onclick="return showLogoutModal()">
                                 <i class="fas fa-sign-out-alt"></i>
                                 Salir
                             </a>
@@ -3261,17 +3598,19 @@
                                             <label for="codigoExterno" class="form-label">
                                                 <i class="fas fa-barcode"></i>
                                                 Código Externo
+                                                <span class="required">*</span>
                                             </label>
                                             <input type="text" id="codigoExterno" name="codigoExterno"
-                                                class="form-input" placeholder="Ej: PROMO 10 2012">
+                                                class="form-input" placeholder="Ej: PROMO 10 2012" required>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="periodicidad" class="form-label">
                                                 <i class="fas fa-calendar-alt"></i>
                                                 Periodicidad
+                                                <span class="required">*</span>
                                             </label>
-                                            <select id="periodicidad" name="periodicidad" class="form-input">
+                                            <select id="periodicidad" name="periodicidad" class="form-input" required>
                                                 <option value="">Seleccione Periodicidad</option>
                                                 <option value="MENSUAL">Mensual</option>
                                                 <option value="DIARIA">Diaria</option>
@@ -4643,11 +4982,18 @@
                                     // Limpiar el select
                                     departamentoSelect.innerHTML = '<option value="">Seleccione Departamento</option>';
 
-                                    // Agregar los departamentos
+                                    // Ordenar departamentos por código (ID) de menor a mayor
+                                    data.departamentos.sort((a, b) => {
+                                        const codigoA = parseInt(a.codigo) || 0;
+                                        const codigoB = parseInt(b.codigo) || 0;
+                                        return codigoA - codigoB;
+                                    });
+
+                                    // Agregar los departamentos con formato "ID - Descripción"
                                     data.departamentos.forEach(dept => {
                                         const option = document.createElement('option');
                                         option.value = dept.codigo;
-                                        option.textContent = dept.descripcion;
+                                        option.textContent = dept.codigo + ' - ' + dept.descripcion;
                                         departamentoSelect.appendChild(option);
                                     });
 
@@ -4689,6 +5035,13 @@
                                 if (data.success) {
                                     // Limpiar el select
                                     mercadoSelect.innerHTML = '<option value="">Selección Categoría</option>';
+
+                                    // Ordenar categorías por código (ID) de menor a mayor
+                                    data.categorias.sort((a, b) => {
+                                        const codigoA = parseInt(a.codigo) || 0;
+                                        const codigoB = parseInt(b.codigo) || 0;
+                                        return codigoA - codigoB;
+                                    });
 
                                     // Agregar las categorías con formato "ID - Descripción"
                                     data.categorias.forEach(categoria => {
@@ -4750,11 +5103,18 @@
                                     // Limpiar el select
                                     subcategoriaSelect.innerHTML = '<option value="">Selección Subcategoría</option>';
 
-                                    // Agregar las subcategorías
+                                    // Ordenar subcategorías por código (ID) de menor a mayor
+                                    data.subcategorias.sort((a, b) => {
+                                        const codigoA = parseInt(a.codigo) || 0;
+                                        const codigoB = parseInt(b.codigo) || 0;
+                                        return codigoA - codigoB;
+                                    });
+
+                                    // Agregar las subcategorías con formato "ID - Descripción"
                                     data.subcategorias.forEach(subcategoria => {
                                         const option = document.createElement('option');
                                         option.value = subcategoria.codigo;
-                                        option.textContent = subcategoria.descripcion;
+                                        option.textContent = subcategoria.codigo + ' - ' + subcategoria.descripcion;
                                         // Agregar información adicional como data attributes si es necesario
                                         option.setAttribute('data-categoria', subcategoria.categoria);
                                         subcategoriaSelect.appendChild(option);
@@ -4844,6 +5204,13 @@
                             resultsContainer.innerHTML = '<div class="no-results-message">No se encontraron planes</div>';
                             return;
                         }
+
+                        // Ordenar planes por código (ID) de menor a mayor
+                        planes.sort((a, b) => {
+                            const codigoA = parseInt(a.codigo) || 0;
+                            const codigoB = parseInt(b.codigo) || 0;
+                            return codigoA - codigoB;
+                        });
 
                         let html = '';
                         planes.forEach((plan, index) => {
@@ -4979,11 +5346,18 @@
                                     // Limpiar el select
                                     localidadSelect.innerHTML = '<option value="">Selección Localidad</option>';
 
-                                    // Agregar las localidades
+                                    // Ordenar localidades por código (ID) de menor a mayor
+                                    data.localidades.sort((a, b) => {
+                                        const codigoA = parseInt(a.locacodi) || 0;
+                                        const codigoB = parseInt(b.locacodi) || 0;
+                                        return codigoA - codigoB;
+                                    });
+
+                                    // Agregar las localidades con formato "ID - Descripción"
                                     data.localidades.forEach(localidad => {
                                         const option = document.createElement('option');
                                         option.value = localidad.locacodi;
-                                        option.textContent = localidad.locanomb;
+                                        option.textContent = localidad.locacodi + ' - ' + localidad.locanomb;
                                         // Agregar información adicional como data attributes si es necesario
                                         option.setAttribute('data-departamento', localidad.locadepa);
                                         localidadSelect.appendChild(option);
@@ -5039,8 +5413,16 @@
                      */
                     function generarOpcionesTipoProducto() {
                         let opciones = '<option value="">Seleccione</option>';
-                        tiposServicioData.forEach(tipo => {
-                            opciones += '<option value="' + tipo.codigo + '">' + tipo.descripcion + '</option>';
+
+                        // Ordenar tipos de servicio por código (ID) de menor a mayor
+                        const tiposOrdenados = [...tiposServicioData].sort((a, b) => {
+                            const codigoA = parseInt(a.codigo) || 0;
+                            const codigoB = parseInt(b.codigo) || 0;
+                            return codigoA - codigoB;
+                        });
+
+                        tiposOrdenados.forEach(tipo => {
+                            opciones += '<option value="' + tipo.codigo + '">' + tipo.codigo + ' - ' + tipo.descripcion + '</option>';
                         });
                         return opciones;
                     }
@@ -5182,27 +5564,142 @@
                         }
                     }
 
+                    let isSubmitting = false; // Flag para prevenir múltiples submits
+
                     function submitPromotionForm(event) {
                         event.preventDefault();
+                        event.stopPropagation(); // Evitar propagación del evento
 
-                        const descripcion = document.getElementById('descripcionPromocion').value.trim();
-                        const departamento = document.getElementById('departamento').value;
+                        // Protección contra múltiples submits
+                        if (isSubmitting) {
+                            console.log('⚠️ Ya se está procesando un submit, ignorando...');
+                            return false;
+                        }
 
+                        isSubmitting = true;
+
+                        // Debug inicial
+                        console.log('=== SUBMIT PROMOTION FORM ===');
+                        console.log('Event:', event);
+                        console.log('Form element:', event.target);
+
+                        // Múltiples estrategias para encontrar los elementos
+                        const form = event.target;
+
+                        // Estrategia 1: getElementById
+                        let descripcionInput = document.getElementById('descripcionPromocion');
+                        let codigoExternoInput = document.getElementById('codigoExterno');
+
+                        // Estrategia 2: buscar en el formulario específico
+                        if (!descripcionInput) {
+                            descripcionInput = form.querySelector('#descripcionPromocion') || form.querySelector('[name="descripcionPromocion"]');
+                        }
+                        if (!codigoExternoInput) {
+                            codigoExternoInput = form.querySelector('#codigoExterno') || form.querySelector('[name="codigoExterno"]');
+                        }
+
+                        // Estrategia 3: buscar en toda la página por nombre
+                        if (!descripcionInput) {
+                            descripcionInput = document.querySelector('input[name="descripcionPromocion"]');
+                        }
+                        if (!codigoExternoInput) {
+                            codigoExternoInput = document.querySelector('input[name="codigoExterno"]');
+                        }
+
+                        const departamentoInput = document.getElementById('departamento');
+                        const localidadInput = document.getElementById('localidad');
+                        const tipoPlanInput = document.getElementById('tipoPlan');
+                        const periodicidadInput = document.getElementById('periodicidad');
+                        const categoriaInput = document.getElementById('mercado');
+                        const subcategoriaInput = document.getElementById('subcategoria');
+
+                        // Debug elementos encontrados
+                        console.log('=== ELEMENTOS ENCONTRADOS ===');
+                        console.log('descripcionInput element:', descripcionInput);
+                        console.log('descripcionInput exists:', !!descripcionInput);
+                        console.log('codigoExternoInput element:', codigoExternoInput);
+                        console.log('codigoExternoInput exists:', !!codigoExternoInput);
+
+                        // Capturar valores de forma más robusta
+                        let descripcion = '';
+                        let codigoExterno = '';
+
+                        if (descripcionInput) {
+                            descripcion = descripcionInput.value ? descripcionInput.value.trim() : '';
+                            console.log('Descripción raw value:', descripcionInput.value);
+                        }
+
+                        if (codigoExternoInput) {
+                            codigoExterno = codigoExternoInput.value ? codigoExternoInput.value.trim() : '';
+                            console.log('Código externo raw value:', codigoExternoInput.value);
+                        }
+
+                        const departamento = departamentoInput ? departamentoInput.value : '';
+                        const localidad = localidadInput ? localidadInput.value : '';
+                        const tipoPlan = tipoPlanInput ? tipoPlanInput.value : '';
+                        const periodicidadFull = periodicidadInput ? periodicidadInput.value : '';
+                        const categoria = categoriaInput ? categoriaInput.value : '';
+                        const subcategoria = subcategoriaInput ? subcategoriaInput.value : '';
+
+                        // Debug para verificar los valores
+                        console.log('=== VALORES CAPTURADOS ===');
+                        console.log('- descripcion:', "'" + descripcion + "'");
+                        console.log('- descripcion length:', descripcion.length);
+                        console.log('- codigoExterno:', "'" + codigoExterno + "'");
+                        console.log('- departamento:', "'" + departamento + "'");
+                        console.log('- periodicidad:', "'" + periodicidadFull + "'");
+
+                        executeFormSubmission(descripcion, codigoExterno, departamento, localidad, tipoPlan, periodicidadFull, categoria, subcategoria, descripcionInput, codigoExternoInput, departamentoInput, periodicidadInput, event);
+                    }
+
+                    function executeFormSubmission(descripcion, codigoExterno, departamento, localidad, tipoPlan, periodicidadFull, categoria, subcategoria, descripcionInput, codigoExternoInput, departamentoInput, periodicidadInput, event) {
+
+                        // Debug adicional para la validación
+                        console.log('=== DEBUGGING VALIDACIÓN ===');
+                        console.log('descripcion param:', descripcion);
+                        console.log('descripcion type:', typeof descripcion);
+                        console.log('descripcion === "":', descripcion === '');
+                        console.log('descripcion.length:', descripcion.length);
+                        console.log('descripcion charCodes:', [...descripcion].map(c => c.charCodeAt(0)));
+
+                        // Validaciones
                         if (descripcion === '') {
-                            alert('Por favor, ingrese la descripción de la promoción.');
+                            console.log('❌ Error: La descripción es obligatoria');
+                            showErrorModal('Por favor, ingrese la descripción de la promoción.');
+                            if (descripcionInput) descripcionInput.focus();
+                            isSubmitting = false; // Reset flag
+                            return false;
+                        } else {
+                            console.log('✅ Descripción válida:', descripcion);
+                        }
+
+                        if (codigoExterno === '') {
+                            showErrorModal('Por favor, ingrese el código externo de la promoción.');
+                            if (codigoExternoInput) codigoExternoInput.focus();
+                            isSubmitting = false; // Reset flag
                             return false;
                         }
 
                         if (departamento === '') {
-                            alert('Por favor, seleccione un departamento.');
+                            showErrorModal('Por favor, seleccione un departamento.');
+                            if (departamentoInput) departamentoInput.focus();
+                            isSubmitting = false; // Reset flag
                             return false;
                         }
 
-                        // Validate details table has at least one row
-                        const detailsRows = document.querySelectorAll('#promotionDetailsBody tr');
-                        if (detailsRows.length === 0) {
-                            alert('Por favor, agregue al menos un detalle de promoción.');
+                        if (periodicidadFull === '') {
+                            showErrorModal('Por favor, seleccione la periodicidad.');
+                            if (periodicidadInput) periodicidadInput.focus();
+                            isSubmitting = false; // Reset flag
                             return false;
+                        }
+
+                        // Convertir periodicidad a formato requerido por el procedimiento
+                        let periodicidad = '';
+                        if (periodicidadFull === 'MENSUAL') {
+                            periodicidad = 'M';
+                        } else if (periodicidadFull === 'DIARIA') {
+                            periodicidad = 'D';
                         }
 
                         // Show loading state on save button
@@ -5211,14 +5708,57 @@
                         saveBtn.innerHTML = '<div class="spinner"></div> Guardando...';
                         saveBtn.disabled = true;
 
-                        // Simulate API call for saving promotion - Replace with actual service call
-                        setTimeout(() => {
-                            console.log('Promoción guardada exitosamente');
+                        // Preparar datos para enviar usando URLSearchParams
+                        const formData = new URLSearchParams();
+                        formData.append('descripcion', descripcion);
+                        formData.append('codigoExterno', codigoExterno);
+                        formData.append('departamento', departamento);
+                        formData.append('localidad', localidad);
+                        formData.append('tipoplan', tipoPlan);
+                        formData.append('periodicidad', periodicidad);
+                        formData.append('categoria', categoria);
+                        formData.append('subcategoria', subcategoria);
 
-                            // Reset button
-                            saveBtn.innerHTML = originalText;
-                            saveBtn.disabled = false;
-                        }, 2000);
+                        // Debug: mostrar lo que se está enviando
+                        console.log('=== DATOS ENVIADOS AL SERVIDOR ===');
+                        for (let [key, value] of formData.entries()) {
+                            console.log(`${key}: '${value}'`);
+                        }
+
+                        // Llamar al controlador para guardar la promoción
+                        fetch('<%= request.getContextPath() %>/GuardarPromocion', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Reset button
+                                saveBtn.innerHTML = originalText;
+                                saveBtn.disabled = false;
+                                isSubmitting = false; // Reset flag
+
+                                if (data.success) {
+                                    console.log('Promoción guardada exitosamente:', data.message);
+
+                                    // Mostrar modal de éxito simple
+                                    showSuccessModal('¡Promoción creada exitosamente!');
+                                } else {
+                                    showErrorModal('Error al crear la promoción: ' + (data.error || 'Error desconocido'));
+                                    console.error('Error:', data.error);
+                                }
+                            })
+                            .catch(error => {
+                                // Reset button
+                                saveBtn.innerHTML = originalText;
+                                saveBtn.disabled = false;
+                                isSubmitting = false; // Reset flag
+
+                                console.error('Error al comunicarse con el servidor:', error);
+                                showErrorModal('Error al comunicarse con el servidor. Por favor, intente nuevamente.');
+                            });
 
                         return false;
                     }
@@ -7115,9 +7655,190 @@
                             });
                     }
 
+                    // Modal functions
+                    function showErrorModal(message) {
+                        const modal = document.getElementById('errorModal');
+                        const messageElement = document.querySelector('#errorModal .error-modal-message');
+                        messageElement.textContent = message;
+                        modal.classList.add('show');
+                    }
 
+                    function hideErrorModal() {
+                        const modal = document.getElementById('errorModal');
+                        modal.classList.remove('show');
+                    }
+
+                    function showSuccessModal(message, onConfirm, showClearOption = false) {
+                        const modal = document.getElementById('successModal');
+                        const messageElement = document.querySelector('#successModal .success-modal-message');
+                        const actionsContainer = document.querySelector('#successModal .success-modal-actions');
+
+                        messageElement.textContent = message;
+
+                        if (showClearOption) {
+                            actionsContainer.innerHTML = `
+                                <button type="button" class="success-modal-btn success-secondary-btn" onclick="hideSuccessModal()">
+                                    <i class="fas fa-times"></i>
+                                    Mantener Datos
+                                </button>
+                                <button type="button" class="success-modal-btn success-primary-btn" onclick="confirmSuccessAction()">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Limpiar Formulario
+                                </button>
+                            `;
+                            window.successModalCallback = onConfirm;
+                        } else {
+                            actionsContainer.innerHTML = `
+                                <button type="button" class="success-modal-btn success-primary-btn" onclick="hideSuccessModal()">
+                                    <i class="fas fa-check"></i>
+                                    Entendido
+                                </button>
+                            `;
+                        }
+
+                        modal.classList.add('show');
+                    }
+
+                    function hideSuccessModal() {
+                        const modal = document.getElementById('successModal');
+                        modal.classList.remove('show');
+                    }
+
+                    function confirmSuccessAction() {
+                        hideSuccessModal();
+                        if (window.successModalCallback) {
+                            window.successModalCallback();
+                            window.successModalCallback = null;
+                        }
+                    }
+
+                    // Logout modal functions
+                    function showLogoutModal() {
+                        const modal = document.getElementById('logoutModal');
+                        modal.classList.add('show');
+                        return false; // Prevent default link behavior
+                    }
+
+                    function hideLogoutModal() {
+                        const modal = document.getElementById('logoutModal');
+                        modal.classList.remove('show');
+                    }
+
+                    function confirmLogout() {
+                        window.location.href = '${pageContext.request.contextPath}/auth/logout';
+                    }
+
+                    // Close modal when clicking outside
+                    document.addEventListener('click', function (e) {
+                        const logoutModal = document.getElementById('logoutModal');
+                        const errorModal = document.getElementById('errorModal');
+                        const successModal = document.getElementById('successModal');
+
+                        if (e.target === logoutModal) {
+                            hideLogoutModal();
+                        } else if (e.target === errorModal) {
+                            hideErrorModal();
+                        } else if (e.target === successModal) {
+                            hideSuccessModal();
+                        }
+                    });
+
+                    // Close modal with Escape key
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape') {
+                            const logoutModal = document.getElementById('logoutModal');
+                            const errorModal = document.getElementById('errorModal');
+                            const successModal = document.getElementById('successModal');
+
+                            if (logoutModal.classList.contains('show')) {
+                                hideLogoutModal();
+                            } else if (errorModal.classList.contains('show')) {
+                                hideErrorModal();
+                            } else if (successModal.classList.contains('show')) {
+                                hideSuccessModal();
+                            }
+                        }
+                    });
 
                 </script>
+
+                <!-- Error Modal -->
+                <div id="errorModal" class="error-modal-overlay">
+                    <div class="error-modal">
+                        <div class="error-modal-header">
+                            <div class="error-modal-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="error-modal-title">Error</h3>
+                        </div>
+                        <div class="error-modal-body">
+                            <p class="error-modal-message">
+                                Mensaje de error aquí
+                            </p>
+                            <div class="error-modal-actions">
+                                <button type="button" class="error-modal-btn" onclick="hideErrorModal()">
+                                    <i class="fas fa-check"></i>
+                                    Entendido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Modal -->
+                <div id="successModal" class="success-modal-overlay">
+                    <div class="success-modal">
+                        <div class="success-modal-header">
+                            <div class="success-modal-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="success-modal-title">¡Éxito!</h3>
+                        </div>
+                        <div class="success-modal-body">
+                            <p class="success-modal-message">
+                                Operación realizada exitosamente
+                            </p>
+                            <div class="success-modal-actions">
+                                <button type="button" class="success-modal-btn success-primary-btn"
+                                    onclick="hideSuccessModal()">
+                                    <i class="fas fa-check"></i>
+                                    Entendido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout Confirmation Modal -->
+                <div id="logoutModal" class="logout-modal-overlay">
+                    <div class="logout-modal">
+                        <div class="logout-modal-header">
+                            <div class="logout-modal-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <h3 class="logout-modal-title">Cerrar Sesión</h3>
+                        </div>
+                        <div class="logout-modal-body">
+                            <p class="logout-modal-message">
+                                ¿Está seguro que desea cerrar su sesión?<br>
+                                <span style="font-size: 0.9rem; opacity: 0.8;">Se perderán los datos no
+                                    guardados.</span>
+                            </p>
+                            <div class="logout-modal-actions">
+                                <button type="button" class="logout-modal-btn logout-cancel-btn"
+                                    onclick="hideLogoutModal()">
+                                    <i class="fas fa-times"></i>
+                                    Cancelar
+                                </button>
+                                <button type="button" class="logout-modal-btn logout-confirm-btn"
+                                    onclick="confirmLogout()">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Salir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </body>
 
             </html>
