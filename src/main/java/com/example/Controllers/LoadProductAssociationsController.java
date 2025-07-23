@@ -431,10 +431,18 @@ public class LoadProductAssociationsController extends HttpServlet {
                 return;
             }
 
-            // 2. Llamar al procedimiento PKG_PROMOCIONES.pr_asignarPromocion
+            // 2. Verificar si la promoción ya está asignada a esta placa
+            if (verificarPromocionYaAsignada(connection, promotionId, servicioData.placa)) {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response.getWriter().write("{\"error\": \"Esta promoción ya está asignada a la placa "
+                        + servicioData.placa + ". No se puede asociar la misma promoción dos veces.\"}");
+                return;
+            }
+
+            // 3. Llamar al procedimiento PKG_PROMOCIONES.pr_asignarPromocion
             llamarProcedimientoAsignarPromocion(connection, promotionId, servicioData);
 
-            // 3. Respuesta exitosa
+            // 4. Respuesta exitosa
             String jsonResponse = "{\"success\": true, \"message\": \"Promoción " + promotionId
                     + " asociada exitosamente a la placa " + servicioData.placa + "\"}";
             response.getWriter().write(jsonResponse);
@@ -513,6 +521,34 @@ public class LoadProductAssociationsController extends HttpServlet {
 
             System.out.println("=== PROCEDIMIENTO EJECUTADO EXITOSAMENTE ===");
         }
+    }
+
+    /**
+     * Verifica si una promoción ya está asignada a una placa específica
+     */
+    private boolean verificarPromocionYaAsignada(Connection connection, Long promotionId, String placa)
+            throws SQLException {
+
+        String sql = "SELECT COUNT(*) FROM VW_PROMOCION_ACTIVA WHERE PLACA = ? AND COD_PROMO = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, placa);
+            pstmt.setLong(2, promotionId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("Verificación de promoción existente:");
+                    System.out.println("  Placa: " + placa);
+                    System.out.println("  Promoción ID: " + promotionId);
+                    System.out.println("  Registros encontrados: " + count);
+
+                    return count > 0;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

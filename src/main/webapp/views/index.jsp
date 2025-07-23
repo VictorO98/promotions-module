@@ -146,6 +146,8 @@
                         text-decoration: none;
                     }
 
+
+
                     .nav-link {
                         color: white;
                         text-decoration: none;
@@ -1149,6 +1151,15 @@
                         justify-content: center;
                         min-width: 28px;
                         height: 28px;
+                    }
+
+                    .btn-primary {
+                        background: var(--primary-color);
+                        color: white;
+                    }
+
+                    .btn-primary:hover {
+                        background: var(--primary-dark);
                     }
 
                     .btn-edit {
@@ -3671,14 +3682,6 @@
                                         <i class="fas fa-save"></i>
                                         Guardar Promoción
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="clearPromotionForm()">
-                                        <i class="fas fa-eraser"></i>
-                                        Limpiar Formulario
-                                    </button>
-                                    <button type="button" class="btn btn-warning" onclick="loadExistingPromotion()">
-                                        <i class="fas fa-search"></i>
-                                        Cargar Promoción
-                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -4224,7 +4227,7 @@
 
                         if (tableRows.length === 0) {
                             console.log('No hay filas en la tabla, mostrando alert...');
-                            alert('No hay datos para exportar. Realice una consulta primero.');
+                            showErrorModal('No hay datos para exportar. Realice una consulta primero.');
                             return;
                         }
 
@@ -4277,7 +4280,7 @@
                             console.log('window.location.href ejecutado');
                         } catch (error) {
                             console.error('Error al exportar:', error);
-                            alert('Error al exportar: ' + error.message);
+                            showErrorModal('Error al exportar: ' + error.message);
                         }
                     }
 
@@ -4411,7 +4414,7 @@
                         const numeroServicio = document.getElementById('numeroServicio').value.trim();
 
                         if (numeroServicio === '') {
-                            alert('Por favor, ingrese un número de servicio para buscar.');
+                            showErrorModal('Por favor, ingrese un número de servicio para buscar.');
                             document.getElementById('numeroServicio').focus();
                             return;
                         }
@@ -4434,7 +4437,7 @@
                                     displayServiceInfo(data.data);
                                     displayPromotionsFromService(data.promociones);
                                 } else {
-                                    alert('Error: ' + data.message);
+                                    showErrorModal('Error: ' + data.message);
                                     document.getElementById('serviceInfo').style.display = 'none';
                                     showNoPromotionsMessage();
                                 }
@@ -4442,7 +4445,7 @@
                             .catch(error => {
                                 showServiceLoading(false);
                                 console.error('Error:', error);
-                                alert('Error al buscar el servicio. Por favor, intente nuevamente.');
+                                showErrorModal('Error al buscar el servicio. Por favor, intente nuevamente.');
                                 document.getElementById('serviceInfo').style.display = 'none';
                                 showNoPromotionsMessage();
                             });
@@ -4666,20 +4669,29 @@
                             '</div>';
                     }
 
+
+
                     function associatePromotion(promotionId) {
                         // Obtener el número de servicio del campo de entrada
                         const numeroServicio = document.getElementById('numeroServicio').value.trim();
 
                         if (!numeroServicio) {
-                            alert('Error: No hay número de servicio disponible. Por favor, busque un servicio primero.');
+                            showErrorModal('No hay número de servicio disponible. Por favor, busque un servicio primero.');
                             return;
                         }
 
-                        // Confirmar la acción con el usuario
-                        if (!confirm('¿Está seguro que desea asociar la promoción ID ' + promotionId + ' al servicio ' + numeroServicio + '?')) {
-                            return;
-                        }
+                        // Confirmar la acción con el usuario usando el modal personalizado
+                        mostrarConfirmacion(
+                            'Confirmar Asociación',
+                            '¿Está seguro que desea asociar la promoción ID ' + promotionId + ' al servicio ' + numeroServicio + '?',
+                            function () {
+                                executeAssociatePromotion(promotionId, numeroServicio);
+                            },
+                            false // No es peligroso, usar botón primario
+                        );
+                    }
 
+                    function executeAssociatePromotion(promotionId, numeroServicio) {
                         // Cambiar el texto del botón a "Procesando..."
                         const button = document.querySelector('[onclick="associatePromotion(' + promotionId + ')"]');
                         const originalText = button.innerHTML;
@@ -4700,29 +4712,30 @@
                             }
                         })
                             .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Error en la respuesta del servidor');
-                                }
-                                return response.json();
+                                // Siempre intentar leer el JSON, sin importar el status
+                                return response.json().then(data => {
+                                    return { data, status: response.status, ok: response.ok };
+                                });
                             })
-                            .then(data => {
+                            .then(result => {
                                 // Restaurar el botón
                                 button.innerHTML = originalText;
                                 button.disabled = false;
 
-                                if (data.success) {
-                                    alert('¡Éxito! ' + data.message);
+                                if (result.ok && result.data.success) {
+                                    showSuccessModal(result.data.message);
                                     // Opcional: Recargar las promociones para reflejar cambios
                                     searchService();
                                 } else {
-                                    alert('Error: ' + (data.error || 'Error desconocido'));
+                                    // Mostrar el mensaje específico del servidor (incluye casos de HTTP 409)
+                                    showErrorModal(result.data.error || result.data.message || 'Error desconocido');
                                 }
                             })
                             .catch(error => {
                                 console.error('Error asociando promoción:', error);
                                 button.innerHTML = originalText;
                                 button.disabled = false;
-                                alert('Error al asociar promoción: ' + error.message);
+                                showErrorModal('Error al asociar promoción: ' + error.message);
                             });
                     }
 
@@ -4751,12 +4764,12 @@
                         const tipoCliente = 'I'; // Valor por defecto: 'I' para Individual
 
                         if (numeroServicio === '') {
-                            alert('Por favor, ingrese un número de servicio.');
+                            showErrorModal('Por favor, ingrese un número de servicio.');
                             return false;
                         }
 
                         if (selectedPromotionId === null) {
-                            alert('Por favor, seleccione una promoción para asociar.');
+                            showErrorModal('Por favor, seleccione una promoción para asociar.');
                             return false;
                         }
 
@@ -4821,7 +4834,7 @@
                                 console.error('Error verificando promociones existentes:', error);
                                 assignBtn.innerHTML = originalText;
                                 assignBtn.disabled = false;
-                                alert('Error al verificar promociones existentes: ' + error.message);
+                                showErrorModal('Error al verificar promociones existentes: ' + error.message);
                             });
                     }
 
@@ -4906,7 +4919,7 @@
                             .then(data => {
                                 if (data.success) {
                                     // Mostrar mensaje de éxito (equivalente al MessageBox.Show del C#)
-                                    alert(data.message);
+                                    showSuccessModal(data.message);
 
                                     // Reset form
                                     document.querySelector('.association-form').reset();
@@ -4928,7 +4941,7 @@
                                 console.error('Error asignando promoción:', error);
                                 assignBtn.innerHTML = originalText;
                                 assignBtn.disabled = false;
-                                alert('Error al asignar promoción: ' + error.message);
+                                showErrorModal('Error al asignar promoción: ' + error.message);
                             });
                     }
 
@@ -5498,6 +5511,9 @@
                             '</td>' +
                             '<td>' +
                             '<div class="action-buttons">' +
+                            '<button type="button" class="btn-action btn-primary" onclick="saveDetailRow(' + detailRowCounter + ')" title="Guardar Detalle">' +
+                            '<i class="fas fa-save"></i>' +
+                            '</button>' +
                             '<button type="button" class="btn-action btn-edit" onclick="editDetailRow(' + detailRowCounter + ')" title="Editar">' +
                             '<i class="fas fa-edit"></i>' +
                             '</button>' +
@@ -5562,6 +5578,140 @@
                             // Actualizar el estado del botón "Agregar Detalle"
                             updateAddDetailButtonState();
                         }
+                    }
+
+                    /**
+                     * Guarda un detalle específico de promoción
+                     */
+                    function saveDetailRow(rowId) {
+                        const row = document.getElementById('detail-row-' + rowId);
+                        if (!row) {
+                            showErrorModal('No se pudo encontrar la fila del detalle.');
+                            return;
+                        }
+
+                        // Capturar los valores de la fila
+                        const fechaInicio = row.querySelector('input[name="fechaInicio_' + rowId + '"]').value;
+                        const fechaFinalizacion = row.querySelector('input[name="fechaFinalizacion_' + rowId + '"]').value;
+                        const tiempoAplicacion = row.querySelector('input[name="tiempoAplicacion_' + rowId + '"]').value;
+                        const porcentajeDesc = row.querySelector('input[name="porcentajeDesc_' + rowId + '"]').value;
+                        const valorDesc = row.querySelector('input[name="valorDesc_' + rowId + '"]').value;
+                        const tipoProducto = row.querySelector('select[name="tipoProducto_' + rowId + '"]').value;
+                        const retencion = row.querySelector('input[name="retencion_' + rowId + '"]').checked;
+                        const activo = row.querySelector('input[name="activo_' + rowId + '"]').checked;
+                        const indexValue = row.querySelector('input[name="index_' + rowId + '"]').value;
+                        const confIndex = row.querySelector('input[name="confIndex_' + rowId + '"]').value;
+
+                        // Obtener información de la promoción principal
+                        const codigoExterno = document.getElementById('codigoExterno').value;
+
+                        // Debug: mostrar valores capturados
+                        console.log('=== DATOS CAPTURADOS DEL DETALLE ===');
+                        console.log('fechaInicio:', fechaInicio);
+                        console.log('fechaFinalizacion:', fechaFinalizacion);
+                        console.log('tiempoAplicacion:', tiempoAplicacion);
+                        console.log('porcentajeDesc:', porcentajeDesc);
+                        console.log('valorDesc:', valorDesc);
+                        console.log('tipoProducto:', tipoProducto);
+                        console.log('retencion:', retencion);
+                        console.log('activo:', activo);
+                        console.log('indexValue:', indexValue);
+                        console.log('confIndex:', confIndex);
+                        console.log('codigoExterno:', codigoExterno);
+
+                        // Validaciones básicas
+                        if (!fechaInicio) {
+                            showErrorModal('La fecha de inicio es obligatoria.');
+                            return;
+                        }
+
+                        if (!fechaFinalizacion) {
+                            showErrorModal('La fecha de finalización es obligatoria.');
+                            return;
+                        }
+
+                        if (!tiempoAplicacion) {
+                            showErrorModal('El tiempo de aplicación es obligatorio.');
+                            return;
+                        }
+
+                        if (!codigoExterno) {
+                            showErrorModal('Debe crear primero la promoción principal antes de agregar detalles.');
+                            return;
+                        }
+
+                        // Obtener el botón de guardar para mostrar estado de carga
+                        const saveButton = row.querySelector('.btn-primary');
+                        const originalText = saveButton.innerHTML;
+                        saveButton.innerHTML = '<div class="spinner"></div>';
+                        saveButton.disabled = true;
+
+                        // Preparar datos para enviar
+                        const formData = new URLSearchParams();
+                        formData.append('cocotico', '1'); // Por ahora usar un valor fijo, debería venir del ID de la promoción
+                        formData.append('cococlco', codigoExterno);
+                        formData.append('cocofein', fechaInicio);
+                        formData.append('cocfefi', fechaFinalizacion);
+                        formData.append('cocotiap', tiempoAplicacion);
+                        formData.append('porcentaje', porcentajeDesc || '');
+                        formData.append('valor', valorDesc || '');
+                        formData.append('activo', activo ? 'true' : 'false');
+                        formData.append('indexado', indexValue || '');
+                        formData.append('planes', tipoProducto || ''); // Mapear tipo producto a planes
+                        formData.append('velocidades', ''); // Por ahora vacío, no tenemos este campo en la UI
+
+                        // Debug: mostrar lo que se está enviando
+                        console.log('=== DATOS ENVIADOS AL SERVIDOR ===');
+                        for (let [key, value] of formData.entries()) {
+                            console.log(`${key}: '${value}'`);
+                        }
+
+                        // Llamar al controlador para guardar el detalle
+                        fetch('<%= request.getContextPath() %>/GuardarDetallePromocion', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Restaurar botón
+                                saveButton.innerHTML = originalText;
+                                saveButton.disabled = false;
+
+                                if (data.success) {
+                                    console.log('Detalle de promoción guardado exitosamente:', data.message);
+                                    showSuccessModal('¡Detalle de promoción guardado exitosamente!');
+
+                                    // Deshabilitar edición de la fila guardada
+                                    const inputs = row.querySelectorAll('input, select');
+                                    inputs.forEach(input => {
+                                        input.readOnly = true;
+                                        if (input.type === 'checkbox') {
+                                            input.disabled = true;
+                                        }
+                                    });
+
+                                    // Cambiar el botón de guardar por uno de "Guardado"
+                                    saveButton.innerHTML = '<i class="fas fa-check"></i>';
+                                    saveButton.title = 'Detalle guardado';
+                                    saveButton.disabled = true;
+                                    saveButton.style.background = '#10b981'; // Color verde
+
+                                } else {
+                                    showErrorModal('Error al guardar el detalle: ' + (data.error || 'Error desconocido'));
+                                    console.error('Error:', data.error);
+                                }
+                            })
+                            .catch(error => {
+                                // Restaurar botón
+                                saveButton.innerHTML = originalText;
+                                saveButton.disabled = false;
+
+                                console.error('Error al comunicarse con el servidor:', error);
+                                showErrorModal('Error al comunicarse con el servidor. Por favor, intente nuevamente.');
+                            });
                     }
 
                     let isSubmitting = false; // Flag para prevenir múltiples submits
@@ -5763,77 +5913,7 @@
                         return false;
                     }
 
-                    function clearPromotionForm() {
-                        if (confirm('¿Está seguro que desea limpiar el formulario? Se perderán todos los datos ingresados.')) {
-                            document.querySelector('.promotion-management-form').reset();
-                            document.getElementById('promotionDetailsBody').innerHTML = '';
-                            detailRowCounter = 0;
 
-                            // Actualizar el estado del botón "Agregar Detalle"
-                            updateAddDetailButtonState();
-
-                            console.log('Formulario limpiado correctamente');
-                        }
-                    }
-
-                    function loadExistingPromotion() {
-                        const codigoPromocion = prompt('Ingrese el código de la promoción a cargar:');
-
-                        if (!codigoPromocion || codigoPromocion.trim() === '') {
-                            return;
-                        }
-
-                        // Show loading message
-                        console.log('Cargando promoción...');
-
-                        // Simulate API call for loading promotion - Replace with actual service call
-                        setTimeout(() => {
-                            // Mock data
-                            const mockPromotion = {
-                                descripcion: 'DESCUENTO 33.02% CONCEPTO CONSUMO LOCAL',
-                                departamento: 'META',
-                                localidad: 'Villavicencio',
-                                mercado: 'RESIDENCIAL',
-                                tipoPlan: 'INTERNET',
-                                codigoExterno: 'PROMO 10 2012',
-                                periodicidad: 'MENSUAL',
-                                estado: 'INACTIVO'
-                            };
-
-                            // Fill form with loaded data
-                            document.getElementById('descripcionPromocion').value = mockPromotion.descripcion;
-                            document.getElementById('departamento').value = mockPromotion.departamento;
-                            loadLocalidades(); // Load localities for selected department
-                            setTimeout(() => {
-                                document.getElementById('localidad').value = mockPromotion.localidad;
-                            }, 100);
-                            document.getElementById('mercado').value = mockPromotion.mercado;
-                            document.getElementById('tipoPlan').value = mockPromotion.tipoPlan;
-                            document.getElementById('codigoExterno').value = mockPromotion.codigoExterno;
-                            document.getElementById('periodicidad').value = mockPromotion.periodicidad;
-                            document.getElementById('estadoPromocion').value = mockPromotion.estado;
-
-                            // Clear existing details and add mock detail
-                            document.getElementById('promotionDetailsBody').innerHTML = '';
-                            detailRowCounter = 0;
-                            addPromotionDetail();
-
-                            // Fill the detail row with mock data
-                            const detailRow = document.querySelector('#promotionDetailsBody tr:last-child');
-                            detailRow.querySelector('[name^="fechaInicio"]').value = '2012-02-01';
-                            detailRow.querySelector('[name^="fechaFinalizacion"]').value = '2017-12-31';
-                            detailRow.querySelector('[name^="tiempoAplicacion"]').value = '15';
-                            detailRow.querySelector('[name^="porcentajeDesc"]').value = '33.02';
-                            detailRow.querySelector('[name^="valorDesc"]').value = '0';
-                            detailRow.querySelector('[name^="tipoProducto"]').value = 'INTERNET';
-                            detailRow.querySelector('[name^="retencion"]').checked = true;
-                            detailRow.querySelector('[name^="activo"]').checked = true;
-                            detailRow.querySelector('[name^="index"]').value = '1';
-                            detailRow.querySelector('[name^="confIndex"]').value = '1';
-
-                            console.log('Promoción cargada exitosamente');
-                        }, 1500);
-                    }
 
                     // Reports Functions
                     let currentPage = 1;
