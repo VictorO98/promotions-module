@@ -84,7 +84,7 @@ public class GuardarDetallePromocionController extends HttpServlet {
             }
 
             // 2. pv_i_cococlco - CONFCOBR.COCOCLCO%type (VARCHAR2)
-            statement.setString(2, cococlco);
+            statement.setString(2, "D");
 
             // 3. pv_i_cocofein - VARCHAR2 (fecha inicio)
             statement.setString(3, cocofein);

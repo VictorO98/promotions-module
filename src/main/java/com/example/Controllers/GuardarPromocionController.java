@@ -77,17 +77,8 @@ public class GuardarPromocionController extends HttpServlet {
             DatabaseConnection dbConnection = new DatabaseConnection();
             dbConnection.getConnection();
 
-            // Preparar los estratos (categoría;subcategoría)
-            String estratos = "";
-            if (categoria != null && !categoria.trim().isEmpty()) {
-                estratos = categoria.trim();
-                if (subcategoria != null && !subcategoria.trim().isEmpty()) {
-                    estratos += ";" + subcategoria.trim();
-                }
-            }
-
             // Construir la llamada al procedimiento
-            String procedureCall = "{ call PKG_PROMOCIONES.pr_crearPromocion(?, ?, ?, ?, ?, ?, ?, ?) }";
+            String procedureCall = "{ call PKG_PROMOCIONES.pr_crearPromocion(?, ?, ?, ?, ?, ?, ?, ?, ?) }";
 
             // Parámetros del procedimiento según la especificación
             Object[] params = {
@@ -98,7 +89,8 @@ public class GuardarPromocionController extends HttpServlet {
                     tipoplan != null ? tipoplan.trim() : "", // pn_i_tipoplan
                     "A", // pv_i_activo (siempre activo)
                     periodicidad.trim(), // pv_i_periodicidad
-                    estratos // pv_i_estratos
+                    categoria.trim(), // pv_i_categoria
+                    subcategoria.trim() // pv_i_subcategoria
             };
 
             // DEBUG COMPLETO: Imprimir todos los parámetros que se envían al procedimiento
@@ -118,8 +110,10 @@ public class GuardarPromocionController extends HttpServlet {
                     + (params[5] != null ? params[5].getClass().getSimpleName() : "null") + "]");
             System.out.println("Parámetro 7 (pv_i_periodicidad): '" + params[6] + "' ["
                     + (params[6] != null ? params[6].getClass().getSimpleName() : "null") + "]");
-            System.out.println("Parámetro 8 (pv_i_estratos): '" + params[7] + "' ["
+            System.out.println("Parámetro 8 (pv_i_categoria): '" + params[7] + "' ["
                     + (params[7] != null ? params[7].getClass().getSimpleName() : "null") + "]");
+            System.out.println("Parámetro 9 (pv_i_subcategoria): '" + params[8] + "' ["
+                    + (params[8] != null ? params[8].getClass().getSimpleName() : "null") + "]");
             System.out.println("=== DATOS DETALLADOS ===");
             System.out.println("descripcion original: '" + descripcion + "'");
             System.out.println("codigoExterno original: '" + codigoExterno + "'");
@@ -129,7 +123,8 @@ public class GuardarPromocionController extends HttpServlet {
             System.out.println("periodicidad original: '" + periodicidad + "'");
             System.out.println("categoria original: '" + categoria + "'");
             System.out.println("subcategoria original: '" + subcategoria + "'");
-            System.out.println("estratos construido: '" + estratos + "'");
+            System.out.println("categoria construido: '" + categoria + "'");
+            System.out.println("subcategoria construido: '" + subcategoria + "'");
 
             // Ejecutar el procedimiento
             dbConnection.executeProcedure(procedureCall, params);

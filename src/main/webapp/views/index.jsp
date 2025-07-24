@@ -5544,6 +5544,12 @@
                                 });
                         }
 
+                        // Agregar validaciones para campos de descuento
+                        setupDiscountValidation(currentRowCounter);
+
+                        // Configurar formato de fecha para campos de fecha
+                        setupDateFormatting(currentRowCounter);
+
                         // Actualizar el estado del botón "Agregar Detalle"
                         updateAddDetailButtonState();
                     }
@@ -5567,6 +5573,10 @@
                         } else {
                             editBtn.innerHTML = '<i class="fas fa-save"></i>';
                             editBtn.title = 'Guardar';
+
+                            // Cuando se habilita la edición, configurar validaciones
+                            setupDiscountValidation(rowId);
+                            setupDateFormatting(rowId);
                         }
                     }
 
@@ -5640,6 +5650,29 @@
                             return;
                         }
 
+                        // Validar que solo uno de los campos de descuento tenga valor
+                        const hasPorcentaje = porcentajeDesc && parseFloat(porcentajeDesc) > 0;
+                        const hasValor = valorDesc && parseFloat(valorDesc) > 0;
+
+                        if (hasPorcentaje && hasValor) {
+                            showErrorModal('Solo puede especificar descuento por porcentaje O por valor, no ambos.');
+                            return;
+                        }
+
+                        if (!hasPorcentaje && !hasValor) {
+                            showErrorModal('Debe especificar al menos un tipo de descuento (porcentaje o valor).');
+                            return;
+                        }
+
+                        // Asegurar que el campo no usado tenga valor 0
+                        if (hasPorcentaje) {
+                            // Si hay porcentaje, el valor debe ser 0
+                            row.querySelector('input[name="valorDesc_' + rowId + '"]').value = '0';
+                        } else if (hasValor) {
+                            // Si hay valor, el porcentaje debe ser 0
+                            row.querySelector('input[name="porcentajeDesc_' + rowId + '"]').value = '0';
+                        }
+
                         // Obtener el botón de guardar para mostrar estado de carga
                         const saveButton = row.querySelector('.btn-primary');
                         const originalText = saveButton.innerHTML;
@@ -5650,11 +5683,21 @@
                         const formData = new URLSearchParams();
                         formData.append('cocotico', '1'); // Por ahora usar un valor fijo, debería venir del ID de la promoción
                         formData.append('cococlco', codigoExterno);
-                        formData.append('cocofein', fechaInicio);
-                        formData.append('cocfefi', fechaFinalizacion);
+
+                        // Formatear fechas en formato día/mes/año para cocofein y cocfefi
+                        const fechaInicioFormatted = formatDateToSpanish(fechaInicio);
+                        const fechaFinalizacionFormatted = formatDateToSpanish(fechaFinalizacion);
+
+                        formData.append('cocofein', fechaInicioFormatted);
+                        formData.append('cocfefi', fechaFinalizacionFormatted);
                         formData.append('cocotiap', tiempoAplicacion);
-                        formData.append('porcentaje', porcentajeDesc || '');
-                        formData.append('valor', valorDesc || '');
+
+                        // Obtener valores actualizados de descuento (después de la validación)
+                        const porcentajeActualizado = row.querySelector('input[name="porcentajeDesc_' + rowId + '"]').value;
+                        const valorActualizado = row.querySelector('input[name="valorDesc_' + rowId + '"]').value;
+
+                        formData.append('porcentaje', porcentajeActualizado || '0');
+                        formData.append('valor', valorActualizado || '0');
                         formData.append('activo', activo ? 'true' : 'false');
                         formData.append('indexado', indexValue || '');
                         formData.append('planes', tipoProducto || ''); // Mapear tipo producto a planes
@@ -6316,6 +6359,86 @@
                     }
 
                     function formatDate(dateString) {
+                        const date = new Date(dateString + 'T00:00:00');
+                        return date.toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        });
+                    }
+
+                    // Función para configurar validación de campos de descuento
+                    function setupDiscountValidation(rowCounter) {
+                        const porcentajeInput = document.querySelector('input[name="porcentajeDesc_' + rowCounter + '"]');
+                        const valorInput = document.querySelector('input[name="valorDesc_' + rowCounter + '"]');
+
+                        if (porcentajeInput && valorInput) {
+                            // Event listener para campo porcentaje
+                            porcentajeInput.addEventListener('input', function () {
+                                if (this.value && this.value > 0) {
+                                    valorInput.value = '';
+                                    valorInput.disabled = true;
+                                    valorInput.style.backgroundColor = '#f5f5f5';
+                                } else {
+                                    valorInput.disabled = false;
+                                    valorInput.style.backgroundColor = '';
+                                }
+                            });
+
+                            // Event listener para campo valor
+                            valorInput.addEventListener('input', function () {
+                                if (this.value && this.value > 0) {
+                                    porcentajeInput.value = '';
+                                    porcentajeInput.disabled = true;
+                                    porcentajeInput.style.backgroundColor = '#f5f5f5';
+                                } else {
+                                    porcentajeInput.disabled = false;
+                                    porcentajeInput.style.backgroundColor = '';
+                                }
+                            });
+
+                            // Validar estado inicial
+                            if (porcentajeInput.value && porcentajeInput.value > 0) {
+                                valorInput.disabled = true;
+                                valorInput.style.backgroundColor = '#f5f5f5';
+                            } else if (valorInput.value && valorInput.value > 0) {
+                                porcentajeInput.disabled = true;
+                                porcentajeInput.style.backgroundColor = '#f5f5f5';
+                            }
+                        }
+                    }
+
+                    // Función para configurar formato de fecha en campos de fecha
+                    function setupDateFormatting(rowCounter) {
+                        const fechaInicioInput = document.querySelector('input[name="fechaInicio_' + rowCounter + '"]');
+                        const fechaFinalizacionInput = document.querySelector('input[name="fechaFinalizacion_' + rowCounter + '"]');
+
+                        // Configurar formato para fecha de inicio
+                        if (fechaInicioInput) {
+                            fechaInicioInput.addEventListener('change', function () {
+                                if (this.value) {
+                                    const formattedDate = formatDateToSpanish(this.value);
+                                    this.setAttribute('data-formatted', formattedDate);
+                                    this.title = 'Formato: ' + formattedDate;
+                                }
+                            });
+                        }
+
+                        // Configurar formato para fecha de finalización
+                        if (fechaFinalizacionInput) {
+                            fechaFinalizacionInput.addEventListener('change', function () {
+                                if (this.value) {
+                                    const formattedDate = formatDateToSpanish(this.value);
+                                    this.setAttribute('data-formatted', formattedDate);
+                                    this.title = 'Formato: ' + formattedDate;
+                                }
+                            });
+                        }
+                    }
+
+                    // Función auxiliar para formatear fecha a formato español
+                    function formatDateToSpanish(dateString) {
+                        if (!dateString) return '';
                         const date = new Date(dateString + 'T00:00:00');
                         return date.toLocaleDateString('es-ES', {
                             day: '2-digit',
