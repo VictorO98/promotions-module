@@ -391,6 +391,11 @@
                         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
                     }
 
+                    /* Campos que se convierten automáticamente a mayúsculas */
+                    .form-input.uppercase {
+                        text-transform: uppercase;
+                    }
+
                     /* Plan Search Container */
                     .plan-search-container {
                         position: relative;
@@ -3536,8 +3541,9 @@
                                                 <span class="required">*</span>
                                             </label>
                                             <input type="text" id="descripcionPromocion" name="descripcionPromocion"
-                                                class="form-input"
-                                                placeholder="Ej: DESCUENTO 33.02% CONCEPTO CONSUMO LOCAL" required>
+                                                class="form-input uppercase"
+                                                placeholder="Ej: DESCUENTO 33.02% CONCEPTO CONSUMO LOCAL"
+                                                oninput="convertirAMayusculas(this)" required>
                                         </div>
 
                                         <div class="form-group">
@@ -3612,7 +3618,8 @@
                                                 <span class="required">*</span>
                                             </label>
                                             <input type="text" id="codigoExterno" name="codigoExterno"
-                                                class="form-input" placeholder="Ej: PROMO 10 2012" required>
+                                                class="form-input uppercase" placeholder="Ej: PROMO 10 2012"
+                                                oninput="convertirAMayusculas(this)" required>
                                         </div>
 
                                         <div class="form-group">
@@ -3678,6 +3685,11 @@
 
                                 <!-- Form Actions -->
                                 <div class="form-actions promotion-actions">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="limpiarFormularioPromocion()">
+                                        <i class="fas fa-eraser"></i>
+                                        Limpiar Campos
+                                    </button>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save"></i>
                                         Guardar Promoción
@@ -4114,6 +4126,9 @@
                 <script>
                     // Verificar que JavaScript se está cargando correctamente
                     console.log('=== SCRIPT PROMOCIONES CARGADO CORRECTAMENTE ===');
+
+                    // Variable global para almacenar el TICOCODI de la promoción creada
+                    let currentTicocodi = null;
                     console.log('Las funciones de exportación deberían estar disponibles ahora');
 
                     // Test inicial de notificaciones después de 2 segundos
@@ -5681,7 +5696,13 @@
 
                         // Preparar datos para enviar
                         const formData = new URLSearchParams();
-                        formData.append('cocotico', '1'); // Por ahora usar un valor fijo, debería venir del ID de la promoción
+                        // Usar el TICOCODI capturado de la promoción principal
+                        const ticocodiToUse = currentTicocodi || '1';
+                        console.log('=== USANDO TICOCODI PARA DETALLE ===');
+                        console.log('currentTicocodi:', currentTicocodi);
+                        console.log('ticocodiToUse:', ticocodiToUse);
+
+                        formData.append('cocotico', ticocodiToUse); // Usar TICOCODI de la promoción o valor por defecto
                         formData.append('cococlco', codigoExterno);
 
                         // Formatear fechas en formato día/mes/año para cocofein y cocfefi
@@ -5935,6 +5956,15 @@
 
                                 if (data.success) {
                                     console.log('Promoción guardada exitosamente:', data.message);
+
+                                    // Capturar el TICOCODI de la respuesta
+                                    if (data.ticocodi) {
+                                        currentTicocodi = data.ticocodi;
+                                        console.log('TICOCODI capturado para detalles de promoción:', currentTicocodi);
+                                    } else {
+                                        console.warn('No se recibió TICOCODI en la respuesta');
+                                        currentTicocodi = null;
+                                    }
 
                                     // Mostrar modal de éxito simple
                                     showSuccessModal('¡Promoción creada exitosamente!');
@@ -7962,6 +7992,68 @@
                             }
                         }
                     });
+
+                    // Función para convertir texto a mayúsculas en tiempo real
+                    function convertirAMayusculas(input) {
+                        // Obtener la posición actual del cursor
+                        const cursorPosition = input.selectionStart;
+
+                        // Convertir el valor a mayúsculas
+                        const valorMayusculas = input.value.toUpperCase();
+
+                        // Establecer el nuevo valor
+                        input.value = valorMayusculas;
+
+                        // Restaurar la posición del cursor
+                        input.setSelectionRange(cursorPosition, cursorPosition);
+                    }
+
+                    // Función para limpiar todos los campos del formulario de gestión de promociones
+                    function limpiarFormularioPromocion() {
+                        // Limpiar campos de texto
+                        document.getElementById('descripcionPromocion').value = '';
+                        document.getElementById('codigoExterno').value = '';
+                        document.getElementById('tipoPlanSearch').value = '';
+
+                        // Limpiar campos ocultos
+                        document.getElementById('tipoPlan').value = '';
+
+                        // Limpiar selects - establecer en valor por defecto
+                        document.getElementById('departamento').selectedIndex = 0;
+                        document.getElementById('localidad').selectedIndex = 0;
+                        document.getElementById('mercado').selectedIndex = 0;
+                        document.getElementById('subcategoria').selectedIndex = 0;
+                        document.getElementById('periodicidad').selectedIndex = 0;
+                        document.getElementById('estadoPromocion').selectedIndex = 0;
+
+                        // Limpiar tabla de detalles de promoción
+                        const promotionDetailsBody = document.getElementById('promotionDetailsBody');
+                        if (promotionDetailsBody) {
+                            promotionDetailsBody.innerHTML = '';
+                        }
+
+                        // Ocultar resultados de búsqueda de planes si están visibles
+                        const planSearchResults = document.getElementById('planSearchResults');
+                        if (planSearchResults) {
+                            planSearchResults.style.display = 'none';
+                        }
+
+                        // Recargar localidades al limpiar departamento
+                        loadLocalidades();
+
+                        // Recargar subcategorías al limpiar categoría  
+                        loadSubcategorias();
+
+                        // Limpiar el TICOCODI almacenado
+                        currentTicocodi = null;
+                        console.log('TICOCODI limpiado');
+
+                        // Mostrar mensaje de confirmación
+                        console.log('Formulario de gestión de promociones limpiado correctamente');
+
+                        // Opcional: mostrar un breve mensaje de confirmación al usuario
+                        showSuccessMessage('Formulario limpiado correctamente');
+                    }
 
                 </script>
 

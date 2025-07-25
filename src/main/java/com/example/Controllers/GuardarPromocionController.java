@@ -77,6 +77,13 @@ public class GuardarPromocionController extends HttpServlet {
             DatabaseConnection dbConnection = new DatabaseConnection();
             dbConnection.getConnection();
 
+            // VALIDACIÓN: Verificar si el código externo ya existe en la tabla tipocobro
+            if (validarCodigoExternoExistente(dbConnection, codigoExterno.trim())) {
+                dbConnection.connection.close();
+                sendErrorResponse(response, "Ya existe una promoción con el código externo: " + codigoExterno.trim());
+                return;
+            }
+
             // Construir la llamada al procedimiento
             String procedureCall = "{ call PKG_PROMOCIONES.pr_crearPromocion(?, ?, ?, ?, ?, ?, ?, ?, ?) }";
 
@@ -129,17 +136,25 @@ public class GuardarPromocionController extends HttpServlet {
             // Ejecutar el procedimiento
             dbConnection.executeProcedure(procedureCall, params);
 
+            // OBTENER TICOCODI después de crear la promoción exitosamente
+            String ticocodi = obtenerTicocodiPorCodigoExterno(dbConnection, codigoExterno.trim());
+
             // Cerrar conexión
             if (dbConnection.connection != null) {
                 dbConnection.connection.close();
             }
 
-            // Respuesta exitosa
+            // Respuesta exitosa incluyendo el TICOCODI
             PrintWriter out = response.getWriter();
-            out.print("{\"success\": true, \"message\": \"Promoción creada exitosamente\"}");
+            if (ticocodi != null) {
+                out.print("{\"success\": true, \"message\": \"Promoción creada exitosamente\", \"ticocodi\": \""
+                        + ticocodi + "\"}");
+            } else {
+                out.print("{\"success\": true, \"message\": \"Promoción creada exitosamente\", \"ticocodi\": null}");
+            }
             out.flush();
 
-            System.out.println("Promoción creada exitosamente: " + descripcion);
+            System.out.println("Promoción creada exitosamente: " + descripcion + " - TICOCODI: " + ticocodi);
 
         } catch (Exception e) {
             System.err.println("Error al crear la promoción: " + e.getMessage());
@@ -181,5 +196,97 @@ public class GuardarPromocionController extends HttpServlet {
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
+    }
+
+    /**
+     * Valida si el código externo ya existe en la tabla tipocobro
+     * 
+     * @param dbConnection  Conexión a la base de datos
+     * @param codigoExterno Código externo a validar
+     * @return true si el código ya existe, false si no existe
+     */
+    private boolean validarCodigoExternoExistente(DatabaseConnection dbConnection, String codigoExterno) {
+        System.out.println("=== VALIDANDO CÓDIGO EXTERNO ===");
+        System.out.println("Código a validar: '" + codigoExterno + "'");
+
+        try {
+            String query = "SELECT COUNT(*) as total FROM tipocobro WHERE UPPER(TRIM(ticocoex)) = UPPER(TRIM(?))";
+
+            java.sql.PreparedStatement statement = dbConnection.connection.prepareStatement(query);
+            statement.setString(1, codigoExterno);
+
+            System.out.println("Query ejecutada: " + query);
+            System.out.println("Parámetro: '" + codigoExterno + "'");
+
+            java.sql.ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt("total");
+                System.out.println("Resultado de la consulta: " + count + " registros encontrados");
+
+                resultSet.close();
+                statement.close();
+
+                return count > 0;
+            }
+
+            resultSet.close();
+            statement.close();
+
+            System.out.println("No se encontraron registros en la consulta");
+            return false;
+
+        } catch (Exception e) {
+            System.err.println("Error al validar código externo: " + e.getMessage());
+            e.printStackTrace();
+            // En caso de error en la validación, permitir continuar para no bloquear el
+            // proceso
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene el TICOCODI de la tabla tipocobro basado en el código externo
+     * 
+     * @param dbConnection  Conexión a la base de datos
+     * @param codigoExterno Código externo para buscar
+     * @return TICOCODI encontrado o null si no se encuentra
+     */
+    private String obtenerTicocodiPorCodigoExterno(DatabaseConnection dbConnection, String codigoExterno) {
+        System.out.println("=== OBTENIENDO TICOCODI ===");
+        System.out.println("Código externo para buscar: '" + codigoExterno + "'");
+
+        try {
+            String query = "SELECT TICOCODI FROM tipocobro WHERE UPPER(TRIM(ticocoex)) = UPPER(TRIM(?))";
+
+            java.sql.PreparedStatement statement = dbConnection.connection.prepareStatement(query);
+            statement.setString(1, codigoExterno);
+
+            System.out.println("Query ejecutada: " + query);
+            System.out.println("Parámetro: '" + codigoExterno + "'");
+
+            java.sql.ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String ticocodi = resultSet.getString("TICOCODI");
+                System.out.println("TICOCODI encontrado: " + ticocodi);
+
+                resultSet.close();
+                statement.close();
+
+                return ticocodi;
+            }
+
+            resultSet.close();
+            statement.close();
+
+            System.out.println("No se encontró TICOCODI para el código externo: " + codigoExterno);
+            return null;
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener TICOCODI: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 }

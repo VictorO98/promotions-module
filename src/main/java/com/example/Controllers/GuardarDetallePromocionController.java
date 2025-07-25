@@ -114,7 +114,7 @@ public class GuardarDetallePromocionController extends HttpServlet {
             }
 
             // 8. pv_i_activo - CONFCOBR.COCOACTI%type (VARCHAR2)
-            statement.setString(8, (activo != null && activo.equals("true")) ? "S" : "N");
+            statement.setString(8, (activo != null && activo.equals("true")) ? "A" : "N");
 
             // 9. pv_i_indexado - CONFCOBR.COCOINDX%TYPE (VARCHAR2)
             statement.setString(9, indexado);
@@ -123,7 +123,7 @@ public class GuardarDetallePromocionController extends HttpServlet {
             statement.setString(10, planes);
 
             // 11. pv_i_velocidades - VARCHAR2
-            statement.setString(11, velocidades);
+            statement.setString(11, "1");
 
             // Log de parámetros enviados al procedimiento
             System.out.println("=== PARÁMETROS ENVIADOS AL PROCEDIMIENTO ===");
@@ -134,7 +134,7 @@ public class GuardarDetallePromocionController extends HttpServlet {
             System.out.println("5. cocotiap: " + cocotiap);
             System.out.println("6. porcentaje: " + porcentaje);
             System.out.println("7. valor: " + valor);
-            System.out.println("8. activo: " + ((activo != null && activo.equals("true")) ? "S" : "N"));
+            System.out.println("8. activo: " + ((activo != null && activo.equals("true")) ? "A" : "N"));
             System.out.println("9. indexado: " + indexado);
             System.out.println("10. planes: " + planes);
             System.out.println("11. velocidades: " + velocidades);
