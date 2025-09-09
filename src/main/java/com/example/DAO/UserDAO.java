@@ -92,6 +92,16 @@ public class UserDAO {
 
             System.out.println("✅ Conexión exitosa con credenciales del usuario");
 
+            // DIAGNÓSTICO: Verificar configuración de charset del servidor (solo la primera
+            // vez)
+            try {
+                DatabaseConnection dbConn = new DatabaseConnection();
+                dbConn.connection = userConnection; // Usar la conexión existente
+                dbConn.verificarCharsetServidor();
+            } catch (Exception e) {
+                System.out.println("⚠️  No se pudo ejecutar diagnóstico de charset: " + e.getMessage());
+            }
+
             // Ahora validar que el usuario existe usando vistas disponibles
             // Usamos USER_USERS con las columnas reales que existen en la tabla
             String validationQuery = "SELECT USERNAME, ACCOUNT_STATUS, CREATED FROM USER_USERS WHERE USERNAME = ?";
@@ -193,8 +203,13 @@ public class UserDAO {
             Properties connectionProps = new Properties();
             connectionProps.setProperty("user", username.toUpperCase()); // Oracle usernames en mayúsculas
             connectionProps.setProperty("password", password);
-            // Test 2: UTF8 encoding más compatible
-            connectionProps.setProperty("NLS_LANG", "AMERICAN_AMERICA.US7ASCII");
+
+            // Configuración de charset compatible para evitar ORA-12704
+            connectionProps.setProperty("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8");
+
+            // Configuraciones adicionales para compatibilidad de charset
+            connectionProps.setProperty("oracle.jdbc.defaultNChar", "true");
+            connectionProps.setProperty("oracle.jdbc.convertNcharLiterals", "true");
 
             System.out.println("URL de conexión: " + url);
             System.out.println("Usuario para conexión: " + username.toUpperCase());

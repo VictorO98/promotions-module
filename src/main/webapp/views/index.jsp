@@ -5499,7 +5499,7 @@
                             '<input type="date" class="details-input" name="fechaFinalizacion_' + detailRowCounter + '">' +
                             '</td>' +
                             '<td>' +
-                            '<input type="number" class="details-input" name="tiempoAplicacion_' + detailRowCounter + '" placeholder="Meses" min="1">' +
+                            '<input type="number" class="details-input" name="tiempoAplicacion_' + detailRowCounter + '" placeholder="Dias" min="1">' +
                             '</td>' +
                             '<td>' +
                             '<input type="number" class="details-input" name="porcentajeDesc_' + detailRowCounter + '" placeholder="%" min="0" max="100" step="0.01">' +
