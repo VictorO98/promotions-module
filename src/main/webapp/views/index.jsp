@@ -246,11 +246,18 @@
                         text-align: center;
                         border: 1px solid var(--border-color);
                         transition: var(--transition);
+                        cursor: pointer;
+                        user-select: none;
                     }
 
                     .feature-card:hover {
                         transform: translateY(-4px);
                         box-shadow: var(--shadow-lg);
+                        border-color: var(--primary-color);
+                    }
+
+                    .feature-card:active {
+                        transform: translateY(-2px);
                     }
 
                     .feature-card .icon {
@@ -3231,14 +3238,14 @@
                                 herramientas disponibles para obtener la información que necesitas.</p>
 
                             <div class="feature-grid">
-                                <div class="feature-card">
+                                <div class="feature-card" onclick="navigateToConsultarPromociones()">
                                     <div class="icon">
                                         <i class="fas fa-search"></i>
                                     </div>
                                     <h3>Consultar Promociones</h3>
                                     <p>Busca promociones por nombre y fechas de vigencia</p>
                                 </div>
-                                <div class="feature-card">
+                                <div class="feature-card" onclick="navigateToGestionPromociones()">
                                     <div class="icon">
                                         <i class="fas fa-cogs"></i>
                                     </div>
@@ -3246,7 +3253,7 @@
                                     <p>Administra el ciclo de vida completo de promociones</p>
                                 </div>
 
-                                <div class="feature-card">
+                                <div class="feature-card" onclick="navigateToGestionProductos()">
                                     <div class="icon">
                                         <i class="fas fa-box"></i>
                                     </div>
@@ -3359,7 +3366,9 @@
                                                             <td>${promotion.plsudesc}</td>
                                                             <td>${promotion.concdesc}</td>
                                                             <td class="porcentaje-col text-center">
-                                                                ${promotion.cocoporc}%</td>
+                                                                <fmt:formatNumber value="${promotion.cocoporc}"
+                                                                    pattern="#0.00" />%
+                                                            </td>
                                                             <td class="text-center">${promotion.cocotiap} meses</td>
                                                             <td class="text-center">${promotion.ticoperiodicidad}</td>
                                                             <td class="text-center">
@@ -4653,7 +4662,7 @@
                                 '</div>' +
                                 '<div class="promotion-detail">' +
                                 '<label>% Descuento:</label>' +
-                                '<span class="discount-percentage">' + (promo.cocoporc || 0) + '%</span>' +
+                                '<span class="discount-percentage">' + parseFloat(promo.cocoporc || 0).toFixed(2) + '%</span>' +
                                 '</div>' +
                                 '<div class="promotion-detail">' +
                                 '<label>Duración:</label>' +
@@ -7992,6 +8001,40 @@
                             }
                         }
                     });
+
+                    // Funciones de navegación para las tarjetas de la página de inicio
+                    function navigateToConsultarPromociones() {
+                        console.log('Navegando a Consultar Promociones');
+                        // Añadir un pequeño delay para mostrar el efecto visual
+                        setTimeout(() => {
+                            window.location.href = '<%= request.getContextPath() %>/InitialPromotions';
+                        }, 200);
+                    }
+
+                    function navigateToGestionPromociones() {
+                        console.log('Navegando a Gestión de Promociones');
+                        // Añadir un pequeño delay para mostrar el efecto visual
+                        setTimeout(() => {
+                            showSection('manage_promotions');
+
+                            // Actualizar el enlace activo en la navegación
+                            document.querySelectorAll('.nav-link').forEach(link => {
+                                link.classList.remove('active');
+                            });
+                            const gestionLink = document.querySelector('a[onclick*="manage_promotions"]');
+                            if (gestionLink) {
+                                gestionLink.classList.add('active');
+                            }
+                        }, 200);
+                    }
+
+                    function navigateToGestionProductos() {
+                        console.log('Navegando a Gestión de Productos');
+                        // Añadir un pequeño delay para mostrar el efecto visual
+                        setTimeout(() => {
+                            window.location.href = '<%= request.getContextPath() %>/InitialProducts';
+                        }, 200);
+                    }
 
                     // Función para convertir texto a mayúsculas en tiempo real
                     function convertirAMayusculas(input) {

@@ -263,8 +263,8 @@ public class LoadPromotionsController extends HttpServlet {
                 }
 
                 try {
-                    promotion.setCocoporc(rs.getInt("COCOPORC"));
-                    System.out.println("COCOPORC: " + rs.getInt("COCOPORC"));
+                    promotion.setCocoporc(rs.getDouble("COCOPORC"));
+                    System.out.println("COCOPORC: " + rs.getDouble("COCOPORC"));
                 } catch (Exception e) {
                     System.out.println("Error leyendo COCOPORC: " + e.getMessage());
                 }

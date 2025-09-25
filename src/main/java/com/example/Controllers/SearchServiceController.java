@@ -381,7 +381,7 @@ public class SearchServiceController extends HttpServlet {
                 }
 
                 try {
-                    int copocorcValue = rs.getInt("COCOPORC");
+                    double copocorcValue = rs.getDouble("COCOPORC");
                     promotion.setCocoporc(copocorcValue);
                     System.out.println("COCOPORC: " + copocorcValue);
                 } catch (Exception e) {

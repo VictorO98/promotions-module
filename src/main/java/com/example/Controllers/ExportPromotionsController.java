@@ -162,9 +162,9 @@ public class ExportPromotionsController extends HttpServlet {
                     promotion.setConcdesc("");
                 }
                 try {
-                    promotion.setCocoporc(rs.getInt("COCOPORC"));
+                    promotion.setCocoporc(rs.getDouble("COCOPORC"));
                 } catch (Exception e) {
-                    promotion.setCocoporc(0);
+                    promotion.setCocoporc(0.0);
                 }
                 try {
                     promotion.setCocotiap(rs.getInt("COCOTIAP"));

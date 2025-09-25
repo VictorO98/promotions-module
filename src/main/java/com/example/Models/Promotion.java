@@ -24,7 +24,7 @@ public class Promotion {
     private Date ticofech; // DATE
     private String ticouser; // VARCHAR2(20)
     private String ticoactive; // VARCHAR2(1)
-    private Integer cocoporc; // NUMBER(10,5)
+    private Double cocoporc; // NUMBER(10,5) - Porcentaje de descuento con decimales
     private Integer cocoval; // NUMBER(10)
     private String ticoperiodicidad; // VARCHAR2(1)
     private Integer cocotiap; // NUMBER
@@ -206,11 +206,11 @@ public class Promotion {
         this.ticoactive = ticoactive;
     }
 
-    public Integer getCocoporc() {
+    public Double getCocoporc() {
         return cocoporc;
     }
 
-    public void setCocoporc(Integer cocoporc) {
+    public void setCocoporc(Double cocoporc) {
         this.cocoporc = cocoporc;
     }
 
