@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 @WebServlet("/SearchService")
 public class SearchServiceController extends HttpServlet {
@@ -26,6 +25,30 @@ public class SearchServiceController extends HttpServlet {
             throws ServletException, IOException {
 
         System.out.println("=== INICIANDO PROCESAMIENTO SearchService ===");
+        System.out.println("Timestamp: " + java.time.LocalDateTime.now());
+        System.out.println("Remote Address: " + request.getRemoteAddr());
+        System.out.println("Remote Host: " + request.getRemoteHost());
+        System.out.println("User Agent: " + request.getHeader("User-Agent"));
+        System.out.println("Content Type: " + request.getContentType());
+        System.out.println("Content Length: " + request.getContentLength());
+        System.out.println(
+                "Session ID: " + (request.getSession(false) != null ? request.getSession().getId() : "No session"));
+
+        // Log todos los parámetros recibidos
+        System.out.println("=== PARÁMETROS RECIBIDOS ===");
+        java.util.Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            String[] paramValues = request.getParameterValues(paramName);
+            System.out.println("Parámetro: " + paramName + " = " + java.util.Arrays.toString(paramValues));
+        }
+
+        // Log headers importantes
+        System.out.println("=== HEADERS IMPORTANTES ===");
+        System.out.println("Authorization: " + request.getHeader("Authorization"));
+        System.out.println("Cookie: " + request.getHeader("Cookie"));
+        System.out.println("Referer: " + request.getHeader("Referer"));
+        System.out.println("X-Forwarded-For: " + request.getHeader("X-Forwarded-For"));
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -49,12 +72,13 @@ public class SearchServiceController extends HttpServlet {
             if (servicio != null) {
                 System.out.println("=== PASO 2: Servicio encontrado, buscando promociones ===");
 
-                // Buscar promociones disponibles
+                // Buscar promociones disponibles (incluyendo filtro por código de plan)
                 List<Promotion> promociones = buscarPromocionesDisponibles(
                         servicio.getCodDepartamento(),
                         servicio.getCodMunicipio(),
                         servicio.getCodCategoria(),
-                        servicio.getCodSubcategoria());
+                        servicio.getCodSubcategoria(),
+                        servicio.getCodPlan());
 
                 System.out.println("=== PASO 3: Construyendo respuesta JSON ===");
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -129,7 +153,7 @@ public class SearchServiceController extends HttpServlet {
 
     private ServicioPreasignacion buscarServicioPorPlaca(String placa) throws Exception {
         String sql = "SELECT PLACA, SUSCRIPCION, DEPARTAMENTE, MUNICIPIO, CATEGORIA, SUBCATEGORIA, PLAN, " +
-                "COD_DEPARTAMENTO, COD_MUNICIPIO, COD_CATEGORIA, COD_SUBCATEGORIA " +
+                "COD_DEPARTAMENTO, COD_MUNICIPIO, COD_CATEGORIA, COD_SUBCATEGORIA, COD_PLAN " +
                 "FROM vw_preasignacion_placa WHERE PLACA = ?";
 
         System.out.println("=== INICIANDO BÚSQUEDA EN vw_preasignacion_placa ===");
@@ -249,6 +273,14 @@ public class SearchServiceController extends HttpServlet {
                     System.err.println("ERROR leyendo COD_SUBCATEGORIA: " + e.getMessage());
                 }
 
+                try {
+                    String codPlanValue = rs.getString("COD_PLAN");
+                    servicio.setCodPlan(codPlanValue);
+                    System.out.println("COD_PLAN: " + codPlanValue);
+                } catch (Exception e) {
+                    System.err.println("ERROR leyendo COD_PLAN: " + e.getMessage());
+                }
+
                 System.out.println("=== SERVICIO CREADO EXITOSAMENTE ===");
                 return servicio;
             } else {
@@ -271,19 +303,33 @@ public class SearchServiceController extends HttpServlet {
     }
 
     private List<Promotion> buscarPromocionesDisponibles(String codDepartamento, String codMunicipio,
-            String codCategoria, String codSubcategoria) throws Exception {
+            String codCategoria, String codSubcategoria, String codPlanServicio) throws Exception {
         List<Promotion> promociones = new ArrayList<>();
 
+        // Query con filtro que maneja comodines (-1) correctamente
+        // Los comodines -1 significan "TODOS" y deben aplicar a cualquier servicio
         String sql = "SELECT * FROM VW_CONSULTA_PROMO WHERE " +
-                "TICODPTO = ? AND LOCACODI = ? AND CATECODI = ? AND SUCACATE = ?";
+                "(TICODPTO = ? OR TICODPTO = -1) AND " +
+                "(LOCACODI = ? OR LOCACODI = -1) AND " +
+                "(CATECODI = ? OR CATECODI = -1) AND " +
+                "(SUCACATE = ? OR SUCACATE = -1) AND " +
+                "(PLSUCODI = ? OR PLSUCODI = -1)";
 
-        System.out.println("=== INICIANDO BÚSQUEDA EN VW_CONSULTA_PROMO ===");
+        System.out.println("=== INICIANDO BÚSQUEDA EN VW_CONSULTA_PROMO CON COMODINES (-1) ===");
         System.out.println("SQL: " + sql);
-        System.out.println("Parámetros:");
+        System.out.println("Parámetros del servicio:");
         System.out.println("  TICODPTO (codDepartamento): " + codDepartamento);
         System.out.println("  LOCACODI (codMunicipio): " + codMunicipio);
         System.out.println("  CATECODI (codCategoria): " + codCategoria);
         System.out.println("  SUCACATE (codSubcategoria): " + codSubcategoria);
+        System.out.println("  PLSUCODI (codPlanServicio): " + codPlanServicio);
+        System.out.println("=== LÓGICA DE COMODINES ===");
+        System.out.println("  Una promoción aplica si:");
+        System.out.println("  - TICODPTO coincide con " + codDepartamento + " O es -1 (todos los departamentos)");
+        System.out.println("  - LOCACODI coincide con " + codMunicipio + " O es -1 (todas las localidades)");
+        System.out.println("  - CATECODI coincide con " + codCategoria + " O es -1 (todas las categorías)");
+        System.out.println("  - SUCACATE coincide con " + codSubcategoria + " O es -1 (todas las subcategorías)");
+        System.out.println("  - PLSUCODI coincide con " + codPlanServicio + " O es -1 (todos los planes)");
 
         DatabaseConnection dbConn = new DatabaseConnection();
         PreparedStatement pstmt = null;
@@ -296,6 +342,7 @@ public class SearchServiceController extends HttpServlet {
             pstmt.setString(2, codMunicipio);
             pstmt.setString(3, codCategoria);
             pstmt.setString(4, codSubcategoria);
+            pstmt.setString(5, codPlanServicio); // Nuevo parámetro: código del plan del servicio
             rs = pstmt.executeQuery();
 
             // Obtener información de las columnas disponibles
@@ -309,9 +356,35 @@ public class SearchServiceController extends HttpServlet {
             }
 
             int recordCount = 0;
+            System.out.println("=== RESULTADOS DE PROMOCIONES FILTRADAS POR PLAN ===");
             while (rs.next()) {
                 recordCount++;
                 System.out.println("=== PROCESANDO PROMOCIÓN " + recordCount + " ===");
+
+                // Log detallado de por qué esta promoción hizo match
+                try {
+                    String promoDpto = rs.getString("TICODPTO");
+                    String promoLoca = rs.getString("LOCACODI");
+                    String promoCate = rs.getString("CATECODI");
+                    String promoSuca = rs.getString("SUCACATE");
+                    String promoPlan = rs.getString("PLSUCODI");
+                    String promoDescPlan = rs.getString("PLSUDESC");
+
+                    System.out.println("=== DETALLES DEL MATCH ===");
+                    System.out.println("Promoción encontrada:");
+                    System.out.println("  TICODPTO: " + promoDpto
+                            + (promoDpto.equals("-1") ? " (TODOS LOS DEPARTAMENTOS)" : " (específico)"));
+                    System.out.println("  LOCACODI: " + promoLoca
+                            + (promoLoca.equals("-1") ? " (TODAS LAS LOCALIDADES)" : " (específico)"));
+                    System.out.println("  CATECODI: " + promoCate
+                            + (promoCate.equals("-1") ? " (TODAS LAS CATEGORÍAS)" : " (específico)"));
+                    System.out.println("  SUCACATE: " + promoSuca
+                            + (promoSuca.equals("-1") ? " (TODAS LAS SUBCATEGORÍAS)" : " (específico)"));
+                    System.out.println("  PLSUCODI: " + promoPlan + " (" + promoDescPlan + ")"
+                            + (promoPlan.equals("-1") ? " (TODOS LOS PLANES)" : " (específico)"));
+                } catch (Exception e) {
+                    System.out.println("No se pudo obtener información detallada de la promoción: " + e.getMessage());
+                }
 
                 Promotion promotion = new Promotion();
 
@@ -424,7 +497,9 @@ public class SearchServiceController extends HttpServlet {
                 System.out.println("=== PROMOCIÓN " + recordCount + " AGREGADA EXITOSAMENTE ===");
             }
 
-            System.out.println("=== TOTAL PROMOCIONES ENCONTRADAS: " + recordCount + " ===");
+            System.out.println("=== RESUMEN DEL FILTRADO CON COMODINES ===");
+            System.out.println("Promociones encontradas que aplican para este servicio: " + recordCount);
+            System.out.println("(Incluye promociones específicas y universales con comodines -1)");
 
         } catch (Exception e) {
             System.err.println("=== ERROR EN CONSULTA VW_CONSULTA_PROMO ===");

@@ -3465,6 +3465,11 @@
                                             <button type="button" class="search-btn" onclick="searchService()">
                                                 <i class="fas fa-search"></i>
                                             </button>
+                                            <button type="button" class="search-btn" onclick="testConnectivity()"
+                                                title="Test de diagnóstico"
+                                                style="background: orange; margin-left: 5px;">
+                                                <i class="fas fa-network-wired"></i>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -4436,6 +4441,10 @@
                     // Association Form Functions
                     function searchService() {
                         const numeroServicio = document.getElementById('numeroServicio').value.trim();
+                        console.log('=== INICIANDO BÚSQUEDA DESDE FRONTEND ===');
+                        console.log('Número de servicio a buscar:', numeroServicio);
+                        console.log('URL actual:', window.location.href);
+                        console.log('Context path:', '<%= request.getContextPath() %>');
 
                         if (numeroServicio === '') {
                             showErrorModal('Por favor, ingrese un número de servicio para buscar.');
@@ -4447,31 +4456,130 @@
                         showServiceLoading(true);
 
                         // Call the SearchService endpoint
-                        fetch('SearchService', {
+                        const url = '<%= request.getContextPath() %>/SearchService';
+                        console.log('=== ENVIANDO PETICIÓN AJAX ===');
+                        console.log('URL del endpoint:', url);
+                        console.log('Método: POST');
+                        console.log('Body:', 'numeroServicio=' + encodeURIComponent(numeroServicio));
+                        console.log('Timestamp:', new Date().toISOString());
+
+                        fetch(url, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             },
                             body: 'numeroServicio=' + encodeURIComponent(numeroServicio)
                         })
-                            .then(response => response.json())
+                            .then(response => {
+                                console.log('=== RESPUESTA RECIBIDA ===');
+                                console.log('Status:', response.status);
+                                console.log('Status text:', response.statusText);
+                                console.log('Content-Type:', response.headers.get('Content-Type'));
+                                console.log('Headers:', [...response.headers.entries()]);
+
+                                if (!response.ok) {
+                                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                                }
+
+                                return response.json();
+                            })
                             .then(data => {
+                                console.log('=== DATOS JSON PARSEADOS ===');
+                                console.log('Datos completos:', data);
+                                console.log('Success:', data.success);
+
                                 showServiceLoading(false);
                                 if (data.success) {
+                                    console.log('=== BÚSQUEDA EXITOSA ===');
+                                    console.log('Datos del servicio:', data.data);
+                                    console.log('Promociones encontradas:', data.promociones ? data.promociones.length : 0);
                                     displayServiceInfo(data.data);
                                     displayPromotionsFromService(data.promociones);
                                 } else {
+                                    console.log('=== BÚSQUEDA SIN RESULTADOS ===');
+                                    console.log('Mensaje de error:', data.message);
                                     showErrorModal('Error: ' + data.message);
                                     document.getElementById('serviceInfo').style.display = 'none';
                                     showNoPromotionsMessage();
                                 }
                             })
                             .catch(error => {
+                                console.error('=== ERROR EN LA PETICIÓN ===');
+                                console.error('Tipo de error:', error.name);
+                                console.error('Mensaje completo:', error.message);
+                                console.error('Stack trace:', error.stack);
+                                console.error('Timestamp:', new Date().toISOString());
+
                                 showServiceLoading(false);
-                                console.error('Error:', error);
-                                showErrorModal('Error al buscar el servicio. Por favor, intente nuevamente.');
+                                let errorMessage = 'Error al buscar el servicio: ' + error.message;
+
+                                // Agregar información adicional según el tipo de error
+                                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                                    errorMessage += '\n\nPosibles causas:\n• Problema de conectividad de red\n• Servidor no disponible\n• Configuración de proxy/firewall';
+                                } else if (error.message.includes('HTTP')) {
+                                    errorMessage += '\n\nEl servidor respondió con error HTTP';
+                                } else if (error.message.includes('JSON')) {
+                                    errorMessage += '\n\nError procesando respuesta del servidor';
+                                }
+
+                                showErrorModal(errorMessage);
                                 document.getElementById('serviceInfo').style.display = 'none';
                                 showNoPromotionsMessage();
+                            });
+                    }
+
+                    // Función de test de conectividad para diagnóstico
+                    function testConnectivity() {
+                        console.log('=== INICIANDO TEST DE CONECTIVIDAD ===');
+                        console.log('Timestamp:', new Date().toISOString());
+                        console.log('URL actual:', window.location.href);
+                        console.log('Context path:', '<%= request.getContextPath() %>');
+
+                        let results = [];
+
+                        // Test 1: Endpoint básico (LoadTiposServicio)
+                        fetch('<%= request.getContextPath() %>/LoadTiposServicio')
+                            .then(response => {
+                                const result1 = `✅ LoadTiposServicio: ${response.status} ${response.statusText}`;
+                                console.log(result1);
+                                results.push(result1);
+
+                                // Test 2: SearchService OPTIONS
+                                return fetch('<%= request.getContextPath() %>/SearchService', {
+                                    method: 'OPTIONS'
+                                });
+                            })
+                            .then(response => {
+                                const result2 = `✅ SearchService OPTIONS: ${response.status} ${response.statusText}`;
+                                console.log(result2);
+                                results.push(result2);
+
+                                // Test 3: SearchService POST con datos de prueba
+                                return fetch('<%= request.getContextPath() %>/SearchService', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: 'numeroServicio=TEST-CONNECTIVITY'
+                                });
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const result3 = `✅ SearchService POST: Respuesta JSON recibida (success: ${data.success})`;
+                                console.log(result3);
+                                console.log('Respuesta completa del test:', data);
+                                results.push(result3);
+
+                                // Mostrar resumen
+                                alert('🔍 Test de Conectividad Completado:\\n\\n' + results.join('\\n') + '\\n\\nRevisa la consola para más detalles.');
+                            })
+                            .catch(error => {
+                                const errorResult = `❌ Error en test: ${error.name} - ${error.message}`;
+                                console.error(errorResult);
+                                console.error('Stack trace:', error.stack);
+                                results.push(errorResult);
+
+                                alert('❌ Test de Conectividad Falló:\\n\\n' + results.join('\\n') + '\\n\\nError: ' + error.message + '\\n\\nRevisa la consola para más detalles.');
                             });
                     }
 

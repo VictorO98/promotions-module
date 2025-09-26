@@ -14,6 +14,7 @@ public class ServicioPreasignacion {
     private String codMunicipio;
     private String codCategoria;
     private String codSubcategoria;
+    private String codPlan; // Código del plan (ej: 7575)
 
     // Constructor vacío
     public ServicioPreasignacion() {
@@ -123,6 +124,14 @@ public class ServicioPreasignacion {
 
     public void setCodSubcategoria(String codSubcategoria) {
         this.codSubcategoria = codSubcategoria;
+    }
+
+    public String getCodPlan() {
+        return codPlan;
+    }
+
+    public void setCodPlan(String codPlan) {
+        this.codPlan = codPlan;
     }
 
     @Override
